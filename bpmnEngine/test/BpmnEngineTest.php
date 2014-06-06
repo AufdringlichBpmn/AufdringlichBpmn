@@ -1,83 +1,154 @@
 <?php
 require_once "PHPUnit/Autoload.php";
+require("../CouchDbConnector.php");
 require("../BpmnEngine.php");
+require("../manager/CouchDbDesignDocument.php");
 
 class BpmnEngineTest extends PHPUnit_Framework_TestCase{
-	private $db;
+	private $dbAdapter;
 
 	protected function setUp() {
-		$this->db = new PDO('sqlite:BpmnEngineTest.sqlite');
-// 		$this->db->beginTransaction();
-		
-		//remove database
-		$this->db->exec("DROP TABLE variable_map");
-		$this->db->exec("DROP TABLE task");
-		$this->db->exec("DROP TABLE process_instance");
-		$this->db->exec("DROP TABLE process_definition");
+		$options['host'] = "localhost";
+		$options['port'] = 5984;
+		$options['db'] = 'test';
+		$this->dbAdapter = new CouchDbAdapter($options);
+		$this->dbAdapter->updateDesignDocument();
 
+		$managerInstall = new \manager\CouchDbDesignDocument();
+		$managerInstall->updateDesignDocument();
 	}
 
 	protected function tearDown(){
-//		$this->db->commit();
-		$ausgabe = array();
-		exec ("sqlite3 -column -header BpmnEngineTest.sqlite 'select * from process_instance order by id;'", $ausgabe);
-		exec ("sqlite3 -column -header BpmnEngineTest.sqlite 'select * from variable_map;'", $ausgabe);
-		exec ("sqlite3 -column -header BpmnEngineTest.sqlite 'select * from task;'", $ausgabe);
-		print_r( $ausgabe);
-		//remove database
-		$this->db->exec("DROP TABLE variable_map");
-		$this->db->exec("DROP TABLE task");
-		$this->db->exec("DROP TABLE process_instance");
-		$this->db->exec("DROP TABLE process_definition");
+
 	}
 
-	public function testBpmnEngine(){
-		$bpmnEngine = new BpmnEngine($this->db);
-		$bpmnEngine->importDefinition('BpmnEngineTest.bpmn');
-		
-		$valueMap = array("aa"=>2, "bb"=>3);
-		$process = $bpmnEngine->startProcessByName("PROCESS_1", $valueMap);
-		
-		$bpmnEngine->listUserTasks();
+	public function testCouchAdapter(){
+		for($i=0; $i<1; $i++){
+			$obj = $this->dbAdapter->storeDbObject(new Task(array("test"=>"Test:$i", "type"=>"test")));
+			$this->dbAdapter->loadTask($obj->getId());
+			$this->dbAdapter->loadTask($obj->getId());
+		}
+	}
+
+	public function testGateways(){
+		$bpmnEngine = new BpmnEngine($this->dbAdapter, "GATEWAY_TEST");
+		$bpmnEngine->importDefinition('GatewayTest.bpmn');
+
+		$valueMap = array("visits" => "start");
+		$process = $bpmnEngine->startProcess($valueMap);
+		$result = $process->getResult();
+		$this->assertEquals("success", $result);
+	}
+
+	public function testTasks(){
+		$bpmnEngine = new BpmnEngine($this->dbAdapter, "TASKS_TEST");
+		$bpmnEngine->importDefinition('TasksTest.bpmn');
+
+		$valueMap = array("visits" => "start");
+		$process = $bpmnEngine->startProcess($valueMap);
+		// null, wegen process wartet auf UserTask
+		$this->assertEquals(null, $process->getResult());
+		$processId = $process->getId();
+		$this->assertEquals($processId, UserTaskImpl::$testProcessInstanceId);
+		// test reload from DB
+		$process = $bpmnEngine->loadProcess($processId);
+		$this->assertEquals("start", $process->get("visits"));
+		// UserTask als vollendet markieren, Process weiterlaufen lassen
+		$bpmnEngine->executeUserTaskByRefId($process, "_19", "success");
+		$this->assertEquals("all success", $process->getResult());
 	}
 	
-	public function testLast(){
-		$bpmnEngine = new BpmnEngine($this->db);
-		$bpmnEngine->importDefinition('BpmnEngineTest.bpmn');
-	
-		for($i=0;$i<2;$i++){
-			$this->db->beginTransaction();
-			$valueMap = array("a"=>2, "b"=>$i);
-			$process = $bpmnEngine->startProcessByName("PROCESS_1", $valueMap);
-			while($process->processNextServiceTask());
-			$this->db->commit();
-		}
+}
 
-		$userTasks = $bpmnEngine->listUserTasks();
-		foreach($userTasks as $userTask){
-			$process = $bpmnEngine->getProcessInstanceByGuid($userTask["guid"]);
-			$process->executeUserTaskByRefId($userTask["ref_id"]);
-//			$process->executeUserTaskByRefId($userTask["ref_id"]);
-			while($process->processNextServiceTask());
-		}
+class TestUserTask{
+	static function preProcessUserTask($engine, $processInstanceId, $elementId){
+	}
+}
+class AbstractServiceTaskImpl{
+	protected $process, $element;
+	function init($process, $element){
+		$this->process = $process;
+		$this->element = $element;
+	}
+}
+class CheckVariableA extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		return  $this->process->get( "a");
+	}
+}
+// Tasks
+class ServiceTaskImpl extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		return "success";
+	}
+}
+class UserTaskImpl extends AbstractServiceTaskImpl{
+	static $testProcessInstanceId;
+	static function preProcessUserTask($engine, $processInstanceId, $elementId){
+		self::$testProcessInstanceId=$processInstanceId;
+		print_r("called UserTaskImpl::preProcessUserTask(engine, $processInstanceId, $elementId)");
 	}
 }
 
-
-class NumberAdder{
-	static function processServiceTask($engine, $processInstanceId, $elementId){
-	}
-	static function addNumbers($ctx){
-		$a = $ctx->get("a");
-		$b = $ctx->get("b");
-		$ctx->put("c", $a+$b);
-	}
-	static function addNumbers2($ctx){
-		$a = $ctx->get("a");
-		$b = $ctx->get("b");
-		$c = $ctx->get("c");
-		$ctx->put("d", $a+$b+$c);
-		if($a==null) throw new Exception("Ausnahme aufgetreten.");
+// Gateways
+class Eins extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 1");
+		return 1;
 	}
 }
+class Zwei extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 2");
+		return 2;
+	}
+}
+class Drei extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 3");
+		return 3;
+	}
+}
+class Vier extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 4");
+		return 4;
+	}
+}
+class Funf extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 5");
+		return 5;
+	}
+}
+class Sechs extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 6");
+		return 6;
+	}
+}
+class Sieben extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 7");
+		return 7;
+	}
+}
+class Acht extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 8");
+		return 8;
+	}
+}
+class Neun extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		$this->process->put( "visits", $this->process->get( "visits").", 9");
+		return 9;
+	}
+}
+class CheckResult extends AbstractServiceTaskImpl{
+	function processServiceTask(){
+		return $this->process->get( "visits");
+	}
+}
+
 ?>
