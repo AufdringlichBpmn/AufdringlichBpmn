@@ -2,22 +2,27 @@
 require_once "PHPUnit/Autoload.php";
 require_once("../BpmnEngine.php");
 require_once("../InMemoryStore.php");
-require_once("../CouchDbStore.php");
+// require_once("../CouchDbStore.php");
+// require_once("../FileStore.php");
 
 class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	private $dbAdapter;
 
 	protected function setUp() {
-		$options['host'] = "localhost";
-		$options['port'] = 5984;
-		$options['db'] = 'test';
-// 		$this->dbAdapter = new InMemoryStore();
- 		$this->dbAdapter = new CouchDbStore($options);
-		$this->dbAdapter->updateDesignDocument();
+		$this->dbAdapter = new InMemoryStore();
+
+		// Use this for CouchDB		
+// 		$options['host'] = "localhost";
+// 		$options['port'] = 5984;
+// 		$options['db'] = 'test';
+//		$this->dbAdapter = new CouchDbStore($options);
+//		$this->dbAdapter->updateDesignDocument();
+
+		// Or use this for File Persistence
+//		$this->dbAdapter = new FileStore();
 	}
 
 	protected function tearDown(){
-
 	}
 
 	public function testGateways(){
