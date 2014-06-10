@@ -1,8 +1,8 @@
 <?php
 require_once "PHPUnit/Autoload.php";
-require("../CouchDbConnector.php");
-require("../BpmnEngine.php");
-require("../manager/CouchDbDesignDocument.php");
+require_once("../BpmnEngine.php");
+require_once("../InMemoryStore.php");
+require_once("../CouchDbStore.php");
 
 class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	private $dbAdapter;
@@ -11,28 +11,18 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$options['host'] = "localhost";
 		$options['port'] = 5984;
 		$options['db'] = 'test';
-		$this->dbAdapter = new CouchDbAdapter($options);
+// 		$this->dbAdapter = new InMemoryStore();
+ 		$this->dbAdapter = new CouchDbStore($options);
 		$this->dbAdapter->updateDesignDocument();
-
-		$managerInstall = new \manager\CouchDbDesignDocument();
-		$managerInstall->updateDesignDocument();
 	}
 
 	protected function tearDown(){
 
 	}
 
-	public function testCouchAdapter(){
-		for($i=0; $i<1; $i++){
-			$obj = $this->dbAdapter->storeDbObject(new Task(array("test"=>"Test:$i", "type"=>"test")));
-			$this->dbAdapter->loadTask($obj->getId());
-			$this->dbAdapter->loadTask($obj->getId());
-		}
-	}
-
 	public function testGateways(){
 		$bpmnEngine = new BpmnEngine($this->dbAdapter, "GATEWAY_TEST");
-		$bpmnEngine->importDefinition('GatewayTest.bpmn');
+		$bpmnEngine->importDefinition(file_get_contents('GatewayTest.bpmn'));
 
 		$valueMap = array("visits" => "start");
 		$process = $bpmnEngine->startProcess($valueMap);
@@ -42,7 +32,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 
 	public function testTasks(){
 		$bpmnEngine = new BpmnEngine($this->dbAdapter, "TASKS_TEST");
-		$bpmnEngine->importDefinition('TasksTest.bpmn');
+		$bpmnEngine->importDefinition(file_get_contents('TasksTest.bpmn'));
 
 		$valueMap = array("visits" => "start");
 		$process = $bpmnEngine->startProcess($valueMap);

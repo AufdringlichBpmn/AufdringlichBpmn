@@ -1,134 +1,44 @@
 <?php
+require_once("../XmlAdapterTrait.php");
 
 class BpmnEngine{
-	private $db;
+	private $dbAdapter;
+	private $name;
 
-	function __construct($db) {
-		$this->db = $db;
-
-		//create the database
-		try{
-			$this->db->exec("
-				CREATE TABLE process_definition
-				(	id INTEGER PRIMARY KEY
-					, name TEXT
-					, xml TEXT
-				);
-				CREATE TABLE process_instance 
-				(	id INTEGER PRIMARY KEY
-					, process_definition_id INTEGER
-					, created_ts DATETIME
-					, executed_ts DATETIME
-				);
-				CREATE TABLE task
-				(	id INTEGER PRIMARY KEY
-					, process_instance_id INTEGER
-					, ref_id TEXT
-					, type TEXT
-					, created_ts DATETIME
-					, executed_ts DATETIME
-					, retries INTEGER
-					, exception_message TEXT
-				);
-				CREATE TABLE variable_map
-				(	id INTEGER PRIMARY KEY
-					, process_instance_id INTEGER
-					, key TEXT
-					, value TEXT
-				);
-			");
-		}catch(Exception $e){}
+	function __construct($dbAdapter, $name) {
+		$this->dbAdapter = $dbAdapter;
+		$this->name = $name;
 	}
 
-	public function importDefinition($file) {
-		$definition = simplexml_load_file($file);
-		foreach($definition->process as $process) {
-			$statement = $this->db->prepare("INSERT INTO process_definition (name, xml) VALUES (:name, :xml)");
-			$statement->execute(array(':name' => $process->attributes()->id, ':xml' => $definition->asXML()));
+	public function importDefinition($process_definition_xml) {
+		$this->dbAdapter->importDefinition($process_definition_xml);
+	}
+
+	public function startProcess($variables) {
+		$processDefinition = $this->dbAdapter->loadProcessDefinition($this->name);
+		$process = ProcessInstance::buildByProcessDefinition($this, $processDefinition, $this->name);
+		foreach($variables as $key => $value){
+			$process->put($key,$value);
 		}
+		$process->start();
+		$this->dbAdapter->storeProcess($process);
+		return $process;
 	}
-	
-	public function startProcessByName($name, $variables) {
-		return new ProcessInstance($this, $name, $variables);
+	public function executeUserTaskByRefId($process, $refId, $value = null){
+		$process->executeUserTaskByRefId($refId, $value);
+		$this->dbAdapter->storeProcess($process);
 	}
-	
-	public function executeStatement($sql, $parameters){
-		$statement = $this->db->prepare($sql);
-		$result = $statement->execute($parameters);
-		return $this->db->lastInsertId();
+	function loadProcess($processId){
+		$processDto = $this->dbAdapter->loadProcess($processId);
+		$process = ProcessInstance::buildByDto($this, $processDto);
+		return $process;
 	}
-
-	public function getResult($sql, $parameters = array()){
-		$statement = $this->db->prepare($sql);
-		$statement->execute($parameters);
-		return $statement->fetchAll();
-	}
-	
-	public function getSingleResult($sql, $parameters = array(), $column = 0){
-		$statement = $this->db->prepare($sql);
-		$statement->execute($parameters);
-		$result = $statement->fetchAll();
-		foreach($result as $row){
-			return $row[$column];
-		}
-	}
-
-	function listUserTasks(){
-		$userTasks = array();
-		$result = $this->getResult("SELECT t.* FROM task t
-			JOIN process_instance pi ON t.process_instance_id = pi.id AND pi.executed_ts IS NULL
-			WHERE type='userTask' AND t.executed_ts IS NULL");
-		foreach($result as $row){
-			$processInstanceId = $row["process_instance_id"];
-			$xml = $this->getProcessDefinition($processInstanceId);
-			$elementId = $row["ref_id"];
-			
-			foreach($xml->xpath("//*[@id='".$elementId."']") as $element){
-				$text = $element->documentation;
-				$variables = $this->getResult("SELECT * FROM variable_map WHERE process_instance_id = :pi_id",array(":pi_id"=>$processInstanceId));
-				foreach($variables as $var) {
-					$text = str_replace('{'.$var["key"].'}', $var["value"], $text);
-				}
-				array_push($userTasks, array("id" => $row["id"]
-					, "guid"=>$this->get($processInstanceId, "_guid")
-					, "ref_id" => $elementId
-					, "process_instance_id" => $processInstanceId
-					, "text" => $text
-				));
-			}
-		}
-		return $userTasks;
-	}
-	
-	function getProcessInstanceByGuid($guid){
-		return new ProcessInstance($this, $guid);
-	}
-	
-	function getProcessDefinition($processInstanceId){
-		$xml = $this->getSingleResult( "
-			SELECT xml FROM process_definition pd
-			JOIN process_instance pi ON pd.id = pi.process_definition_id
-			WHERE pi.id = :pi_id
-		",array(":pi_id"=>$processInstanceId));
-		$xml = new SimpleXMLElement($xml);
-		$xml->registerXPathNamespace("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL");
-		return $xml;
-	}
-	
-	function put($processInstanceId, $key, $value){
-		$this->executeStatement("DELETE FROM variable_map 
-			WHERE key=:key AND process_instance_id=:pi_id", 
-			array(":key" => $key, ":pi_id" => $processInstanceId));
-		$this->executeStatement("
-			INSERT INTO variable_map (process_instance_id, key, value)
-			VALUES ( :pi_id, :key, :value)
-		",array(':pi_id' => $processInstanceId, ":key" => $key, ":value" => $value));
-	}
-
-	function get($processInstanceId, $key){
-		return $this->getSingleResult("
-			SELECT value FROM variable_map WHERE process_instance_id = :pi_id AND key = :key LIMIT 1
-		", array(':pi_id' => $processInstanceId, ":key" => $key));
+	function continueProcess($processId){
+		$processDto = $this->dbAdapter->loadProcess($processId);
+		$process = ProcessInstance::buildByDto($this, $processDto);
+		while($process->processNextUserTask());
+		$this->dbAdapter->storeDbObject($process);
+		return $process;
 	}
 
 	private static $bpmnElemenHandlerMap = array();
@@ -136,266 +46,226 @@ class BpmnEngine{
 		self::$bpmnElemenHandlerMap[$name] = $handler;
 	}
 	function getBpmnElementHandler($name){
+		print "\n".$name.":\n";
 		return self::$bpmnElemenHandlerMap[$name];
 	}
+
+	function findNotExecutedProcessInstanceIds(){
+		// TODO filter nach ProcessDefinition
+		return $this->dbAdapter->findNotExecutedProcessInstanceIds();
+	}
 }
+BpmnEngine::registerBpmnElementHandler('startEvent', new DefaultBpmnElementHandler);
+BpmnEngine::registerBpmnElementHandler('endEvent', new EndEventHandler);
+
 BpmnEngine::registerBpmnElementHandler('callActivity', new CallActivityHandler);
 BpmnEngine::registerBpmnElementHandler('scriptTask', new ScriptTaskHandler);
 BpmnEngine::registerBpmnElementHandler('serviceTask', new ServiceTaskHandler);
 BpmnEngine::registerBpmnElementHandler('userTask', new UserTaskHandler);
-BpmnEngine::registerBpmnElementHandler('startEvent', new DefaultBpmnElementHandler);
-BpmnEngine::registerBpmnElementHandler('exclusiveGateway', new DefaultBpmnElementHandler);
+BpmnEngine::registerBpmnElementHandler('subProcess', new SubProcessHandler);
+
+BpmnEngine::registerBpmnElementHandler('exclusiveGateway', new ExclusivGatewayHandler);
 BpmnEngine::registerBpmnElementHandler('parallelGateway', new ParallelGatewayHandler);
-BpmnEngine::registerBpmnElementHandler('endEvent', new EndEventHandler);
 
 class DefaultBpmnElementHandler{
 	function createTaskInstance($processInstance, $element){
 		return false;
 	}
-	function discoverTasks($processInstance, $element){
-		$elementId = $element->attributes()->id;
-		$default = $element->attributes()->default;
+	function discoverTasks($processInstance, $value, $element){
+		print_r("discover $value");
+		$default =  $processInstance->getAttribute($element, "default");
+		$isExclusivGateway = $processInstance->getName($element) == "exclusivGateway";
+		$isExclusivGatewayCondition = $value."?" ==  $processInstance->getAttribute($element, "name");
 		$useDefault = true;
 		// find sequence flows and create following tasks
-		foreach($processInstance->getXml()
-		->xpath("//bpmn:sequenceFlow[@sourceRef='".$elementId."'][@id!='".$default."']") as $sequenceFlow){
+		foreach($processInstance->findSequenceFlowElementsBySourceElementExcludeDefault($element, $default) as $sequenceFlow){
 			// check expressions
-			if($sequenceFlow->conditionExpression){
-				$condition = $sequenceFlow->conditionExpression;
-				$condition = preg_replace( "/\\$([a-zA-Z_1-9]+)/", "\$processInstance->get('$1')", $condition);
-				if(!eval("return ".$condition.";")){
+			if($condition = $processInstance->getAttribute($sequenceFlow, "name")){
+				if($value != $condition){
 					continue;
 				}
 			}
-			$processInstance->discoverTasks(
-				$sequenceFlow->attributes()->targetRef);
+			$processInstance->discoverTasks( $processInstance->getAttribute($sequenceFlow, "targetRef"), $value);
 			$useDefault = false;
 		}
-		if($useDefault && $default) foreach($processInstance->getXml()
-		->xpath("//bpmn:sequenceFlow[@id='".$default."']") as $sequenceFlow){
-			$processInstance->discoverTasks(
-				$sequenceFlow->attributes()->targetRef);
+		if($useDefault && $default && $sequenceFlow = $processInstance->findElementById($default)) {
+			$processInstance->discoverTasks( $processInstance->getAttribute($sequenceFlow, "targetRef"), $value);
+		}
+		return true;
+	}
+}
+class ExclusivGatewayHandler extends DefaultBpmnElementHandler{
+	function discoverTasks($processInstance, $value, $element){
+		if($processInstance->isJoin($element)){
+			return parent::discoverTasks($processInstance, $value, $element);
+		}else{
+			$xvalue = ($value."?" == $processInstance->getAttribute($element, 'name')) ? "yes" : "no";
+			// find sequence flows and create following tasks
+			foreach($processInstance->findSequenceFlowElementsBySourceElement($element) as $sequenceFlow){
+				// check expressions
+				if($xvalue == $processInstance->getAttribute($sequenceFlow, 'name')){
+					$processInstance->discoverTasks($processInstance->getAttribute($sequenceFlow, 'targetRef'), $value);
+				}
+			}
 		}
 		return true;
 	}
 }
 class TaskHandler extends DefaultBpmnElementHandler{
 	function createTaskInstance($processInstance, $element){
-		$processInstance->getBpmnEngine()->executeStatement( "
-			INSERT INTO task(process_instance_id, ref_id, type, created_ts, retries)
-			VALUES (:pi_id, :ref_id, :type, julianday('now'), 3);
-		", array(":pi_id"=>$processInstance->getProcessInstanceId(),
-			"ref_id"=>$element->attributes()->id,
-			":type"=>$element->getName()));
+		$processInstance->createTaskInstance($element);
 		return 2;
 	}
 	function processTaskInstance($processInstance, $element, $taskId){
-		$elementId = $element->attributes()->id;
-		$processInstance->getBpmnEngine()->executeStatement(
-			"UPDATE task SET retries = retries - 1 WHERE id=:id"
-			, array(":id"=>$taskId));
+		$elementId = $processInstance->getAttribute($element, "id");
+		$processInstance->decrementTaskRetries($taskId);
 		try{
-			$this->evaluate($processInstance, $element);
-			
-			$processInstance->getBpmnEngine()->executeStatement(
-				"UPDATE task SET retries = NULL, executed_ts = julianday('now') WHERE id=:id"
-				, array(":id"=>$taskId));
-			
-			$processInstance->discoverTasks($elementId, true);
-
+			$result = $this->evaluate($processInstance, $element);
+			$processInstance->markTaskExecuted($taskId, $result);
+			$processInstance->discoverTasks($elementId, $result, true);
 		}catch(Exception $e){
-			$processInstance->getBpmnEngine()->executeStatement(
-				"UPDATE task SET exception_message = :exception_message WHERE id=:id"
-				, array(":id"=>$taskId, ":exception_message"=>$e->getMessage()));
+			print_r($e->getMessage());
+			$processInstance->setTaskExceptionMessage($taskId, $e->getMessage());
 		}
 	}
 }
 class CallActivityHandler extends TaskHandler{
 	protected function evaluate($processInstance, $element){
-		$globalTaskId = $element->attributes()->calledElement;
-		foreach($processInstance->getXml()->xpath("//bpmn:globalScriptTask[@id='".$globalTaskId."']") as $globalScriptTask){
-			$script = $globalScriptTask->script;
-			$context = $processInstance;
-			eval($script);
-		}
+		$globalTaskId = $processInstance->getAttribute($element, 'calledElement');
+		$globalScriptTask = $processInstance->findElementById($globalTaskId);
+		$script = $globalScriptTask->script;
+		$context = $processInstance;
+		return eval($script);
 	}
 }
 class ScriptTaskHandler extends TaskHandler{
 	protected function evaluate($processInstance, $element){
 		$script = $element->script;
 		$context = $processInstance;
-		eval($script);
+		return eval($script);
+	}
+}
+class SubProcessHandler extends DefaultBpmnElementHandler{
+	function processTaskInstance($processInstance, $element, $taskId){
+		$subProcess = $processInstance->createSubProcessInstance($element);
+		// 		$subProcess->discoverTasks($subProcess->getAttribute($subProcess->findStartEventElement(), 'id'), null);
+		// TODO: StartEvent finden
+		$subProcess->discoverTasks($subProcess->findStartEventElement($element), null);
+		if(isSet($subProcess->executedTs)){
+			$elementId = $processInstance->getAttribute($element, "id");
+			$processInstance->discoverTasks($elementId, $subProcess->result, true);
+		}
 	}
 }
 class ServiceTaskHandler extends TaskHandler{
 	protected function evaluate($processInstance, $element){
-		$reflectionMethod = new ReflectionMethod(
-			(string)$element->attributes()->implementation, 'processServiceTask');
-		if($reflectionMethod){
-			$reflectionMethod->invoke(null,
-				$processInstance->getBpmnEngine(), 
-				$processInstance->getProcessInstanceId(), 
-				$element->attributes()->id);
-		}
+		$classname = $processInstance->getAttribute($element, 'implementation');
+		if( ! class_exists($classname)) throw new Exception("Implementation nicht gefunden: ".$classname);
+		$class = new ReflectionClass( $classname);
+		$serviceTaskImpl = $class->newInstance();
+		$serviceTaskImpl->init($processInstance,$element);
+		return $serviceTaskImpl->processServiceTask();
 	}
 }
 class UserTaskHandler extends TaskHandler{
 	function createTaskInstance($processInstance, $element){
-		$taskId = $processInstance->getBpmnEngine()->executeStatement( "
-			INSERT INTO task( process_instance_id, ref_id, type, created_ts)
-			VALUES (:pi_id, :ref_id, :type, julianday('now'));
-		", array(":pi_id"=>$processInstance->getProcessInstanceId(),
-			"ref_id"=>$element->attributes()->id, 
-			":type"=>$element->getName())
-		);
-
+		$taskId = $processInstance->createUserTaskInstance($element);
 		try{
 			$reflectionMethod = new ReflectionMethod((string)$element->attributes()->implementation, 'preProcessUserTask');
 			if($reflectionMethod){
 				$reflectionMethod->invoke(null,
-					$processInstance->getBpmnEngine(), 
-					$processInstance->getProcessInstanceId(), 
-					$element->attributes()->id);
+						$processInstance,
+						$processInstance->getProcessInstanceId(),
+						$processInstance->getAttribute($element, 'id')
+				);
 			}
 		}catch(Exception $e){
-			$processInstance->getBpmnEngine()->executeStatement(
-				"UPDATE task SET exception_message = :exception_message
-					WHERE id=:id"
-				, array(":id"=>$taskId, 
-					":exception_message"=>$e->getMessage()));
+			print_r($e);
+			$processInstance->setTaskExceptionMessage($taskId, $e->getMessage());
 		}
 		return 2;
 	}
+	function evaluate($processInstance, $element){
+		return $processInstance->getTaskResult($element);
+	}
 }
 class ParallelGatewayHandler extends DefaultBpmnElementHandler{
-	function discoverTasks($processInstance, $element){
-		$elementId = $element->attributes()->id;
-		$isJoin = 1<count($processInstance->getXml()
-			->xpath("//bpmn:sequenceFlow[@targetRef='".$elementId."']"));
-		if($isJoin){
-			// join ist done, wenn alle zuliefertasks done sind
-			foreach($processInstance->getXml()
-				->xpath("//bpmn:sequenceFlow[@targetRef='".$elementId."']") as $sequenceFlow){
-				// Task noch nicht ausgeführt
-				if($processInstance->getBpmnEngine()->getSingleResult(" SELECT COUNT(*) as count FROM task 
-					WHERE process_instance_id=:pi_id AND ref_id = :ref_id AND executed_ts IS NULL"
-					, array(":pi_id"=>$processInstance->getProcessInstanceId(),
-						":ref_id"=>$sequenceFlow->attributes()->sourceRef))){
-					return false; // kein weiteres Discover, um zu warten
-				}
-				// Task noch gar nicht entdeckt
-				if(0==$processInstance->getBpmnEngine()->getSingleResult(" SELECT COUNT(*) as count FROM task 
-					WHERE process_instance_id=:pi_id AND ref_id = :ref_id"
-					, array(":pi_id"=>$processInstance->getProcessInstanceId(),
-						":ref_id"=>$sequenceFlow->attributes()->sourceRef))){
-					return false; // kein weiteres Discover, um zu warten
-				}
+	function discoverTasks($processInstance, $value, $element){
+		if($processInstance->isJoin($element)){
+			foreach($processInstance->findSequenceFlowElementsByTargetElement($element) as $sequenceFlow){
+				$refId = $processInstance->getAttribute($sequenceFlow, 'sourceRef');
+				if( ! $processInstance->checkParallelGateReady( $refId ))
+					return false;
 			}
-			// wenn kein offener Task gefunden, einfach weiterlaufen lassen
 		}
-
-		return parent::discoverTasks($processInstance, $element);
+		return parent::discoverTasks($processInstance, $value, $element);
 	}
 }
-
 class EndEventHandler extends DefaultBpmnElementHandler{
-	function discoverTasks($processInstance, $element){
-		$processInstance->getBpmnEngine()->executeStatement(
-			"UPDATE task SET retries = NULL WHERE process_instance_id = :pi_id"
-			,array(":pi_id"=>$processInstance->getProcessInstanceId())
-		);
-		$processInstance->getBpmnEngine()->executeStatement(
-			"UPDATE process_instance SET executed_ts =  julianday('now') WHERE id = :pi_id"
-			,array(":pi_id"=>$processInstance->getProcessInstanceId())
-		);
-		return true;
+	function discoverTasks($processInstance, $value, $element){
+		$result = $processInstance->getAttribute($element, 'name');
+		$processInstance->markProcessInstanceExecuted($result);
+		return false;
 	}
 }
 
+class VariableMap {}
 
-class ProcessInstance{
+class ProcessInstance extends Process{
+	use XmlAdapterTrait;
+	use TaskAdapterTrait;
+	use DbObjectTrait;
+
 	private $engine;
-	private $xml;
-	private $processInstanceId;
-	
-	function __construct($bpmnEngine, $name, $variables = null) {
+
+	public $variables;
+
+	static function buildByDto($bpmnEngine, $processDto){
+		$processInstance = new ProcessInstance($bpmnEngine);
+		$processInstance->merge($processDto);
+		$processInstance->setProcessDefinitionXml($processInstance->process_definition_xml);
+		return $processInstance;
+	}
+	static function buildByProcessDefinition($bpmnEngine, $processDefinition, $name){
+		$processInstance = new ProcessInstance($bpmnEngine);
+		$processInstance->variables = new VariableMap();
+		$processInstance->_id = $name.":".md5(''.time());
+		$processInstance->type = "process_instance";
+		$processInstance->setProcessDefinitionXml($processDefinition->xml);
+		$processInstance->created_ts = time();
+		return $processInstance;
+	}
+	function start(){
+		$this->discoverTasks($this->getAttribute($this->findStartEventElement(), 'id'), null);
+	}
+
+	function __construct($bpmnEngine) {
 		$this->engine = $bpmnEngine;
-		
-		if(null==$variables){
-			// Reconstruct Object via GUID
-			$this->processInstanceId = $this->engine->getSingleResult(
-				"SELECT process_instance_id FROM variable_map 
-					WHERE key='_guid' AND value=:guid", array(":guid"=>$name));
-			$this->xml = $this->engine->getProcessDefinition($this->processInstanceId);
+	}
 
-		} else{
-			// Start new Process
-			$this->processInstanceId = $this->engine->executeStatement( "
-				INSERT INTO process_instance ( process_definition_id, created_ts)
-				SELECT id, julianday('now')
-				FROM process_definition WHERE name = :name ORDER BY id DESC LIMIT 1
-			",array(":name"=>$name));
-			
-			$this->xml = $this->engine->getProcessDefinition($this->processInstanceId);
-			
-			foreach($variables as $key => $value) $this->put($key, $value);
-			if( ! $this->get("_guid")){
-				$this->put("_guid",sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X'
-					, mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535)
-					, mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535)
-					, mt_rand(0, 65535), mt_rand(0, 65535)));
-			}
-			
-			foreach($this->xml->xpath("//bpmn:process/bpmn:startEvent") as $startEvent){
-				$this->discoverTasks($startEvent->attributes()->id);
-			}
-		}
-	}
-	
-	public function getProcessInstanceId(){
-		return $this->processInstanceId;
-	}
-	
-	function executeUserTaskByRefId($refId){
-		if($this->engine->getSingleResult("SELECT id FROM task
-			WHERE process_instance_id = :pi_id AND ref_id = :ref_id AND executed_ts IS NULL"
-			, array(":pi_id"=>$this->processInstanceId, ":ref_id"=>$refId))){
-			$this->engine->executeStatement("UPDATE task
-				SET executed_ts = julianday('now')
-				WHERE process_instance_id = :pi_id AND ref_id = :ref_id"
-				, array(":pi_id"=>$this->processInstanceId, ":ref_id"=>$refId));
-			$this->discoverTasks($refId, true);
-		}
-		while($this->processNextServiceTask());
-	}
-	
-	function discoverTasks($elementId, $isExecuted = false){
-		foreach($this->xml->xpath("//*[@id='".$elementId."']") as $element){
-			$handler = $this->engine
-				->getBpmnElementHandler($element->getName());
-			if(!$isExecuted){
-				if($handler->createTaskInstance($this, $element)){
-					continue;
-				}
-			}
-
-			if($handler->discoverTasks($this, $element)){
-				continue;
+	function discoverTasks($elementId, $value, $isExecuted = false){
+		if($element = $this->findElementById($elementId)) {
+			$handler = $this->getBpmnElementHandler($element);
+			if( (! $isExecuted) && $handler->createTaskInstance($this, $element)){
+				//
+			}else if($handler->discoverTasks($this, $value, $element)){
+				//
 			}else{
-				break;
+				return;
 			}
 		}
 		while($this->processNextServiceTask());
 	}
-	
+	private function getBpmnElementHandler($element){
+		return $this->engine->getBpmnElementHandler($this->getName($element));
+	}
 	function processNextServiceTask(){
-		$result = $this->engine->getResult("SELECT * FROM task WHERE retries>0 LIMIT 1");
-		foreach($result as $row){
-			$elementId = $row["ref_id"];
-			$taskId = $row["id"];
-			foreach($this->xml->xpath("//*[@id='".$elementId."']") as $element){
-				$handler = $this->engine
-					->getBpmnElementHandler($element->getName());
+		$task = $this->findNextServiceTask();
+		if($task){
+			$elementId = $task->getRefId();
+			$taskId = $task->getId();
+			if($element = $this->findElementById($elementId)){
+				$handler = $this->getBpmnElementHandler($element);
 				$handler->processTaskInstance($this, $element, $taskId);
 			}
 			return true;
@@ -404,17 +274,184 @@ class ProcessInstance{
 	}
 
 	function put($key, $value){
-		$this->engine->put($this->processInstanceId, $key, $value);
+		$this->variables->$key = $value;
+	}
+	function get($key){
+		return isSet($this->variables->$key)?$this->variables->$key:null;
 	}
 
-	function get($key){
-		return $this->engine->get($this->processInstanceId, $key);
+}
+
+trait TaskAdapterTrait{
+	public $seq_taskId = 0;
+	public $tasks = array();
+	public function getProcessInstanceId(){
+		return $this->_id;
 	}
-	public function getBpmnEngine(){
-		return $this->engine;
+	function getTaskResult($element){
+		$task = $this->getTaskByRefId($this->getAttribute($element, 'id'));
+		return $task->result;
 	}
-	public function getXml(){
-		return $this->xml;
+	function createUserTaskInstance($element){
+		$this->seq_taskId++;
+		$task = new Task();
+		$task->type = "userTask";
+		$task->_id = $this->seq_taskId;
+		$task->ref_id = $this->getAttribute($element, 'id');
+		$task->retries = 0;
+		$task->createdTs = time();
+		$this->tasks[] = $task;
+		return $task->_id;
+	}
+	function createTaskInstance($element){
+		$this->seq_taskId++;
+		$task = new Task();
+		$task->createdTs = time();
+		$task->type = $this->getName($element);
+		$task->_id = $this->seq_taskId;
+		$task->ref_id = $this->getAttribute($element, 'id');
+		$task->retries = 3;
+		$this->tasks[] = $task;
+		return $task->_id;
+	}
+	function createSubProcessInstance($element){
+		$this->seq_taskId++;
+		$processInstance = new ProcessInstance($this->engine);
+		$processInstance->created_ts = time();
+		$processInstance->type = $this->getName($element);
+		$processInstance->variables = $this->variables;
+		$processInstance->setProcessDefinitionXml($this->process_definition_xml);
+		$processInstance->_id = $this->seq_taskId;
+		$processInstance->ref_id = $this->getAttribute($element, 'id');
+		$processInstance->retries = 1;
+		$this->tasks[] = $processInstance;
+		return $processInstance;
+	}
+
+	function decrementTaskRetries($taskId){
+		$task = $this->getTaskById($taskId);
+		$task->retries--;
+	}
+	private function getTaskById($taskId){
+		foreach($this->tasks as $i => $task)
+		if($task->_id == $taskId)
+			return $task;
+		throw new Exception("Task $taskId not found");
+	}
+	private function getTaskByRefId($refId){
+		foreach($this->tasks as $i => $task)
+		if($task->ref_id == $refId)
+			return $task;
+		return false;
+	}
+	private function getNextReadyUserTask(){
+		foreach($this->tasks as $i => $task)
+		if($task->type == "userTask" && !isSet($task->executedTs) && isSet($task->result))
+			return $task;
+		return false;
+	}
+	function markTaskExecuted($taskId, $result){
+		$task = $this->getTaskById($taskId);
+		$task->executedTs = time();
+		$task->result = $result;
+	}
+	function setTaskExceptionMessage($taskId, $message){
+		$task = $this->getTaskById($taskId);
+		$task->exceptionMessage = $message;
+	}
+	public function executeUserTaskByRefId($refId, $result = null){
+		$task = $this->getTaskByRefId($refId);
+		$task->executedTs = time();
+		$task->result = $result;
+		$this->discoverTasks($refId, $result, true);
+		while($this->processNextServiceTask());
+	}
+	public function processNextUserTask(){
+		$task = $this->getNextReadyUserTask();
+		if($task){
+			$this->executeUserTaskByRefId($task->ref_id, $task->result);
+			return true;
+		}else{
+			return false;
+		}
+	}
+	function checkParallelGateReady($refId){
+		$task = $this->getTaskByRefId($refId);
+		if($task) return isSet($task->executedTs);
+		return false;
+	}
+	function markProcessInstanceExecuted($result){
+		$this->executedTs = time();
+		$this->result = $result;
+	}
+	function isJoin($element){
+		return 1<count($this->findSequenceFlowElementsByTargetElement($element));
+	}
+	public function getResult() {
+		if(isSet($this->result))
+			return $this->result;
+	}
+	private function findNextServiceTask(){
+		foreach($this->tasks as $i => $task)
+		if($task->retries > 0 && !isSet($task->executedTs))
+			return $task;
 	}
 }
+
+trait DbObjectTrait{
+	public function merge($dto){
+		foreach((array)$dto as $key => $value){
+			if("\0" != substr($key, 0, 1)){
+				$this->$key = $value;
+			}
+		}
+	}
+	public function getRefId(){
+		return $this->ref_id;
+	}
+	public function getId(){
+		return isSet($this->_id) ? $this->_id : null;
+	}
+}
+
+interface ProcessStore {
+	function importDefinition($simplexml);
+	function loadProcessDefinition($name);
+	function storeProcess($process);
+	function loadProcess($processId);
+	function findNotExecutedProcessInstanceIds();
+}
+
+class DbObject{
+	public function __construct($dto = array()){
+		$this->merge($dto);
+	}
+	public function merge($dto){
+		foreach((array)$dto as $key => $value){
+			if("\0" != substr($key, 0, 1))
+				$this->$key = $value;
+		}
+	}
+	public function getRefId(){
+		return $this->ref_id;
+	}
+	public function getId(){
+		return isSet($this->_id) ? $this->_id : null;
+	}
+}
+class Task extends DbObject{
+}
+class ProcessDefinition extends DbObject{
+}
+class Process extends DbObject{
+	public function put($key, $value){
+		$this->variables = (array)$this->variables;
+		$this->variables[$key] = $value;
+	}
+	public function get($key){
+		return isSet($this->variables->$key) ? $this->variables->$key : null;
+	}
+}
+
+
 ?>

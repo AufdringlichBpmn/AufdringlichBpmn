@@ -1,14 +1,13 @@
 <?php
 require_once "PHPUnit/Autoload.php";
-require_once("../XmlAdapterTrait.php");
+require_once("../BpmnEngine.php");
+require_once("../CouchDbStore.php");
 
 
-class XmlAdapterTest extends PHPUnit_Framework_TestCase{
+class CouchDbStoreTest extends PHPUnit_Framework_TestCase{
 
 	private $testee;
-
-	protected function setUp() {
-		$xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	private $process_definition_xml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://sourceforge.net/bpmn/definitions/_1349295267926" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Yaoqiang BPMN Editor" exporterVersion="2.1.3" expressionLanguage="http://www.w3.org/1999/XPath" id="_1349295267926" name="" targetNamespace="http://sourceforge.net/bpmn/definitions/_1349295267926" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
   <itemDefinition id="ID_1" isCollection="false" itemKind="Information" structureRef="info1"/>
   <process id="PROCESS_1" isClosed="false" isExecutable="true" name="testProcess" processType="None">
@@ -47,49 +46,23 @@ class XmlAdapterTest extends PHPUnit_Framework_TestCase{
   <globalScriptTask id="GT_1" name="incNumbers" scriptLanguage="text/x-groovy">
     <script><![CDATA[Numbers::incrementA($context);]]></script>
   </globalScriptTask>
-</definitions>
-		';
-		$this->testee = $this->getObjectForTrait("XmlAdapterTrait");
-		$this->testee->setProcessDefinitionXml($xml);
+</definitions>';
+
+	protected function setUp() {
+		$options['host'] = "localhost";
+		$options['port'] = 5984;
+		$options['db'] = 'test';
+		$this->testee = new CouchDbStore($options);
 	}
 
 	protected function tearDown(){
 	}
 
-	public function testFindStartElement(){
-		$startElement = $this->testee->findStartEventElement();
-// 		print_r($startElement);
-		$this->assertNotNull( $startElement);
-		$this->assertEquals("_2", $this->testee->getAttribute($startElement,"id"));
+	public function testImportDefinition(){
+		$this->testee->importDefinition($this->process_definition_xml);
+		$pd = $this->testee->loadProcessDefinition("PROCESS_1");
+		$this->assertNotNull($pd);
 	}
 	
-	public function testFindElementById(){
-		$targetElement = $this->testee->findElementById("_7");
-// 		print_r($targetElement);
-		$this->assertNotNull( $targetElement);
-		$this->assertEquals("_7", $this->testee->getAttribute($targetElement,"id"));
-	}
-	
-	public function testFindElementById_notFound(){
-		$this->assertNull($this->testee->findElementById("_7XXX"));
-	}
-	
-	public function testFindSequenceFlowElementsBySourceElement(){
-		$startElement = $this->testee->findElementById("_2");
-		$sequenceElements = $this->testee->findSequenceFlowElementsBySourceElement($startElement);
-// 		print_r($sequenceElements );
-		$this->assertNotNull( $sequenceElements );
-		$this->assertTrue(is_array( $sequenceElements) );
-		$this->assertEquals("_9", $this->testee->getAttribute($sequenceElements[0] ,"id"));
-	}
-	
-	public function testFindSequenceFlowElementsByTargetElement(){
-		$targetElement = $this->testee->findElementById("_7");
-		$sequenceElements = $this->testee->findSequenceFlowElementsByTargetElement($targetElement);
-// 		print_r($sequenceElements );
-		$this->assertNotNull( $sequenceElements );
-		$this->assertTrue(is_array( $sequenceElements) );
-		$this->assertEquals("_13", $this->testee->getAttribute($sequenceElements[0] ,"id"));
-	}
 
 }
