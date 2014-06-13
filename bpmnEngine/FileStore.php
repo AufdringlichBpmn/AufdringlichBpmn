@@ -24,7 +24,7 @@ class FileStore implements ProcessStore{
 			}
 			
 			$myFile = $this->processDefinitions.'/'.md5($pdId).".json";
-			file_put_contents($myFile, json_encode( $processDefinition, JSON_PRETTY_PRINT ));
+			file_put_contents($myFile, json_encode( $processDefinition ));
 		}
 	}
 
@@ -40,7 +40,7 @@ class FileStore implements ProcessStore{
 	
 	function storeProcess($process){
 		$myFile = $this->processes.'/'.md5($process->getId()).".json";
-		file_put_contents($myFile, json_encode( $process, JSON_PRETTY_PRINT ));
+		file_put_contents($myFile, json_encode( $process ));
 	}
 	
 	function loadProcess($processId){

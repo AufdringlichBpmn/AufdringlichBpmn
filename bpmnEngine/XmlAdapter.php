@@ -1,6 +1,7 @@
 <?php
 
-trait XmlAdapterTrait{
+class XmlAdapter {
+
 	private $simpleXml;
 
 	function setProcessDefinitionXml($process_definition_xml){

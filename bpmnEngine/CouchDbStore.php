@@ -485,7 +485,7 @@ EOF;
 		$process = new Process(array(
 				'_id' => $processDefinitionName.":".md5(''.time()),
 				'type' => "process_instance",
-				'open_tasks' => [],
+				'open_tasks' => array(),
 				'variables' => $variables,
 				'process_definition_xml' => $processDefinition->xml,
 				'created_ts' => time()

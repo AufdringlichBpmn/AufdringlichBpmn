@@ -1,13 +1,15 @@
 <?php
-require_once("../XmlAdapterTrait.php");
+require_once("../XmlAdapter.php");
 
 class BpmnEngine{
 	private $dbAdapter;
+	private $xmlAdapter;
 	private $name;
 
 	function __construct($dbAdapter, $name) {
 		$this->dbAdapter = $dbAdapter;
 		$this->name = $name;
+		$this->xmlAdapter = new XmlAdapter();
 	}
 
 	public function importDefinition($process_definition_xml) {
@@ -148,9 +150,7 @@ class ScriptTaskHandler extends TaskHandler{
 class SubProcessHandler extends DefaultBpmnElementHandler{
 	function processTaskInstance($processInstance, $element, $taskId){
 		$subProcess = $processInstance->createSubProcessInstance($element);
-		// 		$subProcess->discoverTasks($subProcess->getAttribute($subProcess->findStartEventElement(), 'id'), null);
-		// TODO: StartEvent finden
-		$subProcess->discoverTasks($subProcess->findStartEventElement($element), null);
+		$subProcess->discoverTasks($subProcess->xmlAdapter->findStartEventElement($element), null);
 		if(isSet($subProcess->executedTs)){
 			$elementId = $processInstance->getAttribute($element, "id");
 			$processInstance->discoverTasks($elementId, $subProcess->result, true);
@@ -212,18 +212,15 @@ class EndEventHandler extends DefaultBpmnElementHandler{
 class VariableMap {}
 
 class ProcessInstance extends Process{
-	use XmlAdapterTrait;
-	use TaskAdapterTrait;
-	use DbObjectTrait;
-
 	private $engine;
+	private $xmlAdapter;
 
 	public $variables;
 
 	static function buildByDto($bpmnEngine, $processDto){
 		$processInstance = new ProcessInstance($bpmnEngine);
 		$processInstance->merge($processDto);
-		$processInstance->setProcessDefinitionXml($processInstance->process_definition_xml);
+		$processInstance->xmlAdapter->setProcessDefinitionXml($processInstance->process_definition_xml);
 		return $processInstance;
 	}
 	static function buildByProcessDefinition($bpmnEngine, $processDefinition, $name){
@@ -231,16 +228,42 @@ class ProcessInstance extends Process{
 		$processInstance->variables = new VariableMap();
 		$processInstance->_id = $name.":".md5(''.time());
 		$processInstance->type = "process_instance";
-		$processInstance->setProcessDefinitionXml($processDefinition->xml);
+		$processInstance->process_definition_xml = $processDefinition->xml;
+		$processInstance->xmlAdapter->setProcessDefinitionXml($processDefinition->xml);
 		$processInstance->created_ts = time();
 		return $processInstance;
 	}
 	function start(){
-		$this->discoverTasks($this->getAttribute($this->findStartEventElement(), 'id'), null);
+		$this->discoverTasks($this->getAttribute($this->xmlAdapter->findStartEventElement(), 'id'), null);
 	}
 
 	function __construct($bpmnEngine) {
 		$this->engine = $bpmnEngine;
+		$this->xmlAdapter = new XmlAdapter();
+	}
+
+	public function findElementById($elementId){
+		return $this->xmlAdapter->findElementById($elementId);
+	}
+	
+	public function findSequenceFlowElementsBySourceElementExcludeDefault($element, $defaultId){
+		return $this->xmlAdapter->findSequenceFlowElementsBySourceElementExcludeDefault($element, $defaultId);
+	}
+	public function findSequenceFlowElementsBySourceElement($element){
+		return $this->xmlAdapter->findSequenceFlowElementsBySourceElement($element);
+	}
+	public function findSequenceFlowElementsByTargetElement($element){
+		return $this->xmlAdapter->findSequenceFlowElementsByTargetElement($element);
+	}
+
+	public function getAttribute($element, $attribute) {
+		return $this->xmlAdapter->getAttribute($element, $attribute) ;
+	}
+	public function getAttributes($element) {
+		return $this->xmlAdapter->getAttributes($element);
+	}
+	public function getName($element) {
+		return $this->xmlAdapter->getName($element) ;
 	}
 
 	function discoverTasks($elementId, $value, $isExecuted = false){
@@ -280,9 +303,7 @@ class ProcessInstance extends Process{
 		return isSet($this->variables->$key)?$this->variables->$key:null;
 	}
 
-}
-
-trait TaskAdapterTrait{
+// trait TaskAdapterTrait{
 	public $seq_taskId = 0;
 	public $tasks = array();
 	public function getProcessInstanceId(){
@@ -320,7 +341,7 @@ trait TaskAdapterTrait{
 		$processInstance->created_ts = time();
 		$processInstance->type = $this->getName($element);
 		$processInstance->variables = $this->variables;
-		$processInstance->setProcessDefinitionXml($this->process_definition_xml);
+		$processInstance->xmlAdapter->setProcessDefinitionXml($this->process_definition_xml);
 		$processInstance->_id = $this->seq_taskId;
 		$processInstance->ref_id = $this->getAttribute($element, 'id');
 		$processInstance->retries = 1;
@@ -395,22 +416,6 @@ trait TaskAdapterTrait{
 		foreach($this->tasks as $i => $task)
 		if($task->retries > 0 && !isSet($task->executedTs))
 			return $task;
-	}
-}
-
-trait DbObjectTrait{
-	public function merge($dto){
-		foreach((array)$dto as $key => $value){
-			if("\0" != substr($key, 0, 1)){
-				$this->$key = $value;
-			}
-		}
-	}
-	public function getRefId(){
-		return $this->ref_id;
-	}
-	public function getId(){
-		return isSet($this->_id) ? $this->_id : null;
 	}
 }
 

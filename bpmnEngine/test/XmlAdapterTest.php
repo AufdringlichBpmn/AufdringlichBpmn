@@ -1,6 +1,5 @@
 <?php
-require_once "PHPUnit/Autoload.php";
-require_once("../XmlAdapterTrait.php");
+require_once "../XmlAdapter.php" ;
 
 
 class XmlAdapterTest extends PHPUnit_Framework_TestCase{
@@ -49,7 +48,7 @@ class XmlAdapterTest extends PHPUnit_Framework_TestCase{
   </globalScriptTask>
 </definitions>
 		';
-		$this->testee = $this->getObjectForTrait("XmlAdapterTrait");
+		$this->testee = new XmlAdapter();
 		$this->testee->setProcessDefinitionXml($xml);
 	}
 

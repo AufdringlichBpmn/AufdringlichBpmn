@@ -1,5 +1,4 @@
 <?php
-require_once "PHPUnit/Autoload.php";
 require_once("../BpmnEngine.php");
 require_once("../InMemoryStore.php");
 // require_once("../CouchDbStore.php");
@@ -9,7 +8,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	private $dbAdapter;
 
 	protected function setUp() {
-		$this->dbAdapter = new InMemoryStore();
+//		$this->dbAdapter = new InMemoryStore();
 
 		// Use this for CouchDB		
 // 		$options['host'] = "localhost";
@@ -19,7 +18,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 //		$this->dbAdapter->updateDesignDocument();
 
 		// Or use this for File Persistence
-//		$this->dbAdapter = new FileStore();
+		$this->dbAdapter = new FileStore();
 	}
 
 	protected function tearDown(){
