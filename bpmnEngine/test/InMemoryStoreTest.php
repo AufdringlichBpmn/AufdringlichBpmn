@@ -2,7 +2,6 @@
 require_once("../BpmnEngine.php");
 require_once("../InMemoryStore.php");
 
-
 class InMemoryStoreTest extends PHPUnit_Framework_TestCase{
 
 	private $testee;

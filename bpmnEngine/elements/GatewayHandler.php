@@ -28,6 +28,13 @@ class ExclusiveGatewayHandler extends DefaultBpmnElementHandler{
 }
 
 class ParallelGatewayHandler extends DefaultBpmnElementHandler{
+
+	private function checkParallelGateReady($processInstance, $refId){
+		$task = $processInstance->getTaskByRefId($refId);
+		if($task) return isSet($task->executedTs);
+		return false;
+	}
+
 	function discoverTasks($processInstance, $value, $element){
 		if($processInstance->isJoin($element)){
 			foreach($processInstance->findSequenceFlowElementsByTargetElement($element) as $sequenceFlow){

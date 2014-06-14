@@ -382,36 +382,6 @@ EOF;
 		return isSet($process->variables->$key) ? $process->variables->$key : null;
 	}
 
-	public function createTaskInstance($processInstanceId, $elementName, $elementId){
-		$taskId = "task:".$processInstanceId.':'.$elementId;
-		$this->couch->send("/_design/bpmn/_update/createTask/".$processInstanceId
-				."?type=$elementName&created_ts=".time()."&ref_id=$elementId"
-				."&taskId=$taskId","PUT");
-		$task = new Task(array(
-				"type" => $elementName,
-				"_id" => $taskId,
-				"process_instance_id" => $processInstanceId,
-				"created_ts" => time(),
-				"ref_id" => ''.$elementId,
-				"retries" => 3
-		));
-		$resp = $this->storeDbObject($task);
-		return $taskId;
-	}
-	public function createUserTaskInstance($processInstanceId, $elementName, $elementId, $attributes){
-		$taskId = "task:".$processInstanceId.':'.$elementId;
-		$task = new Task(array(
-				"type" => $elementName,
-				"_id" => $taskId,
-				"process_instance_id" => $processInstanceId,
-				"created_ts" => time(),
-				"ref_id" => ''.$elementId,
-				"attributes" => $attributes,
-				"retries" => 0
-		));
-		$resp = $this->storeDbObject($task);
-		return $taskId;
-	}
 	public function getTaskResult($processInstanceId, $element){
 		$taskId = "task:".$processInstanceId.':'.$element->attributes()->id;
 		$task = $this->couch->send($taskId, "GET")->getBody();

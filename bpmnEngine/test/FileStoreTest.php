@@ -2,7 +2,6 @@
 require_once("../BpmnEngine.php");
 require_once("../FileStore.php");
 
-
 class FileStoreTest extends PHPUnit_Framework_TestCase{
 
 	private $testee;

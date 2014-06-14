@@ -17,3 +17,25 @@ class EndEventHandler extends DefaultBpmnElementHandler{
 		return false;
 	}
 }
+
+class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
+	function createEventInstance($processInstance, $element){
+		$event = new Event();
+		$event->type = "intermediateCatchEvent";
+		$event->ref_id = $processInstance->getAttribute($element, 'id');
+		$event->timeDuration = (string) $element->timerEventDefinition->timeDuration;
+		$event->createdTs = time();
+		$event->timeout = (new DateTime())->add(new DateInterval($event->timeDuration))->getTimestamp();
+		$processInstance->addEvent($event);
+		return 2;
+	}
+	
+	function isEventOccured($processInstance, $event){
+		$event->lastCheck = time();
+		if(time() > $event->timeout) {
+			$event->result = "occured at " . (date("M d Y H:i:s"));
+			return true;
+		}
+		return false;
+	}
+}

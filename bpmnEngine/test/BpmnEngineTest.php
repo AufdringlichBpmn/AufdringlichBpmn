@@ -1,8 +1,4 @@
 <?php
-require_once("../BpmnEngine.php");
-require_once("../InMemoryStore.php");
-// require_once("../CouchDbStore.php");
-// require_once("../FileStore.php");
 
 class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	private $dbAdapter;
@@ -52,6 +48,26 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals("all success", $process->getResult());
 	}
 	
+	public function testEvents(){
+		$bpmnEngine = new BpmnEngine($this->dbAdapter, "EVENTS_TEST");
+		$bpmnEngine->importDefinition(file_get_contents('EventTest.bpmn'));
+
+		$valueMap = array("visits" => "start");
+		$process = $bpmnEngine->startProcess($valueMap);
+		
+		print_r("Warte 2 Sekunden um TimeOut zu erzeugen.");
+		sleep (2);
+		$process = $bpmnEngine->continueProcess($process->getId());
+		$result = $process->getResult();
+
+		//	print_r(	$queue = msg_get_queue(1));
+		//	msg_send($queue, 12, "Hello from PHP!\0", false);
+		//	print_r(	msg_stat_queue($queue));
+
+		print_r($process);
+		$this->assertEquals("End Event", $result);
+	}
+
 }
 
 class AbstractServiceTaskImpl{
@@ -61,6 +77,7 @@ class AbstractServiceTaskImpl{
 		$this->element = $element;
 	}
 }
+
 class CheckVariableA extends AbstractServiceTaskImpl{
 	function processServiceTask(){
 		return  $this->process->get( "a");
@@ -72,6 +89,7 @@ class ServiceTaskImpl extends AbstractServiceTaskImpl{
 		return "success";
 	}
 }
+
 class UserTaskImpl extends AbstractServiceTaskImpl{
 	static $testProcessInstanceId;
 	static function preProcessUserTask($engine, $processInstanceId, $elementId){
