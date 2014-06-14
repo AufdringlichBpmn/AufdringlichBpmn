@@ -54,10 +54,6 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	
 }
 
-class TestUserTask{
-	static function preProcessUserTask($engine, $processInstanceId, $elementId){
-	}
-}
 class AbstractServiceTaskImpl{
 	protected $process, $element;
 	function init($process, $element){

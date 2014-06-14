@@ -1,11 +1,24 @@
 <?php
 
-
 class FileStore implements ProcessStore{
 
 	private $processDefinitions = '/tmp/process_definitions';
 	private $processes = '/tmp/processes';
-	
+
+	function __construct($dir = null) {
+		if(null===$dir){
+			$dir = sys_get_temp_dir();
+		}
+		$this->processDefinitions = realpath($dir).'/process_definitions';
+		if( ! file_exists($this->processDefinitions) ){
+			mkdir($this->processDefinitions);
+		}
+		$this->processes = realpath($dir).'/processes';
+		if( ! file_exists($this->processes) ){
+			mkdir($this->processes);
+		}
+	}
+
 	function importDefinition($process_definition_xml){
 		$simpleXml = new SimpleXMLElement($process_definition_xml);
 		$simpleXml->registerXPathNamespace("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL");
@@ -68,5 +81,4 @@ class FileStore implements ProcessStore{
 		}
 		$d->close();
 	}
-
 }
