@@ -200,7 +200,7 @@ class ProcessInstance extends Process{
 		throw new Exception("Task $taskId not found");
 	}
 	
-	private function getTaskByRefId($refId){
+	public function getTaskByRefId($refId){
 		foreach($this->tasks as $i => $task)
 			if($task->ref_id == $refId)
 				return $task;
@@ -236,7 +236,7 @@ class ProcessInstance extends Process{
 		return false;
 	}
 
-	private function getEventByRefId($refId){
+	public function getEventByRefId($refId){
 		foreach($this->events as $i => $event)
 			if($event->ref_id == $refId)
 				return $event;
@@ -264,12 +264,6 @@ class ProcessInstance extends Process{
 		return false;
 	}
 
-	function checkParallelGateReady($refId){
-		$task = $this->getTaskByRefId($refId);
-		if($task) return isSet($task->executedTs);
-		return false;
-	}
-	
 	function markProcessInstanceExecuted($result){
 		$this->executedTs = time();
 		$this->result = $result;

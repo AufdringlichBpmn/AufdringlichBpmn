@@ -3,6 +3,7 @@
 require_once 'EventHandler.php';
 BpmnEngine::registerBpmnElementHandler('startEvent', new StartEventHandler);
 BpmnEngine::registerBpmnElementHandler('intermediateCatchEvent', new IntermediaCatchEventHandler);
+BpmnEngine::registerBpmnElementHandler('intermediateThrowEvent', new IntermediaThrowEventHandler);
 BpmnEngine::registerBpmnElementHandler('endEvent', new EndEventHandler);
 
 require_once 'GatewayHandler.php';
@@ -25,7 +26,7 @@ class DefaultBpmnElementHandler{
 	 * it will be called after discovering an element on the BPMN-Graph.
 	 * A Task needs to override this implementation.
 	 */
-	function createTaskInstance($processInstance, $element){ 
+	function createTaskInstance($processInstance, $element){
 		return false;
 	}
 
