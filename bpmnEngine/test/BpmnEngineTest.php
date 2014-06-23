@@ -1,5 +1,7 @@
 <?php
 
+require_once('../BpmnEngine.php');
+
 class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	private $dbAdapter;
 
@@ -49,6 +51,8 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	}
 	
 	public function testEvents(){
+		AbstractMessageEventImpl::registerMessageEventHandler('TestMessage', new MessageSendingImpl);
+	
 		$bpmnEngine = new BpmnEngine($this->dbAdapter, "EVENTS_TEST");
 		$bpmnEngine->importDefinition(file_get_contents('EventTest.bpmn'));
 
@@ -67,16 +71,9 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		print_r($process);
 		$this->assertEquals("End Event", $result);
 	}
-
 }
 
-class AbstractServiceTaskImpl{
-	protected $process, $element;
-	function init($process, $element){
-		$this->process = $process;
-		$this->element = $element;
-	}
-}
+
 
 class CheckVariableA extends AbstractServiceTaskImpl{
 	function processServiceTask(){
@@ -90,11 +87,10 @@ class ServiceTaskImpl extends AbstractServiceTaskImpl{
 	}
 }
 
-class UserTaskImpl extends AbstractServiceTaskImpl{
+class UserTaskImpl extends AbstractUserTaskImpl{
 	static $testProcessInstanceId;
-	static function preProcessUserTask($engine, $processInstanceId, $elementId){
-		self::$testProcessInstanceId=$processInstanceId;
-		print_r("called UserTaskImpl::preProcessUserTask(engine, $processInstanceId, $elementId)");
+	function preProcessUserTask(){
+		self::$testProcessInstanceId=$this->process->getId();
 	}
 }
 
@@ -158,5 +154,27 @@ class CheckResult extends AbstractServiceTaskImpl{
 		return $this->process->get( "visits");
 	}
 }
+
+// EVENTS
+class MessageSendingImpl extends AbstractMessageEventImpl{
+	function sendMessage($processInstance, $event){
+		$queue = msg_get_queue(1);
+		$msgType = 1;
+		$msg = "Hallo Welt\0";
+		return msg_send($queue, $msgType, $msg, true, false);
+	}
+	function receiveMessage($processInstance, $event){
+		$queue = msg_get_queue(1);
+		$msgType = 1;
+		$message = '';
+		$maxsize = 1000*1000;
+		$hasMsg = msg_receive ($queue, $msgType, $msgType, $maxsize, $message, true, MSG_IPC_NOWAIT);
+		if($hasMsg) {
+			$event->result = $message;
+		}
+		return $hasMsg;
+	}
+}
+
 
 ?>

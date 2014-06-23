@@ -92,10 +92,12 @@ class UserTaskHandler extends TaskHandler {
 		$task->createdTs = time();
 		$taskId = $processInstance->addTask($task);
 		try{
-			$reflectionMethod = new ReflectionMethod((string)$element->attributes()->implementation, 'preProcessUserTask');
-			if($reflectionMethod){
-				$reflectionMethod->invoke(null, $processInstance, $processInstance->getProcessInstanceId(), $processInstance->getAttribute($element, 'id'));
-			}
+			$classname = $processInstance->getAttribute($element, 'implementation');
+			if( ! class_exists($classname)) throw new Exception("Implementation nicht gefunden: ".$classname);
+			$class = new ReflectionClass( $classname);
+			$userTaskImpl = $class->newInstance();
+			$userTaskImpl->init($processInstance, $element);
+			$userTaskImpl->preProcessUserTask();
 		}catch(Exception $e){
 			print_r($e);
 			$processInstance->setTaskExceptionMessage($taskId, $e->getMessage());

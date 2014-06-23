@@ -44,6 +44,11 @@ class BpmnEngine{
 		return $process;
 	}
 
+	function findNotExecutedProcessInstanceIds(){
+		// TODO filter nach ProcessDefinition
+		return $this->dbAdapter->findNotExecutedProcessInstanceIds();
+	}
+
 	private static $bpmnElemenHandlerMap = array();
 	static function registerBpmnElementHandler($name, $handler){
 		self::$bpmnElemenHandlerMap[$name] = $handler;
@@ -51,11 +56,6 @@ class BpmnEngine{
 	function getBpmnElementHandler($name){
 		print "\n".$name.":\n";
 		return self::$bpmnElemenHandlerMap[$name];
-	}
-
-	function findNotExecutedProcessInstanceIds(){
-		// TODO filter nach ProcessDefinition
-		return $this->dbAdapter->findNotExecutedProcessInstanceIds();
 	}
 }
 
@@ -283,6 +283,29 @@ class ProcessInstance extends Process{
 		if($task->retries > 0 && !isSet($task->executedTs))
 			return $task;
 	}
+}
+
+abstract class AbstractMessageEventImpl {
+	static $messageEventHandlerMap = array();
+	static function registerMessageEventHandler($name, $handler){
+		self::$messageEventHandlerMap[$name] = $handler;
+	}
+	abstract function sendMessage($processInstance, $element);
+	abstract function receiveMessage($processInstance, $element);
+}
+
+abstract class AbstractTaskImpl{
+	protected $process, $element;
+	function init($process, $element){
+		$this->process = $process;
+		$this->element = $element;
+	}
+}
+abstract class AbstractServiceTaskImpl extends AbstractTaskImpl{
+	abstract function processServiceTask();
+}
+abstract class AbstractUserTaskImpl extends AbstractTaskImpl{
+	abstract function preProcessUserTask();
 }
 
 interface ProcessStore {

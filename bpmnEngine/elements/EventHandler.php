@@ -26,6 +26,9 @@ class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
 		$event->type = "intermediateCatchEvent";
 		if(isset($element->messageEventDefinition)){
 			$event->subtype = "message";
+			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
+			$msgDefinition = $processInstance->findElementById($msgRefId);
+			$event->handler = $processInstance->getAttribute($msgDefinition, 'name');
 		}else{
 			$event->subtype = "timer";
 			$event->timeDuration = (string) $element->timerEventDefinition->timeDuration;
@@ -43,15 +46,8 @@ class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
 				return true;
 			}
 		} else if($event->subtype == "message"){
-			$queue = msg_get_queue(1);
-			$msgType = 1;
-			$msg = '';
-			$maxsize = 1000*1000;
-			$hasMsg = msg_receive ($queue, $msgType, $msgType, $maxsize, $message, true, MSG_IPC_NOWAIT);
-			if($hasMsg) {
-				$event->result = "received at " . (date("M d Y H:i:s"));
-			}
-			return $hasMsg;
+			$handler = AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
+			return $handler->receiveMessage($processInstance, $event);
 		}
 		return false;
 	}
@@ -64,21 +60,23 @@ class IntermediaThrowEventHandler extends DefaultBpmnElementHandler {
 		$event->createdTs = time();
 		$event->type = "intermediateThrowEvent";
 		if(isset($element->messageEventDefinition)){
-			$queue = msg_get_queue(1);
+			$event->subtype = "message";
 			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
 			$msgDefinition = $processInstance->findElementById($msgRefId);
-			$variable = $processInstance->getAttribute($msgDefinition, 'name');
-			$msgType = 1;
-			$msg = ''+$variable+"\0";
-			msg_send($queue, $msgType, $msg, true, false);
+			$event->handler = $processInstance->getAttribute($msgDefinition, 'name');
 		}
 		$processInstance->addEvent($event);
 		return 2;
 	}
 	
 	function isEventOccured($processInstance, $event){
-		$event->result = "send at " . (date("M d Y H:i:s"));
-		return true;
+		if($event->subtype == "message"){
+			$handler = AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
+			$handler->sendMessage($processInstance, $event);
+			$event->result = "send at " . (date("M d Y H:i:s"));
+			return true;
+		}
+		return false;
 	}
 }
 
