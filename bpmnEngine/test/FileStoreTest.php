@@ -47,7 +47,7 @@ class FileStoreTest extends PHPUnit_Framework_TestCase{
 </definitions>';
 
 	protected function setUp() {
-		$this->testee = new fileStore();
+		$this->testee = new FileStore();
 	}
 
 	protected function tearDown(){

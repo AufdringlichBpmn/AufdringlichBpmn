@@ -157,18 +157,23 @@ class CheckResult extends AbstractServiceTaskImpl{
 
 // EVENTS
 class MessageSendingImpl extends AbstractMessageEventImpl{
+	private $msgType;
+	private $maxsize;
+	private $queue;
+
+	function __construct(){
+		$this->msgType = 1;
+		$this->maxsize = 1000;
+		$this->queue = msg_get_queue(1);
+	}
 	function sendMessage($processInstance, $event){
-		$queue = msg_get_queue(1);
-		$msgType = 1;
 		$msg = "Hallo Welt\0";
-		return msg_send($queue, $msgType, $msg, true, false);
+		return msg_send($this->queue, $this->msgType, $msg, true, false);
 	}
 	function receiveMessage($processInstance, $event){
-		$queue = msg_get_queue(1);
-		$msgType = 1;
 		$message = '';
-		$maxsize = 1000*1000;
-		$hasMsg = msg_receive ($queue, $msgType, $msgType, $maxsize, $message, true, MSG_IPC_NOWAIT);
+		$hasMsg = msg_receive ($this->queue, $this->msgType, $this->msgType,
+			$this->maxsize, $message, true, MSG_IPC_NOWAIT);
 		if($hasMsg) {
 			$event->result = $message;
 		}
