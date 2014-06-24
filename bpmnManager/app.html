@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Aufdringlich BPMN - Manager</title>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.css" />
+	<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.4.2/jquery.mobile-1.4.2.min.js"></script>
+</head>
+
+<body>
+
+<!-- Start of first page: #one -->
+<div data-role="page" id="pageStart">
+
+	<div data-role="header">
+		<h1>Aufdringlich BPMN - Manager</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content" >
+		<p><a href="#pageProcessDefinitions" class="ui-btn ui-shadow ui-corner-all">Show Process Definitions</a></p>
+		<p><a href="#pageUserTasks" class="ui-btn ui-shadow ui-corner-all">Show User Tasks</a></p>
+
+		<h2>&Uuml;bersicht</h2>
+		<p>I have an <code>id</code> of "one" on my page container. I'm first in the source order so I'm shown when the page loads.</p>
+
+		<p>This is a multi-page boilerplate template that you can copy to build your first jQuery Mobile page. This template contains multiple "page" containers inside, unlike a single page template that has just one page within it.</p>
+		<p>Just view the source and copy the code to get started. All the CSS and JS is linked to the jQuery CDN versions so this is super easy to set up. Remember to include a meta viewport tag in the head to set the zoom level.</p>
+		<p>You link to internal pages by referring to the <code>id</code> of the page you want to show. For example, to <a href="#two" >link</a> to the page with an <code>id</code> of "two", my link would have a <code>href="#two"</code> in the code.</p>
+
+		<h3>Show internal pages:</h3>
+		<p><a href="#two" class="ui-btn ui-shadow ui-corner-all">Show page "two"</a></p>
+		<p><a href="#popup" class="ui-btn ui-shadow ui-corner-all" data-rel="dialog" data-transition="pop">Show page "popup" (as a dialog)</a></p>
+	</div><!-- /content -->
+
+	<div data-role="footer" data-theme="a">
+		<h4>Page Footer</h4>
+	</div><!-- /footer -->
+</div><!-- /page one -->
+
+<!-- Start of second page: #two -->
+<div data-role="page" id="pageProcessDefinitions" data-theme="a">
+
+	<div data-role="header">
+		<h1>Prozess Definitions</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		<h2>&Uuml;bersicht</h2>
+		<p>I have an id of "two" on my page container. I'm the second page container in this multi-page template.</p>
+		<table class="ui-table">
+			<tr>
+				<th>Name</th>
+				<th>File</th>
+				<th>Details</th>
+			</tr>
+			<tr>
+				<td>TASKS_TEST</td>
+				<td>TaskTest.bpmn</td>
+				<td>SVG-Graphic</td>
+				<td><a href="#viewSvg" class="ui-btn ui-shadow ui-corner-all"
+					data-rel="dialog" data-transition="pop">view</a></td>
+			</tr>
+			<tr>
+				<td>GATEWAY_TEST</td>
+				<td>TaskTest.bpmn</td>
+				<td>SVG-Graphic</td>
+				<td><a href="#viewSvg" class="ui-btn ui-shadow ui-corner-all"
+					data-rel="dialog" data-transition="pop">view</a></td>
+			</tr>
+		</table>
+		<p><a href="#pageStart" data-direction="reverse" class="ui-btn ui-shadow ui-corner-all ui-btn-b">Back to start page</a></p>
+
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<h4>Page Footer</h4>
+	</div>
+</div>
+
+<!-- Start of second page: #two -->
+<div data-role="page" id="pageUserTasks" data-theme="a">
+
+	<div data-role="header">
+		<h1>User Tasks</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		<h2>Ubersicht</h2>
+		<p>I have an id of "two" on my page container. I'm the second page container in this multi-page template.</p>
+		<table class="ui-table">
+			<tr>
+				<th>Process_id</th>
+				<th>Task</th>
+				<th>Date</th>
+			</tr>
+			<tr>
+				<td>PROCESS_1</td>
+				<td>TestUserTask</td>
+				<td>3.6.2014</td>
+				<td><a href="#executeUserTask" class="ui-btn ui-shadow ui-corner-all"
+					data-rel="dialog" data-transition="pop">execute</a></td>
+			</tr>
+		</table>
+		<p><a href="#pageStart" data-direction="reverse" class="ui-btn ui-shadow ui-corner-all ui-btn-b">Back to start page</a></p>
+
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<h4>Page Footer</h4>
+	</div>
+</div>
+
+<!-- Start of third page: #popup -->
+<div data-role="page" id="executeUserTask">
+
+	<div data-role="header" data-theme="b">
+		<h1>Dialog</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content">
+		<h2>Execute User Task - ##Name###</h2>
+		<table class="ui-table">
+			<tr>
+				<th>Variable:</th>
+				<td>3.6.2014</td>
+			</tr>
+			<tr>
+				<th>Betrag:</th>
+				<td>14 EUR</td>
+			</tr>
+			<tr>
+				<th>Frist:</th>
+				<td>13.6.2014</td>
+			</tr>
+			<tr>
+				<th>Resultat</th>
+				<td><input name="result"></td>
+			</tr>
+		</table>
+		<p>
+			<a href="#pageUserTasks" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Abbrechen</a>
+			<a href="#pageUserTasks" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">Speichern und Nächster</a>
+		</p>
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<h4>Page Footer</h4>
+	</div><!-- /footer -->
+</div><!-- /page popup -->
+
+</body>
+</html>
