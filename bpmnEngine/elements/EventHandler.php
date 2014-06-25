@@ -32,7 +32,8 @@ class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
 		}else{
 			$event->subtype = "timer";
 			$event->timeDuration = (string) $element->timerEventDefinition->timeDuration;
-			$event->timeout = (new DateTime())->add(new DateInterval($event->timeDuration))->getTimestamp();
+			$event->timeout = time(); // todo php5.3
+//			$event->timeout = (new DateTime)->add(new DateInterval($event->timeDuration))->getTimestamp();
 		}
 		$processInstance->addEvent($event);
 		return 2;
@@ -79,4 +80,3 @@ class IntermediaThrowEventHandler extends DefaultBpmnElementHandler {
 		return false;
 	}
 }
-

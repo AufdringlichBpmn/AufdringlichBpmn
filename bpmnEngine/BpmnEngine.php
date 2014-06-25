@@ -6,7 +6,7 @@ class BpmnEngine{
 	private $xmlAdapter;
 	private $name;
 
-	function __construct($dbAdapter, $name) {
+	function __construct(ProcessStore $dbAdapter, $name) {
 		$this->dbAdapter = $dbAdapter;
 		$this->name = $name;
 		$this->xmlAdapter = new XmlAdapter();
