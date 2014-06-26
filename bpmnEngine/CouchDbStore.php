@@ -370,6 +370,10 @@ EOF;
 		}
 	}
 
+	public function listProcessDefinitions(){
+		// TODO implement this
+	}
+	
 	public function put($processInstanceId, $key, $value){
 		$process = $this->loadProcess($processInstanceId);
 		$process->variables = ((array)$process->variables);

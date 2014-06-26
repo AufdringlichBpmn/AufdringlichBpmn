@@ -33,6 +33,10 @@ class InMemoryStore implements ProcessStore{
 			}
 		}
 	}
+
+	public function listProcessDefinitions(){
+		return $this->processDefinitions;
+	}
 	
 	function storeProcess($process){
 		$this->processes[] = $process;

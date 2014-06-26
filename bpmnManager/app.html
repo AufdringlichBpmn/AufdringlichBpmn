@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="lib/jquery.mobile-1.4.2.min.css" />
 	<script src="lib/jquery-1.9.1.min.js"></script>
 	<script src="lib/jquery.mobile-1.4.2.min.js"></script>
-	<script src="lib/jquery.mustache.js"></script>
+	<script src="lib/mustache.js"></script>
 	<script src="client.js"></script>
 </head>
 
@@ -49,33 +49,31 @@
 		<h1>Prozess Definitions</h1>
 	</div><!-- /header -->
 
-	<div role="main" class="ui-content">
+	<div role="main" class="ui-content"></div>
+	<textarea id="template-pageProcessDefinitions" style="display:none;">
 		<h2>&Uuml;bersicht</h2>
-		<p>I have an id of "two" on my page container. I'm the second page container in this multi-page template.</p>
+		<p>Das sind die installierten Prozesse.</p>
 		<table class="ui-table">
 			<tr>
-				<th>Name</th>
+				<th>Id</th>
 				<th>File</th>
 				<th>Details</th>
 			</tr>
+			{{#process_definitions}}
 			<tr>
-				<td>TASKS_TEST</td>
-				<td>TaskTest.bpmn</td>
-				<td>SVG-Graphic</td>
-				<td><a href="#viewSvg" class="ui-btn ui-shadow ui-corner-all"
-					data-rel="dialog" data-transition="pop">view</a></td>
+				<td>{{id}}</td>
+				<td>{{file}}</td>
+				<td>{{#process_stats}}
+					{{running}}/{{done}}
+				{{/process_stats}}</td>
+				<td><a href="#executeUserTask" _class="ui-btn ui-shadow ui-corner-all"
+					data-rel="dialog" data-transition="pop">details</a></td>
 			</tr>
-			<tr>
-				<td>GATEWAY_TEST</td>
-				<td>TaskTest.bpmn</td>
-				<td>SVG-Graphic</td>
-				<td><a href="#viewSvg" class="ui-btn ui-shadow ui-corner-all"
-					data-rel="dialog" data-transition="pop">view</a></td>
-			</tr>
+			{{/process_definitions}}
 		</table>
-		<p><a href="#pageStart" data-direction="reverse" class="ui-btn ui-shadow ui-corner-all ui-btn-b">Back to start page</a></p>
-
-	</div><!-- /content -->
+		<p><a href="#pageStart" data-direction="reverse" 
+			class="ui-btn ui-shadow ui-corner-all ui-btn-b">Back to start page</a></p>
+	</textarea>
 
 	<div data-role="footer">
 		<h4>Page Footer</h4>
@@ -89,26 +87,21 @@
 		<h1>User Tasks</h1>
 	</div><!-- /header -->
 
-	<div role="main" class="ui-content">
-		<h2>Ubersicht</h2>
+	<div role="main" class="ui-content"></div>
+	<textarea id="template-pageUserTasks" style="display:none;">
+		<h2>&Uuml;bersicht</h2>
 		<p>I have an id of "two" on my page container. I'm the second page container in this multi-page template.</p>
-		<table class="ui-table">
+		<table class="ui-table" border=1>
+			{{#usertasks}}
 			<tr>
-				<th>Process_id</th>
-				<th>Task</th>
-				<th>Date</th>
-			</tr>
-			<tr>
-				<td>PROCESS_1</td>
-				<td>TestUserTask</td>
-				<td>3.6.2014</td>
 				<td><a href="#executeUserTask" class="ui-btn ui-shadow ui-corner-all"
-					data-rel="dialog" data-transition="pop">execute</a></td>
+					data-rel="dialog" data-transition="pop">{{name}}</a></td>
+				<td>{{process_definition_id}} / {{process_id}}<br>{{created_ts}}</td>
 			</tr>
+			{{/usertasks}}
 		</table>
 		<p><a href="#pageStart" data-direction="reverse" class="ui-btn ui-shadow ui-corner-all ui-btn-b">Back to start page</a></p>
-
-	</div><!-- /content -->
+	</textarea>
 
 	<div data-role="footer">
 		<h4>Page Footer</h4>
