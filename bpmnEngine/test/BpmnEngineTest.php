@@ -68,7 +68,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		//	msg_send($queue, 12, "Hello from PHP!\0", false);
 		//	print_r(	msg_stat_queue($queue));
 
-		print_r($process);
+//		print_r($process);
 		$this->assertEquals("End Event", $result);
 	}
 }

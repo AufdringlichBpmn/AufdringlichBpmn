@@ -57,6 +57,10 @@ class FileStoreTest extends PHPUnit_Framework_TestCase{
 		$this->testee->importDefinition($this->process_definition_xml);
 		$pd = $this->testee->loadProcessDefinition("PROCESS_1");
 		$this->assertNotNull($pd);
+		
+		$pds = $this->testee->listProcessDefinitions();
+		$this->assertNotNull($pds);
+		print_r($pds);
 	}
 	
 

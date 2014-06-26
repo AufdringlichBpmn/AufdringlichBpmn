@@ -51,6 +51,19 @@ class FileStore implements ProcessStore{
 		}
 	}
 	
+	public function listProcessDefinitions(){
+		$processDefinitions = array();
+		$d = dir($this->processDefinitions);
+		while (false !== ($myFile = $d->read())) {
+			$dto = json_decode( file_get_contents($this->processDefinitions.'/'.$myFile) );
+			$dbObject = new ProcessDefinition();
+			$dbObject->merge($dto);
+			$processDefinitions[] = $dbObject;
+		}
+		$d->close();
+		return $processDefinitions;
+	}
+
 	function storeProcess($process){
 		$myFile = $this->processes.'/'.md5($process->getId()).".json";
 		file_put_contents($myFile, json_encode( $process ));
