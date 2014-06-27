@@ -60,7 +60,7 @@ class FileStoreTest extends PHPUnit_Framework_TestCase{
 		
 		$pds = $this->testee->listProcessDefinitions();
 		$this->assertNotNull($pds);
-		print_r($pds);
+		print_r($pds[0]->getId());
 	}
 	
 

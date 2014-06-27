@@ -11,7 +11,7 @@ class InMemoryStore implements ProcessStore{
 		$simpleXml->registerXPathNamespace("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL");
 
 		foreach($simpleXml->process as $process) {
-			$pdId = $process->attributes()->id;
+			$pdId = (String) $process->attributes()->id;
 			$processDefinition = $this->loadProcessDefinition($pdId);
 			if($processDefinition) {
 				$processDefinition->xml = $simpleXml->asXML();

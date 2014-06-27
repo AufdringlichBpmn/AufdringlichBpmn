@@ -115,31 +115,53 @@
 		<h1>Dialog</h1>
 	</div><!-- /header -->
 
-	<div role="main" class="ui-content">
-		<h2>Execute User Task - ##Name###</h2>
+	<div role="main" class="ui-content"></div>
+	<textarea id="template-executeUserTask" style="display:none;">
+		{{#usertask}}
+		<h2>Execute User Task - {{name}}</h2>
 		<table class="ui-table">
+			{{#documentation}}
 			<tr>
-				<th>Variable:</th>
-				<td>3.6.2014</td>
+				<td colspan="2">{{.}}</td>
 			</tr>
+			{{/documentation}}
 			<tr>
-				<th>Betrag:</th>
-				<td>14 EUR</td>
+				<th colspan="2">Variable:</th>
 			</tr>
+			{{#variables}}
 			<tr>
-				<th>Frist:</th>
-				<td>13.6.2014</td>
+				<th>{{key}}:</th>
+				<td>{{value}}</td>
 			</tr>
+			{{/variables}}
 			<tr>
-				<th>Resultat</th>
-				<td><input name="result"></td>
+				<th colspan="2">Auswahl:</th>
 			</tr>
+			{{#choice}}
+				{{#name}}{{^default}}
+					<tr>
+						<th><input type="radio" name="choice"></th>
+						<td>{{.}}</td>
+					</tr>
+				{{/default}}{{/name}}
+				{{#default}}
+					<tr>
+						<th><input type="radio" name="choice"></th>
+						<td><input value="sonstiges"></td>
+					</tr>
+				{{/default}}
+			{{/choice}}
 		</table>
+		{{/usertask}}
 		<p>
-			<a href="#pageUserTasks" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Abbrechen</a>
-			<a href="#pageUserTasks" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">Speichern und Nächster</a>
+			<a href="#pageUserTasks" data-rel="back"
+				id="executeUserTask-cancel"
+				class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Abbrechen</a>
+			<a href="#pageUserTasks" data-rel="back" 
+				id="executeUserTask-save"
+				class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">Speichern und Nächster</a>
 		</p>
-	</div><!-- /content -->
+	</textarea><!-- /content -->
 
 	<div data-role="footer">
 		<h4>Page Footer</h4>
