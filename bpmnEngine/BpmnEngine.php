@@ -193,7 +193,7 @@ class ProcessInstance extends Process{
 		$task->retries--;
 	}
 	
-	private function getTaskById($taskId){
+	public function getTaskById($taskId){
 		foreach($this->tasks as $i => $task)
 			if($task->_id == $taskId)
 				return $task;
@@ -224,6 +224,11 @@ class ProcessInstance extends Process{
 		$task->result = $result;
 		$this->discoverTasks($refId, $result, true);
 		while($this->processNextServiceTask());
+	}
+	
+	public function evaluateUserTask($taskId, $result = null){
+		$task = $this->getTaskById($taskId);
+		$task->result = $result;
 	}
 	
 	public function processNextUserTask(){
@@ -315,6 +320,7 @@ interface ProcessStore {
 	function storeProcess($process);
 	function loadProcess($processId);
 	function findNotExecutedProcessInstanceIds();
+	function findOpenUserTasks();
 }
 
 class DbObject{

@@ -1,10 +1,13 @@
 var config = {
 	server : {
 		base_url: "testStub/",
-//		process_definitions_url:"../connector/processdefinitions.php",
-		process_definitions_url:"processdefinitions.js",
-		open_usertasks_url:"open_usertasks.js",
-		usertask_url:"usertask.js"
+		process_definitions_url:"../connector/processdefinitions.php",
+		open_usertasks_url:"../connector/openUserTasks.php",
+		usertask_url:"../connector/usertask.php",
+		evaluate_usertask_url:"../connector/evaluateUserTask.php"
+//		process_definitions_url:"processdefinitions.js",
+//		open_usertasks_url:"open_usertasks.js",
+//		usertask_url:"usertask.js"
 	}
 };
 
@@ -31,6 +34,11 @@ $(document).ready(function() {
 				$("#pageUserTasks [role='main']").html(
 					Mustache.render(template, data)
 				);
+				$("a[data-action]").click(function( event ) {
+					$("#executeUserTask").attr("data-processDefinitionId", $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId"));
+					$("#executeUserTask").attr("data-processId", $(this).closest("[data-processId]").attr("data-processId"));
+					$("#executeUserTask").attr("data-taskId", $(this).closest("[data-taskId]").attr("data-taskId"));
+				});
 			},
 			dataType: "json"
 		});
@@ -38,16 +46,38 @@ $(document).ready(function() {
 	$( "#executeUserTask" ).on( "pageshow", function( event ) {
 		$.ajax({
 			url: config.server.base_url + config.server.usertask_url,
-			data: {},
+			data: {
+				process_definition_id: $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId"),
+				process_id: $(this).closest("[data-processId]").attr("data-processId"),
+				task_id: $(this).closest("[data-taskId]").attr("data-taskId")
+			},
 			success: function(data){
 				var template = $("#template-executeUserTask").text();
 				$("#executeUserTask [role='main']").html(
 					Mustache.render(template, data)
 				);
 				$( "#executeUserTask-save" ).click(function( event ) {
-					alert("save");
+					var result;
+					if($(this).closest("div").find("input:checked.default"))
+						result = $(this).closest("div").find("input[type='text'].default").val();
+					else
+						result = $(this).closest("div").find("input:checked").val();
+					$.ajax({
+						url: config.server.base_url + config.server.evaluate_usertask_url,
+						data: {
+							process_definition_id: $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId"),
+							process_id: $(this).closest("[data-processId]").attr("data-processId"),
+							task_id: $(this).closest("[data-taskId]").attr("data-taskId"),
+							result: result
+						},
+						success: function(data){
+							alert("ok");
+						},
+						dataType: "json"
+					});
 				});
 				$( "#executeUserTask-cancel" ).click(function( event ) {
+					//TODO
 					alert("zurück");
 				});
 			},

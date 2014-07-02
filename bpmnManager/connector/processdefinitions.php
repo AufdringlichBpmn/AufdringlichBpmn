@@ -8,9 +8,10 @@ $store = new FileStore();
 $output->process_definitions = array();
 
 foreach($store->listProcessDefinitions() as $processDefinition) {
-	$pd->id = $processDefinition->getId(); // TODO
-	$pd->file = $processDefinition->getRefId(); // TODO
-	$output->process_definitions[] = $pd;
+	$output->process_definitions[] = array(
+		"id"=>$processDefinition->getId(), // TODO
+		"file" =>"",
+	);
 }
 
 echo json_encode($output);

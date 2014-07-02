@@ -94,4 +94,28 @@ class FileStore implements ProcessStore{
 		}
 		$d->close();
 	}
+
+	function findOpenUserTasks(){
+		$openUserTasks = array();
+		$d = dir($this->processes);
+		while (false !== ($myFile = $d->read())) {
+			$process = json_decode( file_get_contents($this->processes.'/'.$myFile) );
+			if( ! $process->executed_ts){
+				foreach($process->tasks as $task) {
+					if( ! $task->executedTs
+					 && ! $task->result
+					 && $task->type == "userTask"
+					){
+						$openUserTasks[] = array(
+							"taskId"=>$task->_id,
+							"processId"=>$process->_id,
+							"processDefinitionId" => explode(":", $process->_id, 2)[0]
+						);
+					}
+				}
+			}
+		}
+		$d->close();
+		return $openUserTasks;
+	}
 }

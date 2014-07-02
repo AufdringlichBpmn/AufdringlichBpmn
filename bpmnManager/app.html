@@ -93,8 +93,9 @@
 		<p>I have an id of "two" on my page container. I'm the second page container in this multi-page template.</p>
 		<table class="ui-table" border=1>
 			{{#usertasks}}
-			<tr>
+			<tr data-processDefinitionId="{{process_definition_id}}" data-processId="{{process_id}}" data-taskId="{{id}}">
 				<td><a href="#executeUserTask" class="ui-btn ui-shadow ui-corner-all"
+					data-action="openUserTask"
 					data-rel="dialog" data-transition="pop">{{name}}</a></td>
 				<td>{{process_definition_id}} / {{process_id}}<br>{{created_ts}}</td>
 			</tr>
@@ -125,29 +126,34 @@
 				<td colspan="2">{{.}}</td>
 			</tr>
 			{{/documentation}}
+			{{#ioSpecification}}
+				{{#input}}
+					<tr>
+						<th>{{name}}:</th>
+						<td>{{value}}</td>
+					</tr>
+				{{/input}}
+				{{#output}}
+					<tr>
+						<th>{{name}}:</th>
+						<td><input name="var_{{name}}" value="{{value}}"></td>
+					</tr>
+				{{/output}}
+			{{/ioSpecification}}
 			<tr>
-				<th colspan="2">Variable:</th>
-			</tr>
-			{{#variables}}
-			<tr>
-				<th>{{key}}:</th>
-				<td>{{value}}</td>
-			</tr>
-			{{/variables}}
-			<tr>
-				<th colspan="2">Auswahl:</th>
+				<th colspan="2">Auswahl</th>
 			</tr>
 			{{#choice}}
 				{{#name}}{{^default}}
 					<tr>
-						<th><input type="radio" name="choice"></th>
+						<th><input type="radio" name="choice" value="{{.}}"></th>
 						<td>{{.}}</td>
 					</tr>
 				{{/default}}{{/name}}
 				{{#default}}
 					<tr>
-						<th><input type="radio" name="choice"></th>
-						<td><input value="sonstiges"></td>
+						<th><input type="radio" name="choice" class="default"></th>
+						<td><input type="text" class="default" value="sonstiges"></td>
 					</tr>
 				{{/default}}
 			{{/choice}}

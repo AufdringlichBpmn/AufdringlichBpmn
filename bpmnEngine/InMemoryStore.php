@@ -38,6 +38,27 @@ class InMemoryStore implements ProcessStore{
 		return $this->processDefinitions;
 	}
 	
+	public function findOpenUserTasks(){
+		$openUserTasks = array();
+		foreach($this->processes as $process) {
+			if( ! $process->executed_ts){
+				foreach($process->tasks as $task) {
+					if( ! $task->executedTs
+					 && ! $task->result
+					 && $task->type == "userTask"
+					){
+						$openUserTasks[] = array(
+							"taskId"=>$task->_id,
+							"processId"=>$process->_id,
+							"processDefinitionId" => explode(":", $process->_id, 2)[0]
+						);
+					}
+				}
+			}
+		}
+		return $openUserTasks;
+	}
+
 	function storeProcess($process){
 		$this->processes[] = $process;
 	}
