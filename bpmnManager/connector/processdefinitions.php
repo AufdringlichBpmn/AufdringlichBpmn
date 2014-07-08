@@ -1,7 +1,8 @@
 <?php
 
-require_once('../../bpmnEngine/BpmnEngine.php');
-require_once('../../bpmnEngine/FileStore.php');
+Phar::interceptFileFuncs();
+include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
+
 
 $store = new FileStore();
 

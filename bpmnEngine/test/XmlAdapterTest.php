@@ -1,5 +1,4 @@
 <?php
-require_once "../XmlAdapter.php" ;
 
 class XmlAdapterTest extends PHPUnit_Framework_TestCase{
 

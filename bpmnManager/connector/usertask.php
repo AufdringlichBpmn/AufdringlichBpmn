@@ -1,9 +1,5 @@
 <?php
 
-require_once('../../bpmnEngine/BpmnEngine.php');
-require_once('../../bpmnEngine/XmlAdapter.php');
-require_once('../../bpmnEngine/FileStore.php');
-
 $store = new FileStore();
 
 $processDefinitionId = $_GET["process_definition_id"];
