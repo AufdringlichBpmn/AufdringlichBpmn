@@ -1,5 +1,7 @@
 <?php
 
+namespace dto;
+
 class Process extends DbObject{
 	public function put($key, $value){
 		$this->variables = (array)$this->variables;

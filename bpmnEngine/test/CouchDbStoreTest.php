@@ -1,5 +1,9 @@
 <?php
 
+Phar::interceptFileFuncs();
+require_once(__DIR__.'/../build/bpmn.phar');
+require_once('BpmnEngineTest_TaskImpls.php');
+
 class CouchDbStoreTest extends PHPUnit_Framework_TestCase{
 
 	private $testee;
@@ -45,20 +49,10 @@ class CouchDbStoreTest extends PHPUnit_Framework_TestCase{
 </definitions>';
 
 	protected function setUp() {
-		require_once('ProcessStore.php');
-		require_once('CouchDbStore.php');
-		require_once('XmlAdapter.php');
-		require_once('BpmnEngine.php');
-		require_once('AbstractMessageEventImpl.php');
-		require_once('AbstractTaskImpl.php');
-		require_once('AbstractServiceTaskImpl.php');
-		require_once('AbstractUserTaskImpl.php');
-		require_once('BpmnEngineTest_TaskImpls.php');
-
 		$options['host'] = "localhost";
 		$options['port'] = 5984;
 		$options['db'] = 'test';
-		$this->testee = new CouchDbStore($options);
+		$this->testee = new \persistence\CouchDbStore($options);
 	}
 
 	protected function tearDown(){

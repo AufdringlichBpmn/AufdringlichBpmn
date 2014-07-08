@@ -1,5 +1,6 @@
 <?php
 
+namespace persistence;
 
 class InMemoryStore implements ProcessStore{
 
@@ -7,7 +8,7 @@ class InMemoryStore implements ProcessStore{
 	private $processes = array();
 	
 	function importDefinition($process_definition_xml){
-		$simpleXml = new SimpleXMLElement($process_definition_xml);
+		$simpleXml = new \SimpleXMLElement($process_definition_xml);
 		$simpleXml->registerXPathNamespace("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL");
 
 		foreach($simpleXml->process as $process) {
@@ -16,7 +17,7 @@ class InMemoryStore implements ProcessStore{
 			if($processDefinition) {
 				$processDefinition->xml = $simpleXml->asXML();
 			} else {
-				$processDefinition = new ProcessDefinition(array(
+				$processDefinition = new \dto\ProcessDefinition(array(
 						'type' => "process_definition",
 						'_id' => $pdId,
 						'xml' => $simpleXml->asXML()

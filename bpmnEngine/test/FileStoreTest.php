@@ -1,5 +1,9 @@
 <?php
 
+Phar::interceptFileFuncs();
+require_once(__DIR__.'/../build/bpmn.phar');
+require_once('BpmnEngineTest_TaskImpls.php');
+
 class FileStoreTest extends PHPUnit_Framework_TestCase{
 
 	private $testee;
@@ -45,7 +49,7 @@ class FileStoreTest extends PHPUnit_Framework_TestCase{
 </definitions>';
 
 	protected function setUp() {
-		$this->testee = new FileStore();
+		$this->testee = new \persistence\FileStore();
 	}
 
 	protected function tearDown(){

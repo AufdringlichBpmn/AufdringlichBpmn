@@ -4,7 +4,7 @@ Phar::interceptFileFuncs();
 include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
 
 
-$store = new FileStore();
+$store = new \persistence\FileStore();
 
 $output->process_definitions = array();
 

@@ -1,13 +1,15 @@
 <?php
-	require_once('DbObject.php');
-	require_once('Task.php');
-	require_once('Event.php');
-	require_once('ProcessDefinition.php');
-	require_once('ProcessStore.php');
-	require_once('FileStore.php');
+	require_once('dto/DbObject.php');
+	require_once('dto/Task.php');
+	require_once('dto/Event.php');
+	require_once('dto/ProcessDefinition.php');
+	require_once('dto/Process.php');
+	require_once('dto/VariableMap.php');
+	require_once('persistence/ProcessStore.php');
+	require_once('persistence/FileStore.php');
+	require_once('persistence/CouchDbStore.php');
+	require_once('persistence/InMemoryStore.php');
 	require_once('XmlAdapter.php');
-	require_once('VariableMap.php');
-	require_once('Process.php');
 	require_once('ProcessInstance.php');
 	require_once('BpmnEngine.php');
 	require_once('AbstractMessageEventImpl.php');

@@ -20,7 +20,7 @@ class EndEventHandler extends DefaultBpmnElementHandler{
 
 class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
 	function createEventInstance($processInstance, $element){
-		$event = new Event();
+		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
 		$event->createdTs = time();
 		$event->type = "intermediateCatchEvent";
@@ -56,7 +56,7 @@ class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
 
 class IntermediaThrowEventHandler extends DefaultBpmnElementHandler {
 	function createEventInstance($processInstance, $element){
-		$event = new Event();
+		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
 		$event->createdTs = time();
 		$event->type = "intermediateThrowEvent";

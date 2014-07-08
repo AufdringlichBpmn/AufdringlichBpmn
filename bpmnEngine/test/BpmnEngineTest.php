@@ -1,25 +1,14 @@
 <?php
 
+Phar::interceptFileFuncs();
+require_once(__DIR__.'/../build/bpmn.phar');
+require_once('BpmnEngineTest_TaskImpls.php');
+
 class BpmnEngineTest extends PHPUnit_Framework_TestCase{
+
 	private $dbAdapter;
 
 	protected function setUp() {
-		require_once('DbObject.php');
-		require_once('Task.php');
-		require_once('Event.php');
-		require_once('ProcessDefinition.php');
-		require_once('ProcessStore.php');
-		require_once('FileStore.php');
-		require_once('XmlAdapter.php');
-		require_once('VariableMap.php');
-		require_once('Process.php');
-		require_once('ProcessInstance.php');
-		require_once('BpmnEngine.php');
-		require_once('AbstractMessageEventImpl.php');
-		require_once('AbstractTaskImpl.php');
-		require_once('AbstractServiceTaskImpl.php');
-		require_once('AbstractUserTaskImpl.php');
-		require_once('BpmnEngineTest_TaskImpls.php');
 
 //		$this->dbAdapter = new InMemoryStore();
 
@@ -31,7 +20,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 //		$this->dbAdapter->updateDesignDocument();
 
 		// Or use this for File Persistence
-		$this->dbAdapter = new FileStore();
+		$this->dbAdapter = new \persistence\FileStore();
 		
 	}
 

@@ -1,5 +1,9 @@
 <?php
 
+Phar::interceptFileFuncs();
+require_once(__DIR__.'/../build/bpmn.phar');
+require_once('BpmnEngineTest_TaskImpls.php');
+
 class InMemoryStoreTest extends PHPUnit_Framework_TestCase{
 
 	private $testee;
@@ -55,7 +59,7 @@ class InMemoryStoreTest extends PHPUnit_Framework_TestCase{
 		require_once('AbstractUserTaskImpl.php');
 		require_once('BpmnEngineTest_TaskImpls.php');
 
-		$this->testee = new InMemoryStore();
+		$this->testee = new \persistence\InMemoryStore();
 	}
 
 	protected function tearDown(){

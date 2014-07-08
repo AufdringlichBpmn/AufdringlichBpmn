@@ -3,7 +3,7 @@
 class TaskHandler extends DefaultBpmnElementHandler {
 	
 	function createTaskInstance($processInstance, $element){
-		$task = new Task();
+		$task = new \dto\Task();
 		$task->createdTs = time();
 		$task->type = $processInstance->getName($element);
 		$task->ref_id = $processInstance->getAttribute($element, 'id');
@@ -52,7 +52,7 @@ class ScriptTaskHandler extends TaskHandler {
 class SubProcessHandler extends DefaultBpmnElementHandler {
 	
 	function processTaskInstance($processInstance, $element, $taskId){
-		$subProcess = new ProcessInstance($this->engine, $this->xmlAdapter);
+		$subProcess = new \ProcessInstance($this->engine, $this->xmlAdapter);
 		$subProcess->created_ts = time();
 		$subProcess->type = $this->getName($element);
 		$subProcess->variables = $this->variables;
@@ -74,7 +74,7 @@ class ServiceTaskHandler extends TaskHandler {
 	protected function evaluate($processInstance, $element){
 		$classname = $processInstance->getAttribute($element, 'implementation');
 		if( ! class_exists($classname)) throw new Exception("Implementation nicht gefunden: ".$classname);
-		$class = new ReflectionClass( $classname);
+		$class = new \ReflectionClass( $classname);
 		$serviceTaskImpl = $class->newInstance();
 		$serviceTaskImpl->init($processInstance,$element);
 		return $serviceTaskImpl->processServiceTask();
@@ -85,7 +85,7 @@ class ServiceTaskHandler extends TaskHandler {
 class UserTaskHandler extends TaskHandler {
 
 	function createTaskInstance($processInstance, $element){
-		$task = new Task();
+		$task = new \dto\Task();
 		$task->type = "userTask";
 		$task->ref_id = $processInstance->getAttribute($element, 'id');
 		$task->retries = 0;
@@ -93,8 +93,8 @@ class UserTaskHandler extends TaskHandler {
 		$taskId = $processInstance->addTask($task);
 		try{
 			$classname = $processInstance->getAttribute($element, 'implementation');
-			if( ! class_exists($classname)) throw new Exception("Implementation nicht gefunden: ".$classname);
-			$class = new ReflectionClass( $classname);
+			if( ! class_exists($classname)) throw new \Exception("Implementation nicht gefunden: ".$classname);
+			$class = new \ReflectionClass( $classname);
 			$userTaskImpl = $class->newInstance();
 			$userTaskImpl->init($processInstance, $element);
 			$userTaskImpl->preProcessUserTask();
@@ -109,5 +109,3 @@ class UserTaskHandler extends TaskHandler {
 		return $processInstance->getTaskResult($element);
 	}
 }
-
-					

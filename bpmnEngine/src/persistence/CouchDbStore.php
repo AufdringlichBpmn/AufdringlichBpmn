@@ -1,5 +1,7 @@
 <?php
 
+namespace persistence;
+
 class CouchDBResponse {
 
 	private $raw_response = '';
@@ -334,13 +336,13 @@ EOF;
 		// 		print_r($result);
 	}
 	public function loadTask( $id){
-		return $this->loadDbObject(new Task(), $id);
+		return $this->loadDbObject(new \dto\Task(), $id);
 	}
 	public function loadProcessDefinition( $id){
-		return $this->loadDbObject(new ProcessDefinition(), $id);
+		return $this->loadDbObject(new \dto\ProcessDefinition(), $id);
 	}
 	public function loadProcess( $id){
-		$process = $this->loadDbObject(new Process(), $id);
+		$process = $this->loadDbObject(new \dto\Process(), $id);
 		$tasks = array();
 		foreach($process->tasks as $index => $dto){
 			$tasks[] = $task = new Task();
@@ -351,7 +353,7 @@ EOF;
 	}
 
 	public function importDefinition($process_definition_xml) {
-		$simpleXml = new SimpleXMLElement($process_definition_xml);
+		$simpleXml = new \SimpleXMLElement($process_definition_xml);
 		$simpleXml->registerXPathNamespace("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL");
 
 		foreach($simpleXml->process as $process) {
@@ -360,7 +362,7 @@ EOF;
 			if($processDefinition) {
 				$processDefinition->xml = $simpleXml->asXML();
 			} else {
-				$processDefinition = new ProcessDefinition(array(
+				$processDefinition = new \dto\ProcessDefinition(array(
 						'type' => "process_definition",
 						'_id' => $pdId,
 						'xml' => $simpleXml->asXML()

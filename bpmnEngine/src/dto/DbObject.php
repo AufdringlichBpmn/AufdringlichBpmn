@@ -1,5 +1,7 @@
 <?php
 
+namespace dto;
+
 class DbObject{
 	public function __construct($dto = array()){
 		$this->merge($dto);

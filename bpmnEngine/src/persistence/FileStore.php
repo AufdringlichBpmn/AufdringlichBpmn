@@ -1,5 +1,7 @@
 <?php
 
+namespace persistence;
+
 class FileStore implements ProcessStore{
 
 	private $processDefinitions = '/tmp/process_definitions';
@@ -20,7 +22,7 @@ class FileStore implements ProcessStore{
 	}
 
 	function importDefinition($process_definition_xml){
-		$simpleXml = new SimpleXMLElement($process_definition_xml);
+		$simpleXml = new \SimpleXMLElement($process_definition_xml);
 		$simpleXml->registerXPathNamespace("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL");
 
 		foreach($simpleXml->process as $process) {
@@ -29,7 +31,7 @@ class FileStore implements ProcessStore{
 			if($processDefinition) {
 				$processDefinition->xml = $simpleXml->asXML();
 			} else {
-				$processDefinition = new ProcessDefinition(array(
+				$processDefinition = new \dto\ProcessDefinition(array(
 						'type' => "process_definition",
 						'_id' => $pdId,
 						'xml' => $simpleXml->asXML()
@@ -45,7 +47,7 @@ class FileStore implements ProcessStore{
 		$myFile = $this->processDefinitions.'/'.md5($pdId).".json";
 		if( file_exists($myFile) ) {
 			$dto = json_decode( file_get_contents($myFile) );
-			$dbObject = new ProcessDefinition();
+			$dbObject = new \dto\ProcessDefinition();
 			$dbObject->merge($dto);
 			return $dbObject;
 		}
@@ -56,7 +58,7 @@ class FileStore implements ProcessStore{
 		$d = dir($this->processDefinitions);
 		while (false !== ($myFile = $d->read())) {
 			$dto = json_decode( file_get_contents($this->processDefinitions.'/'.$myFile) );
-			$dbObject = new ProcessDefinition();
+			$dbObject = new \dto\ProcessDefinition();
 			$dbObject->merge($dto);
 			$processDefinitions[] = $dbObject;
 		}
@@ -73,7 +75,7 @@ class FileStore implements ProcessStore{
 		$myFile = $this->processes.'/'.md5($processId).".json";
 		if( file_exists($myFile) ) {
 			$dto = json_decode( file_get_contents($myFile) );
-			$dbObject = new Process();
+			$dbObject = new \dto\Process();
 			$dbObject->merge($dto);
 			return $dbObject;
 		}

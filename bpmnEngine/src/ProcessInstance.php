@@ -1,6 +1,6 @@
 <?php
 
-class ProcessInstance extends Process{
+class ProcessInstance extends \dto\Process{
 	private $engine;
 	private $xmlAdapter;
 
@@ -20,7 +20,7 @@ class ProcessInstance extends Process{
 
 	static function buildByProcessDefinition($bpmnEngine, $processDefinition, $name){
 		$processInstance = new ProcessInstance($bpmnEngine);
-		$processInstance->variables = new VariableMap();
+		$processInstance->variables = new \dto\VariableMap();
 		$processInstance->_id = $name.":".md5(''.time());
 		$processInstance->type = "process_instance";
 		$processInstance->xmlAdapter->setProcessDefinitionXml($processDefinition->xml);

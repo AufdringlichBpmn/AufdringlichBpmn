@@ -1,5 +1,7 @@
 <?php
 
+namespace persistence;
+
 interface ProcessStore {
 	function importDefinition($simplexml);
 	function loadProcessDefinition($name);
@@ -9,3 +11,4 @@ interface ProcessStore {
 	function findNotExecutedProcessInstanceIds();
 	function findOpenUserTasks();
 }
+
