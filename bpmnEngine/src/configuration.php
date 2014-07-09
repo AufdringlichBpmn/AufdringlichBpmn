@@ -2,17 +2,17 @@
 
 $CONFIG = (object) array(
 	"eventHandlerByElementName" => array(
-		'startEvent' => \elements\StartEventHandler::getClassName(),
-		'intermediateCatchEvent' => \elements\IntermediaCatchEventHandler::getClassName(),
-		'intermediateThrowEvent' => \elements\IntermediaThrowEventHandler::getClassName(),
-		'endEvent' => \elements\EndEventHandler::getClassName(),
-		'exclusiveGateway' => \elements\ExclusiveGatewayHandler::getClassName(),
-		'parallelGateway' => \elements\ParallelGatewayHandler::getClassName(),
-		'callActivity' => \elements\CallActivityHandler::getClassName(),
-		'scriptTask' => \elements\ScriptTaskHandler::getClassName(),
-		'serviceTask' => \elements\ServiceTaskHandler::getClassName(),
-		'userTask' => \elements\UserTaskHandler::getClassName(),
-		'subProcess' => \elements\SubProcessHandler::getClassName()
+		'startEvent' => \elements\StartEventHandler::class,
+		'intermediateCatchEvent' => \elements\IntermediaCatchEventHandler::class,
+		'intermediateThrowEvent' => \elements\IntermediaThrowEventHandler::class,
+		'endEvent' => \elements\EndEventHandler::class,
+		'exclusiveGateway' => \elements\ExclusiveGatewayHandler::class,
+		'parallelGateway' => \elements\ParallelGatewayHandler::class,
+		'callActivity' => \elements\CallActivityHandler::class,
+		'scriptTask' => \elements\ScriptTaskHandler::class,
+		'serviceTask' => \elements\ServiceTaskHandler::class,
+		'userTask' => \elements\UserTaskHandler::class,
+		'subProcess' => \elements\SubProcessHandler::class
 	),
 	"taskImpls" => array(),
 	"eventImpls" => array(),	

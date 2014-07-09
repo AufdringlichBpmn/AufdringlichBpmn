@@ -49,16 +49,6 @@ class InMemoryStoreTest extends PHPUnit_Framework_TestCase{
 </definitions>';
 
 	protected function setUp() {
-		require_once('ProcessStore.php');
-		require_once('InMemoryStore.php');
-		require_once('XmlAdapter.php');
-		require_once('BpmnEngine.php');
-		require_once('AbstractMessageEventImpl.php');
-		require_once('AbstractTaskImpl.php');
-		require_once('AbstractServiceTaskImpl.php');
-		require_once('AbstractUserTaskImpl.php');
-		require_once('BpmnEngineTest_TaskImpls.php');
-
 		$this->testee = new \persistence\InMemoryStore();
 	}
 

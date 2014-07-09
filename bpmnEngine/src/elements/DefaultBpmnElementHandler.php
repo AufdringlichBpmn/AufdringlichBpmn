@@ -7,9 +7,6 @@ namespace elements;
  *
  */
 class DefaultBpmnElementHandler implements BpmnElementHandler{
-	public static function getClassName() {
-		return get_called_class();
-	}
 	/**
 	 * it will be called after discovering an element on the BPMN-Graph.
 	 * A Task needs to override this implementation.
