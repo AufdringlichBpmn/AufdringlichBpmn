@@ -28,10 +28,12 @@ $phar ["persistence/InMemoryStore.php"] = file_get_contents($srcRoot."/persisten
 $phar ["persistence/FileStore.php"] = file_get_contents($srcRoot."/persistence/FileStore.php");
 
 $phar ["BpmnEngine.php"] = file_get_contents($srcRoot."/BpmnEngine.php");
+$phar ["configuration.php"] = file_get_contents($srcRoot."/configuration.php");
 
 
 $phar ["XmlAdapter.php"] = file_get_contents($srcRoot."/XmlAdapter.php");
-$phar ["elements/DefaultElementHandler.php"] = file_get_contents($srcRoot."/elements/DefaultElementHandler.php");
+$phar ["elements/BpmnElementHandler.php"] = file_get_contents($srcRoot."/elements/BpmnElementHandler.php");
+$phar ["elements/DefaultBpmnElementHandler.php"] = file_get_contents($srcRoot."/elements/DefaultBpmnElementHandler.php");
 $phar ["elements/EventHandler.php"] = file_get_contents($srcRoot."/elements/EventHandler.php");
 $phar ["elements/GatewayHandler.php"] = file_get_contents($srcRoot."/elements/GatewayHandler.php");
 $phar ["elements/TaskHandler.php"] = file_get_contents($srcRoot."/elements/TaskHandler.php");

@@ -1,5 +1,7 @@
 <?php
 
+namespace elements;
+
 /**
  *	Handels an exclusive gateway.
  * E.g.

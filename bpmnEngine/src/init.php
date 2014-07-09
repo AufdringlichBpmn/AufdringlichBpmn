@@ -12,6 +12,12 @@
 	require_once('XmlAdapter.php');
 	require_once('ProcessInstance.php');
 	require_once('BpmnEngine.php');
+	require_once('elements/BpmnElementHandler.php');
+	require_once('elements/DefaultBpmnElementHandler.php');
+	require_once('elements/GatewayHandler.php');
+	require_once('elements/EventHandler.php');
+	require_once('elements/TaskHandler.php');
+	require_once('configuration.php');
 	require_once('AbstractMessageEventImpl.php');
 	require_once('AbstractTaskImpl.php');
 	require_once('AbstractServiceTaskImpl.php');

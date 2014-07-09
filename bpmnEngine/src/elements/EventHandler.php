@@ -1,5 +1,7 @@
 <?php
 
+namespace elements;
+
 /**
  *	Start-Element.
  * E.g.
@@ -47,7 +49,7 @@ class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
 				return true;
 			}
 		} else if($event->subtype == "message"){
-			$handler = AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
+			$handler = \AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
 			return $handler->receiveMessage($processInstance, $event);
 		}
 		return false;
@@ -72,7 +74,7 @@ class IntermediaThrowEventHandler extends DefaultBpmnElementHandler {
 	
 	function isEventOccured($processInstance, $event){
 		if($event->subtype == "message"){
-			$handler = AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
+			$handler = \AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
 			$handler->sendMessage($processInstance, $event);
 			$event->result = "send at " . (date("M d Y H:i:s"));
 			return true;

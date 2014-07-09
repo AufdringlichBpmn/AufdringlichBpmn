@@ -1,5 +1,7 @@
 <?php
-require_once ('elements/DefaultElementHandler.php');
+
+require_once ('elements/BpmnElementHandler.php');
+require_once ('elements/DefaultBpmnElementHandler.php');
 
 class BpmnEngine{
 	private $storage;
@@ -49,12 +51,9 @@ class BpmnEngine{
 		return $this->storage->findNotExecutedProcessInstanceIds();
 	}
 
-	private static $bpmnElemenHandlerMap = array();
-	static function registerBpmnElementHandler($name, $handler){
-		self::$bpmnElemenHandlerMap[$name] = $handler;
-	}
-	function getBpmnElementHandler($name){
-		print "\n".$name.":\n";
-		return self::$bpmnElemenHandlerMap[$name];
+	function getBpmnElementHandler($elementName){
+		global $CONFIG;
+		print "\n".$elementName.":\n";
+		return new $CONFIG->eventHandlerByElementName[$elementName];
 	}
 }

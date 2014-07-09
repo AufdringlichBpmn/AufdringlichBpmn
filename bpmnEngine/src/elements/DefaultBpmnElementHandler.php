@@ -1,27 +1,15 @@
 <?php
 
-require_once 'EventHandler.php';
-BpmnEngine::registerBpmnElementHandler('startEvent', new StartEventHandler);
-BpmnEngine::registerBpmnElementHandler('intermediateCatchEvent', new IntermediaCatchEventHandler);
-BpmnEngine::registerBpmnElementHandler('intermediateThrowEvent', new IntermediaThrowEventHandler);
-BpmnEngine::registerBpmnElementHandler('endEvent', new EndEventHandler);
-
-require_once 'GatewayHandler.php';
-BpmnEngine::registerBpmnElementHandler('exclusiveGateway', new ExclusiveGatewayHandler);
-BpmnEngine::registerBpmnElementHandler('parallelGateway', new ParallelGatewayHandler);
-
-require_once 'TaskHandler.php';
-BpmnEngine::registerBpmnElementHandler('callActivity', new CallActivityHandler);
-BpmnEngine::registerBpmnElementHandler('scriptTask', new ScriptTaskHandler);
-BpmnEngine::registerBpmnElementHandler('serviceTask', new ServiceTaskHandler);
-BpmnEngine::registerBpmnElementHandler('userTask', new UserTaskHandler);
-BpmnEngine::registerBpmnElementHandler('subProcess', new SubProcessHandler);
+namespace elements;
 
 /**
  *	Default implementation of an BPMN-Element. 
  *
  */
-class DefaultBpmnElementHandler{
+class DefaultBpmnElementHandler implements BpmnElementHandler{
+	public static function getClassName() {
+		return get_called_class();
+	}
 	/**
 	 * it will be called after discovering an element on the BPMN-Graph.
 	 * A Task needs to override this implementation.
@@ -65,4 +53,3 @@ class DefaultBpmnElementHandler{
 		return true;
 	}
 }
-

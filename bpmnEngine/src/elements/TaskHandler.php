@@ -1,5 +1,7 @@
 <?php
 
+namespace elements;
+
 class TaskHandler extends DefaultBpmnElementHandler {
 	
 	function createTaskInstance($processInstance, $element){
