@@ -12,8 +12,11 @@ namespace elements;
     </exclusiveGateway>
  */
 class ExclusiveGatewayHandler extends DefaultBpmnElementHandler{
+	static function canHandleElement($elementName){
+		return "exclusiveGateway" == $elementName;
+	}
 	function discoverTasks($processInstance, $value, $element){
-		if($processInstance->isJoin($element)){
+		if($this->isJoin($processInstance, $element)){
 			return parent::discoverTasks($processInstance, $value, $element);
 		}else{
 			$xvalue = ($value."?" == $processInstance->getAttribute($element, 'name')) ? "yes" : "no";
@@ -30,6 +33,9 @@ class ExclusiveGatewayHandler extends DefaultBpmnElementHandler{
 }
 
 class ParallelGatewayHandler extends DefaultBpmnElementHandler{
+	static function canHandleElement($elementName){
+		return "parallelGateway" == $elementName;
+	}
 
 	private function checkParallelGateReady($processInstance, $refId){
 		$taskOrEvent = $processInstance->getTaskByRefId($refId);
@@ -39,7 +45,7 @@ class ParallelGatewayHandler extends DefaultBpmnElementHandler{
 	}
 
 	function discoverTasks($processInstance, $value, $element){
-		if($processInstance->isJoin($element)){
+		if($this->isJoin($processInstance, $element)){
 			foreach($processInstance->findSequenceFlowElementsByTargetElement($element) as $sequenceFlow){
 				$refId = $processInstance->getAttribute($sequenceFlow, 'sourceRef');
 				if( ! $this->checkParallelGateReady($processInstance, $refId ))

@@ -10,9 +10,15 @@ namespace elements;
  *	</startEvent>
  */
 class StartEventHandler extends DefaultBpmnElementHandler{
+	static function canHandleElement($elementName){
+		return "startEvent" == $elementName;
+	}
 }
 
 class EndEventHandler extends DefaultBpmnElementHandler{
+	static function canHandleElement($elementName){
+		return "endEvent" == $elementName;
+	}
 	function discoverTasks($processInstance, $value, $element){
 		$result = $processInstance->getAttribute($element, 'name');
 		$processInstance->markProcessInstanceExecuted($result);
@@ -21,6 +27,9 @@ class EndEventHandler extends DefaultBpmnElementHandler{
 }
 
 class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
+	static function canHandleElement($elementName){
+		return "intermediateCatchEvent" == $elementName;
+	}
 	function createEventInstance($processInstance, $element){
 		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
@@ -57,6 +66,9 @@ class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
 }
 
 class IntermediaThrowEventHandler extends DefaultBpmnElementHandler {
+	static function canHandleElement($elementName){
+		return "intermediateThrowEvent" == $elementName;
+	}
 	function createEventInstance($processInstance, $element){
 		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');

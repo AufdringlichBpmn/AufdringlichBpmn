@@ -62,7 +62,7 @@ class ProcessInstance extends \dto\Process{
 
 	function discoverTasks($elementId, $value, $isExecuted = false){
 		if($element = $this->findElementById($elementId)) {
-			$handler = $this->getBpmnElementHandler($element);
+			$handler = $this->getBpmnElementHandler($this->getName($element));
 			if( (!$isExecuted) && ( $handler->createTaskInstance($this, $element) || $handler->createEventInstance($this, $element)) ){
 				//
 			}else if($handler->discoverTasks($this, $value, $element)){
@@ -74,8 +74,14 @@ class ProcessInstance extends \dto\Process{
 		while($this->processNextServiceTask());
 	}
 	
-	private function getBpmnElementHandler($element){
-		return $this->engine->getBpmnElementHandler($this->getName($element));
+	private function getBpmnElementHandler($elementName){
+		global $CONFIG;
+		foreach($CONFIG->elementHandlers as $handler){
+			$handlerInstance = new $handler;
+			if($handler::canHandleElement($elementName))
+				return $handlerInstance;
+		}
+		return false;
 	}
 	
 	function processNextServiceTask(){
@@ -84,7 +90,7 @@ class ProcessInstance extends \dto\Process{
 			$elementId = $task->getRefId();
 			$taskId = $task->getId();
 			if($element = $this->findElementById($elementId)){
-				$handler = $this->getBpmnElementHandler($element);
+				$handler = $this->getBpmnElementHandler($this->getName($element));
 				$handler->processTaskInstance($this, $element, $taskId);
 			}
 			return true;
@@ -198,7 +204,7 @@ class ProcessInstance extends \dto\Process{
 	public function processNextEvent(){
 		foreach($this->events as $i => $event){
 			if(!isSet($event->executedTs)){
-				$handler = $this->engine->getBpmnElementHandler($event->type);
+				$handler = $this->getBpmnElementHandler($event->type);
 				if( $handler->isEventOccured($this, $event) ) {
 					$this->executeEventByRefId($event->ref_id, $event->result);
 					return true;
@@ -211,10 +217,6 @@ class ProcessInstance extends \dto\Process{
 	function markProcessInstanceExecuted($result){
 		$this->executedTs = time();
 		$this->result = $result;
-	}
-	
-	function isJoin($element){
-		return 1<count($this->findSequenceFlowElementsByTargetElement($element));
 	}
 	
 	public function getResult() {

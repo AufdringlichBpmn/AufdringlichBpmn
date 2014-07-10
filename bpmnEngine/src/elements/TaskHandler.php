@@ -2,7 +2,7 @@
 
 namespace elements;
 
-class TaskHandler extends DefaultBpmnElementHandler {
+abstract class TaskHandler extends DefaultBpmnElementHandler {
 	
 	function createTaskInstance($processInstance, $element){
 		$task = new \dto\Task();
@@ -29,7 +29,10 @@ class TaskHandler extends DefaultBpmnElementHandler {
 }
 
 class CallActivityHandler extends TaskHandler {
-	
+	static function canHandleElement($elementName){
+		return "callActivity" == $elementName;
+	}
+
 	protected function evaluate($processInstance, $element){
 		$globalTaskId = $processInstance->getAttribute($element, 'calledElement');
 		$globalScriptTask = $processInstance->findElementById($globalTaskId);
@@ -41,6 +44,9 @@ class CallActivityHandler extends TaskHandler {
 }
 
 class ScriptTaskHandler extends TaskHandler {
+	static function canHandleElement($elementName){
+		return "scriptTask" == $elementName;
+	}
 	
 	protected function evaluate($processInstance, $element){
 		$script = $element->script;
@@ -52,6 +58,9 @@ class ScriptTaskHandler extends TaskHandler {
 
 // TODO write Test
 class SubProcessHandler extends DefaultBpmnElementHandler {
+	static function canHandleElement($elementName){
+		return "subProcess" == $elementName;
+	}
 	
 	function processTaskInstance($processInstance, $element, $taskId){
 		$subProcess = new \ProcessInstance($this->engine, $this->xmlAdapter);
@@ -72,6 +81,9 @@ class SubProcessHandler extends DefaultBpmnElementHandler {
 }
 
 class ServiceTaskHandler extends TaskHandler {
+	static function canHandleElement($elementName){
+		return "serviceTask" == $elementName;
+	}
 	
 	protected function evaluate($processInstance, $element){
 		$classname = $processInstance->getAttribute($element, 'implementation');
@@ -85,6 +97,9 @@ class ServiceTaskHandler extends TaskHandler {
 }
 
 class UserTaskHandler extends TaskHandler {
+	static function canHandleElement($elementName){
+		return "userTask" == $elementName;
+	}
 
 	function createTaskInstance($processInstance, $element){
 		$task = new \dto\Task();

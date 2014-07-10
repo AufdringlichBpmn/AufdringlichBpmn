@@ -6,7 +6,7 @@ namespace elements;
  *	Default implementation of an BPMN-Element. 
  *
  */
-class DefaultBpmnElementHandler implements BpmnElementHandler{
+abstract class DefaultBpmnElementHandler implements BpmnElementHandler{
 	/**
 	 * it will be called after discovering an element on the BPMN-Graph.
 	 * A Task needs to override this implementation.
@@ -21,6 +21,13 @@ class DefaultBpmnElementHandler implements BpmnElementHandler{
 	 */
 	function createEventInstance($processInstance, $element){
 		return false;
+	}
+	
+	/**
+	 * checks if multiple sequence flows come in into this element.
+	 */
+	protected function isJoin($processInstance, $element){
+		return 1<count($processInstance->findSequenceFlowElementsByTargetElement($element));
 	}
 
 	/**

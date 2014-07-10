@@ -1,20 +1,22 @@
 <?php
 
 $CONFIG = (object) array(
-	"eventHandlerByElementName" => array(
-		'startEvent' => \elements\StartEventHandler::class,
-		'intermediateCatchEvent' => \elements\IntermediaCatchEventHandler::class,
-		'intermediateThrowEvent' => \elements\IntermediaThrowEventHandler::class,
-		'endEvent' => \elements\EndEventHandler::class,
-		'exclusiveGateway' => \elements\ExclusiveGatewayHandler::class,
-		'parallelGateway' => \elements\ParallelGatewayHandler::class,
-		'callActivity' => \elements\CallActivityHandler::class,
-		'scriptTask' => \elements\ScriptTaskHandler::class,
-		'serviceTask' => \elements\ServiceTaskHandler::class,
-		'userTask' => \elements\UserTaskHandler::class,
-		'subProcess' => \elements\SubProcessHandler::class
+	"elementHandlers" => array(
+		\elements\StartEventHandler::class,
+		\elements\IntermediaCatchEventHandler::class,
+		\elements\IntermediaThrowEventHandler::class,
+		\elements\EndEventHandler::class,
+		\elements\ExclusiveGatewayHandler::class,
+		\elements\ParallelGatewayHandler::class,
+		\elements\CallActivityHandler::class,
+		\elements\ScriptTaskHandler::class,
+		\elements\ServiceTaskHandler::class,
+		\elements\UserTaskHandler::class,
+		\elements\SubProcessHandler::class
 	),
-	"taskImpls" => array(),
-	"eventImpls" => array(),	
+	"taskImpls" => array(
+	),
+	"eventImpls" => array(
+	),
 );
  

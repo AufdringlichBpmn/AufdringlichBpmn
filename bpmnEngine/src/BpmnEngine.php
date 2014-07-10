@@ -50,10 +50,4 @@ class BpmnEngine{
 		// TODO filter nach ProcessDefinition
 		return $this->storage->findNotExecutedProcessInstanceIds();
 	}
-
-	function getBpmnElementHandler($elementName){
-		global $CONFIG;
-		print "\n".$elementName.":\n";
-		return new $CONFIG->eventHandlerByElementName[$elementName];
-	}
 }
