@@ -81,7 +81,7 @@ class ProcessInstance extends \dto\Process{
 			if($handler::canHandleElement($elementName))
 				return $handlerInstance;
 		}
-		return false;
+		throw new Exception("No Handler found for $elementName.");
 	}
 	
 	function processNextServiceTask(){

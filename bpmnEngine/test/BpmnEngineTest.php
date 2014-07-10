@@ -22,6 +22,21 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		// Or use this for File Persistence
 		$this->dbAdapter = new \persistence\FileStore();
 		
+		global $CONFIG;
+		$CONFIG->taskImpls[] = CheckVariableA::class;
+		$CONFIG->taskImpls[] = ServiceTaskImpl::class;
+		$CONFIG->taskImpls[] = UserTaskImpl::class;
+		$CONFIG->taskImpls[] = Eins::class;
+		$CONFIG->taskImpls[] = Zwei::class;
+		$CONFIG->taskImpls[] = Drei::class;
+		$CONFIG->taskImpls[] = Vier::class;
+		$CONFIG->taskImpls[] = Funf::class;
+		$CONFIG->taskImpls[] = Sechs::class;
+		$CONFIG->taskImpls[] = Sieben::class;
+		$CONFIG->taskImpls[] = Acht::class;
+		$CONFIG->taskImpls[] = Neun::class;
+		$CONFIG->taskImpls[] = CheckResult::class;
+		print_r($CONFIG);
 	}
 
 	protected function tearDown(){
