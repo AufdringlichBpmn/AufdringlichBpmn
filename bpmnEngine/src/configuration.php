@@ -17,6 +17,7 @@ $CONFIG = (object) array(
 	"taskImpls" => array(
 	),
 	"eventImpls" => array(
+		TimerEventImpl::class
 	),
 );
  

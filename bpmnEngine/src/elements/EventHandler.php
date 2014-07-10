@@ -26,46 +26,42 @@ class EndEventHandler extends DefaultBpmnElementHandler{
 	}
 }
 
-class IntermediaCatchEventHandler extends DefaultBpmnElementHandler {
+abstract class AbstractIntermediaEventHandler extends DefaultBpmnElementHandler {
+	protected function findEventImpl(
+		\ProcessInstance $processInstance, $elementId){
+		global $CONFIG;
+		foreach($CONFIG->eventImpls as $impl){
+			if($impl::canHandleEvent($processInstance, $elementId)){
+				return new $impl;
+			}
+		}
+		throw new \Exception("No Impl found for ElementId=$elementId.");
+	}
+}
+
+class IntermediaCatchEventHandler extends AbstractIntermediaEventHandler {
 	static function canHandleElement($elementName){
 		return "intermediateCatchEvent" == $elementName;
 	}
-	function createEventInstance($processInstance, $element){
+	function createEventInstance(\ProcessInstance $processInstance, $element){
 		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
 		$event->createdTs = time();
 		$event->type = "intermediateCatchEvent";
-		if(isset($element->messageEventDefinition)){
-			$event->subtype = "message";
-			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
-			$msgDefinition = $processInstance->findElementById($msgRefId);
-			$event->handler = $processInstance->getAttribute($msgDefinition, 'name');
-		}else{
-			$event->subtype = "timer";
-			$event->timeDuration = (string) $element->timerEventDefinition->timeDuration;
-			$event->timeout = time(); // todo php5.3
-//			$event->timeout = (new DateTime)->add(new DateInterval($event->timeDuration))->getTimestamp();
-		}
 		$processInstance->addEvent($event);
 		return 2;
 	}
 	
-	function isEventOccured($processInstance, $event){
-		$event->lastCheck = time();
-		if($event->subtype == "timer"){
-			if( time() > $event->timeout) {
-				$event->result = "occured at " . (date("M d Y H:i:s"));
-				return true;
-			}
-		} else if($event->subtype == "message"){
-			$handler = \AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
-			return $handler->receiveMessage($processInstance, $event);
+	function isEventOccured(\ProcessInstance $processInstance, $event){
+		$handler = $this->findEventImpl($processInstance, $event->ref_id);
+		if($handler->isEventOccured($processInstance, $event)){
+			$event->result = "catched at " . (date("M d Y H:i:s"));
+			return true;
 		}
-		return false;
 	}
 }
 
-class IntermediaThrowEventHandler extends DefaultBpmnElementHandler {
+class IntermediaThrowEventHandler extends AbstractIntermediaEventHandler {
 	static function canHandleElement($elementName){
 		return "intermediateThrowEvent" == $elementName;
 	}
@@ -74,21 +70,14 @@ class IntermediaThrowEventHandler extends DefaultBpmnElementHandler {
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
 		$event->createdTs = time();
 		$event->type = "intermediateThrowEvent";
-		if(isset($element->messageEventDefinition)){
-			$event->subtype = "message";
-			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
-			$msgDefinition = $processInstance->findElementById($msgRefId);
-			$event->handler = $processInstance->getAttribute($msgDefinition, 'name');
-		}
 		$processInstance->addEvent($event);
 		return 2;
 	}
 	
 	function isEventOccured($processInstance, $event){
-		if($event->subtype == "message"){
-			$handler = \AbstractMessageEventImpl::$messageEventHandlerMap[$event->handler];
-			$handler->sendMessage($processInstance, $event);
-			$event->result = "send at " . (date("M d Y H:i:s"));
+		$handler = $this->findEventImpl($processInstance, $event->ref_id);
+		if($handler->isEventOccured($processInstance, $event)){
+			$event->result = "thrown at " . (date("M d Y H:i:s"));
 			return true;
 		}
 		return false;

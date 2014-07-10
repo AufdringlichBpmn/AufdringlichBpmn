@@ -8,7 +8,9 @@ $phar = new Phar($buildRoot . "/bpmn.phar",
 	FilesystemIterator::KEY_AS_FILENAME, "bpmn.phar");
 $phar ["init.php"] = file_get_contents($srcRoot."/init.php");
 
+$phar ["AbstractEventImpl.php"] = file_get_contents($srcRoot."/AbstractEventImpl.php");
 $phar ["AbstractMessageEventImpl.php"] = file_get_contents($srcRoot."/AbstractMessageEventImpl.php");
+$phar ["TimerEventImpl.php"] = file_get_contents($srcRoot."/TimerEventImpl.php");
 $phar ["AbstractServiceTaskImpl.php"] = file_get_contents($srcRoot."/AbstractServiceTaskImpl.php");
 $phar ["AbstractTaskImpl.php"] = file_get_contents($srcRoot."/AbstractTaskImpl.php");
 $phar ["AbstractUserTaskImpl.php"] = file_get_contents($srcRoot."/AbstractUserTaskImpl.php");

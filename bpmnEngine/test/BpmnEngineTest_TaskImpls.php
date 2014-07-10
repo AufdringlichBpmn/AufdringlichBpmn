@@ -82,6 +82,17 @@ class CheckResult extends AbstractServiceTaskImpl{
 
 // EVENTS
 class MessageSendingImpl extends AbstractMessageEventImpl{
+	static function canHandleEvent(
+		\ProcessInstance $processInstance, $elementId){
+		$element = $processInstance->findElementById($elementId);
+		if(!isset($element->messageEventDefinition)) 
+			return false;
+		$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
+		$msgDefinition = $processInstance->findElementById($msgRefId);
+		$messageName = $processInstance->getAttribute($msgDefinition, 'name');
+		return $messageName == get_called_class();
+	}
+
 	private $msgType;
 	private $maxsize;
 	private $queue;
@@ -91,11 +102,11 @@ class MessageSendingImpl extends AbstractMessageEventImpl{
 		$this->maxsize = 1000;
 		$this->queue = msg_get_queue(1);
 	}
-	function sendMessage($processInstance, $event){
+	function sendMessage(\ProcessInstance $processInstance, $event){
 		$msg = "Hallo Welt\0";
 		return msg_send($this->queue, $this->msgType, $msg, true, false);
 	}
-	function receiveMessage($processInstance, $event){
+	function receiveMessage(\ProcessInstance $processInstance, $event){
 		$message = '';
 		$hasMsg = msg_receive ($this->queue, $this->msgType, $this->msgType,
 			$this->maxsize, $message, true, MSG_IPC_NOWAIT);

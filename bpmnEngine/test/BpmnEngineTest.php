@@ -36,6 +36,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$CONFIG->taskImpls[] = Acht::class;
 		$CONFIG->taskImpls[] = Neun::class;
 		$CONFIG->taskImpls[] = CheckResult::class;
+		$CONFIG->eventImpls[] = MessageSendingImpl::class;
 		print_r($CONFIG);
 	}
 
@@ -71,13 +72,14 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	}
 	
 	public function testEvents(){
-		AbstractMessageEventImpl::registerMessageEventHandler('TestMessage', new MessageSendingImpl);
+//		AbstractMessageEventImpl::registerMessageEventHandler('MessageSendingImpl', new MessageSendingImpl);
 	
 		$bpmnEngine = new BpmnEngine($this->dbAdapter, "EVENTS_TEST");
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/EventTest.bpmn'));
 
 		$valueMap = array("visits" => "start");
 		$process = $bpmnEngine->startProcess($valueMap);
+		$process = $bpmnEngine->continueProcess($process->getId());
 		
 		print_r("Warte 2 Sekunden um TimeOut zu erzeugen.");
 		sleep (2);

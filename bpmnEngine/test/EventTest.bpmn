@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://sourceforge.net/bpmn/definitions/_1402727296482" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Yaoqiang BPMN Editor" exporterVersion="3.0" expressionLanguage="http://www.w3.org/1999/XPath" id="_1402727296482" name="Process_EventTest" targetNamespace="http://sourceforge.net/bpmn/definitions/_1402727296482" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
   <itemDefinition id="ID_1" isCollection="false" itemKind="Information" structureRef="student"/>
-  <message id="MSG_1" name="TestMessage"/>
+  <message id="MSG_1" name="MessageSendingImpl"/>
   <process id="EVENTS_TEST" isClosed="false" isExecutable="true" processType="None">
     <extensionElements>
       <yaoqiang:pageFormat height="842.4" imageableHeight="832.4" imageableWidth="587.6" imageableX="5.0" imageableY="5.0" orientation="0" width="597.6"/>
