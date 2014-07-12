@@ -1,8 +1,6 @@
 <?php
 
-Phar::interceptFileFuncs();
 include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
-
 
 $store = new \persistence\FileStore();
 

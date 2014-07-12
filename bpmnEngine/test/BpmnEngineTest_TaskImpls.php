@@ -1,18 +1,18 @@
 <?php
 
-class CheckVariableA extends AbstractServiceTaskImpl{
+class CheckVariableA extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		return  $this->process->get( "a");
 	}
 }
 // Tasks
-class ServiceTaskImpl extends AbstractServiceTaskImpl{
+class ServiceTaskImpl extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		return "success";
 	}
 }
 
-class UserTaskImpl extends AbstractUserTaskImpl{
+class UserTaskImpl extends \elements\AbstractUserTaskImpl{
 	static $testProcessInstanceId;
 	function preProcessUserTask(){
 		self::$testProcessInstanceId=$this->process->getId();
@@ -20,68 +20,68 @@ class UserTaskImpl extends AbstractUserTaskImpl{
 }
 
 // Gateways
-class Eins extends AbstractServiceTaskImpl{
+class Eins extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 1");
 		return 1;
 	}
 }
-class Zwei extends AbstractServiceTaskImpl{
+class Zwei extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 2");
 		return 2;
 	}
 }
-class Drei extends AbstractServiceTaskImpl{
+class Drei extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 3");
 		return 3;
 	}
 }
-class Vier extends AbstractServiceTaskImpl{
+class Vier extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 4");
 		return 4;
 	}
 }
-class Funf extends AbstractServiceTaskImpl{
+class Funf extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 5");
 		return 5;
 	}
 }
-class Sechs extends AbstractServiceTaskImpl{
+class Sechs extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 6");
 		return 6;
 	}
 }
-class Sieben extends AbstractServiceTaskImpl{
+class Sieben extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 7");
 		return 7;
 	}
 }
-class Acht extends AbstractServiceTaskImpl{
+class Acht extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 8");
 		return 8;
 	}
 }
-class Neun extends AbstractServiceTaskImpl{
+class Neun extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		$this->process->put( "visits", $this->process->get( "visits").", 9");
 		return 9;
 	}
 }
-class CheckResult extends AbstractServiceTaskImpl{
+class CheckResult extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		return $this->process->get( "visits");
 	}
 }
 
 // EVENTS
-class MessageSendingImpl extends AbstractMessageEventImpl{
+class MessageSendingImpl extends \elements\AbstractMessageEventImpl{
 	static function canHandleEvent(
 		\ProcessInstance $processInstance, $elementId){
 		$element = $processInstance->findElementById($elementId);

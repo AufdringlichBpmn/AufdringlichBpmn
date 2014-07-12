@@ -1,6 +1,8 @@
 <?php
 
-$store = new FileStore();
+include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
+
+$store = new \persistence\FileStore();
 
 $processDefinitionId = $_GET["process_definition_id"];
 $engine = new BpmnEngine($store, $processDefinitionId);

@@ -6,11 +6,9 @@ require_once ('elements/DefaultBpmnElementHandler.php');
 class BpmnEngine{
 	private $storage;
 	private $xmlAdapter;
-	private $name;
 
-	function __construct(\persistence\ProcessStore $storage, $name) {
+	function __construct(\persistence\ProcessStore $storage) {
 		$this->storage = $storage;
-		$this->name = $name;
 		$this->xmlAdapter = new XmlAdapter();
 	}
 
@@ -18,9 +16,9 @@ class BpmnEngine{
 		$this->storage->importDefinition($process_definition_xml);
 	}
 
-	public function startProcess($variables) {
-		$processDefinition = $this->storage->loadProcessDefinition($this->name);
-		$process = ProcessInstance::buildByProcessDefinition($this, $processDefinition, $this->name);
+	public function startProcess($processDefintionId, $variables) {
+		$processDefinition = $this->storage->loadProcessDefinition($processDefintionId);
+		$process = ProcessInstance::buildByProcessDefinition($this, $processDefinition);
 		foreach($variables as $key => $value){
 			$process->put($key,$value);
 		}
@@ -33,8 +31,8 @@ class BpmnEngine{
 		$this->storage->storeProcess($process);
 	}
 	function loadProcess($processId){
-		$processDefinition = $this->storage->loadProcessDefinition($this->name);
 		$processDto = $this->storage->loadProcess($processId);
+		$processDefinition = $this->storage->loadProcessDefinition($processDto->processDefinitionId);
 		$process = ProcessInstance::buildByDto($this, $processDefinition->xml, $processDto);
 		return $process;
 	}

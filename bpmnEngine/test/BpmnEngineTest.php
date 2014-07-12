@@ -44,21 +44,21 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	}
 
 	public function testGateways(){
-		$bpmnEngine = new BpmnEngine($this->dbAdapter, "GATEWAY_TEST");
+		$bpmnEngine = new BpmnEngine($this->dbAdapter);
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/GatewayTest.bpmn'));
 
 		$valueMap = array("visits" => "start");
-		$process = $bpmnEngine->startProcess($valueMap);
+		$process = $bpmnEngine->startProcess("GATEWAY_TEST", $valueMap);
 		$result = $process->getResult();
 		$this->assertEquals("success", $result);
 	}
 
 	public function testTasks(){
-		$bpmnEngine = new BpmnEngine($this->dbAdapter, "TASKS_TEST");
+		$bpmnEngine = new BpmnEngine($this->dbAdapter);
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/TasksTest.bpmn'));
 
 		$valueMap = array("visits" => "start");
-		$process = $bpmnEngine->startProcess($valueMap);
+		$process = $bpmnEngine->startProcess("TASKS_TEST", $valueMap);
 		// null, wegen process wartet auf UserTask
 		$this->assertEquals(null, $process->getResult());
 		$processId = $process->getId();
@@ -78,7 +78,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/EventTest.bpmn'));
 
 		$valueMap = array("visits" => "start");
-		$process = $bpmnEngine->startProcess($valueMap);
+		$process = $bpmnEngine->startProcess("EVENTS_TEST", $valueMap);
 		$process = $bpmnEngine->continueProcess($process->getId());
 		
 		print_r("Warte 2 Sekunden um TimeOut zu erzeugen.");

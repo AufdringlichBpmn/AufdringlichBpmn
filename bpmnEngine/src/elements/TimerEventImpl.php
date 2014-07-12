@@ -1,5 +1,7 @@
 <?php
 
+namespace elements;
+
 class TimerEventImpl extends AbstractEventImpl{
 
 	static function canHandleEvent(

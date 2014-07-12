@@ -17,11 +17,11 @@
 	require_once('elements/GatewayHandler.php');
 	require_once('elements/EventHandler.php');
 	require_once('elements/TaskHandler.php');
+	require_once('elements/AbstractEventImpl.php');
+	require_once('elements/AbstractMessageEventImpl.php');
+	require_once('elements/TimerEventImpl.php');
+	require_once('elements/AbstractTaskImpl.php');
+	require_once('elements/AbstractServiceTaskImpl.php');
+	require_once('elements/AbstractUserTaskImpl.php');
 	require_once('configuration.php');
-	require_once('AbstractEventImpl.php');
-	require_once('AbstractMessageEventImpl.php');
-	require_once('TimerEventImpl.php');
-	require_once('AbstractTaskImpl.php');
-	require_once('AbstractServiceTaskImpl.php');
-	require_once('AbstractUserTaskImpl.php');
 

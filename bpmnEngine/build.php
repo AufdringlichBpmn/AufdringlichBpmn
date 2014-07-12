@@ -8,12 +8,12 @@ $phar = new Phar($buildRoot . "/bpmn.phar",
 	FilesystemIterator::KEY_AS_FILENAME, "bpmn.phar");
 $phar ["init.php"] = file_get_contents($srcRoot."/init.php");
 
-$phar ["AbstractEventImpl.php"] = file_get_contents($srcRoot."/AbstractEventImpl.php");
-$phar ["AbstractMessageEventImpl.php"] = file_get_contents($srcRoot."/AbstractMessageEventImpl.php");
-$phar ["TimerEventImpl.php"] = file_get_contents($srcRoot."/TimerEventImpl.php");
-$phar ["AbstractServiceTaskImpl.php"] = file_get_contents($srcRoot."/AbstractServiceTaskImpl.php");
-$phar ["AbstractTaskImpl.php"] = file_get_contents($srcRoot."/AbstractTaskImpl.php");
-$phar ["AbstractUserTaskImpl.php"] = file_get_contents($srcRoot."/AbstractUserTaskImpl.php");
+$phar ["elements/AbstractEventImpl.php"] = file_get_contents($srcRoot."/elements/AbstractEventImpl.php");
+$phar ["elements/AbstractMessageEventImpl.php"] = file_get_contents($srcRoot."/elements/AbstractMessageEventImpl.php");
+$phar ["elements/TimerEventImpl.php"] = file_get_contents($srcRoot."/elements/TimerEventImpl.php");
+$phar ["elements/AbstractServiceTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractServiceTaskImpl.php");
+$phar ["elements/AbstractTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractTaskImpl.php");
+$phar ["elements/AbstractUserTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractUserTaskImpl.php");
 
 $phar ["dto/DbObject.php"] = file_get_contents($srcRoot."/dto/DbObject.php");
 $phar ["dto/Event.php"] = file_get_contents($srcRoot."/dto/Event.php");

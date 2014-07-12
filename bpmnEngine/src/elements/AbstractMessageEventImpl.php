@@ -1,5 +1,7 @@
 <?php
 
+namespace elements;
+
 abstract class AbstractMessageEventImpl extends AbstractEventImpl {
 
 	function isEventOccured(\ProcessInstance $processInstance, $event){

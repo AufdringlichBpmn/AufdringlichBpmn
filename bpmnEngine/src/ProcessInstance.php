@@ -5,6 +5,9 @@ class ProcessInstance extends \dto\Process{
 	private $xmlAdapter;
 
 	public $variables;
+	public $type;
+	public $processDefinitionId;
+	public $created_ts;
 
 	function __construct($bpmnEngine, $xmlAdapter = null) {
 		$this->engine = $bpmnEngine;
@@ -18,11 +21,12 @@ class ProcessInstance extends \dto\Process{
 		return $processInstance;
 	}
 
-	static function buildByProcessDefinition($bpmnEngine, $processDefinition, $name){
+	static function buildByProcessDefinition($bpmnEngine, $processDefinition){
 		$processInstance = new ProcessInstance($bpmnEngine);
-		$processInstance->variables = new \dto\VariableMap();
-		$processInstance->_id = $name.":".md5(''.time());
+		$processInstance->_id = $processDefinition->getId().":".md5(''.time());
 		$processInstance->type = "process_instance";
+		$processInstance->variables = new \dto\VariableMap();
+		$processInstance->processDefinitionId = $processDefinition->getId();
 		$processInstance->xmlAdapter->setProcessDefinitionXml($processDefinition->xml);
 		$processInstance->created_ts = time();
 		return $processInstance;

@@ -1,10 +1,8 @@
 <?php
 
-require_once('../../bpmnEngine/BpmnEngine.php');
-require_once('../../bpmnEngine/XmlAdapter.php');
-require_once('../../bpmnEngine/FileStore.php');
+include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
 
-$store = new FileStore();
+$store = new \persistence\FileStore();
 
 $output = array();
 foreach($store->findOpenUserTasks() as $row){

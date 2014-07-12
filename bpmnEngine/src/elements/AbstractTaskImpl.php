@@ -1,5 +1,7 @@
 <?php
 
+namespace elements;
+
 abstract class AbstractTaskImpl{
 	static function canHandleTask($processInstance, $element){
 		$classname = $processInstance->getAttribute($element, 'implementation');

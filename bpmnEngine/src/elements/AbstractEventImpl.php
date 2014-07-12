@@ -1,5 +1,7 @@
 <?php
 
+namespace elements;
+
 abstract class AbstractEventImpl {
 	abstract static function canHandleEvent(
 		\ProcessInstance $processInstance, $elementId);
