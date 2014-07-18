@@ -11,13 +11,16 @@ $CONFIG = (object) array(
 		\elements\CallActivityHandler::class,
 		\elements\ScriptTaskHandler::class,
 		\elements\ServiceTaskHandler::class,
+		\elements\SendTaskHandler::class,
+		\elements\ReceiveTaskHandler::class,
 		\elements\UserTaskHandler::class,
-		\elements\SubProcessHandler::class
+		\elements\ManualTaskHandler::class,
+		\elements\SubProcessHandler::class,
 	),
 	"taskImpls" => array(
 	),
 	"eventImpls" => array(
-		\elements\TimerEventImpl::class
+		\elements\TimerEventImpl::class,
 	),
 );
  

@@ -26,6 +26,8 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$CONFIG->taskImpls[] = CheckVariableA::class;
 		$CONFIG->taskImpls[] = ServiceTaskImpl::class;
 		$CONFIG->taskImpls[] = UserTaskImpl::class;
+		$CONFIG->taskImpls[] = SendTaskImpl::class;
+		$CONFIG->taskImpls[] = ReceiveTaskImpl::class;
 		$CONFIG->taskImpls[] = Eins::class;
 		$CONFIG->taskImpls[] = Zwei::class;
 		$CONFIG->taskImpls[] = Drei::class;
@@ -68,6 +70,9 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$this->assertEquals("start", $process->get("visits"));
 		// UserTask als vollendet markieren, Process weiterlaufen lassen
 		$bpmnEngine->executeUserTaskByRefId($process, "_19", "success");
+		$bpmnEngine->executeManualTaskByRefId($process, "_14", "success");
+		$process = $bpmnEngine->continueProcess($process->getId());
+		print_r($process);
 		$this->assertEquals("all success", $process->getResult());
 	}
 	

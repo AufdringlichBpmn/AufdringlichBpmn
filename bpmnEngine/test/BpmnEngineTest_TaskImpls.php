@@ -19,6 +19,18 @@ class UserTaskImpl extends \elements\AbstractUserTaskImpl{
 	}
 }
 
+class SendTaskImpl extends \elements\AbstractServiceTaskImpl{
+	function processServiceTask(){
+		return "success";
+	}
+}
+
+class ReceiveTaskImpl extends \elements\AbstractServiceTaskImpl{
+	function processServiceTask(){
+		return "success";
+	}
+}
+
 // Gateways
 class Eins extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){

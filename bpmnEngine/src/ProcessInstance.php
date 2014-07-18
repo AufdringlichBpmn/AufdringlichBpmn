@@ -167,7 +167,7 @@ class ProcessInstance extends \dto\Process{
 		$task->exceptionMessage = $message;
 	}
 	
-	public function executeUserTaskByRefId($refId, $result = null){
+	public function executeTaskByRefId($refId, $result = null){
 		$task = $this->getTaskByRefId($refId);
 		$task->executedTs = time();
 		$task->result = $result;

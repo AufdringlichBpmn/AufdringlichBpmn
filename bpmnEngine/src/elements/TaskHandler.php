@@ -127,3 +127,47 @@ class UserTaskHandler extends TaskHandler {
 		return $processInstance->getTaskResult($element);
 	}
 }
+
+class ManualTaskHandler extends TaskHandler {
+	static function canHandleElement($elementName){
+		return "manualTask" == $elementName;
+	}
+
+	function createTaskInstance($processInstance, $element){
+		$task = new \dto\Task();
+		$task->type = "manualTask";
+		$task->ref_id = $processInstance->getAttribute($element, 'id');
+		$task->retries = 0;
+		$task->createdTs = time();
+		$taskId = $processInstance->addTask($task);
+		return 2;
+	}
+	
+	function evaluate($processInstance, $element){
+		return $processInstance->getTaskResult($element);
+	}
+}
+
+class SendTaskHandler extends TaskHandler {
+	static function canHandleElement($elementName){
+		return "sendTask" == $elementName;
+	}
+	
+	protected function evaluate($processInstance, $element){
+		$serviceTaskImpl = self::findTaskImpl($processInstance, $element);
+		$serviceTaskImpl->init($processInstance,$element);
+		return $serviceTaskImpl->processServiceTask();
+	}
+}
+
+class ReceiveTaskHandler extends TaskHandler {
+	static function canHandleElement($elementName){
+		return "receiveTask" == $elementName;
+	}
+	
+	protected function evaluate($processInstance, $element){
+		$serviceTaskImpl = self::findTaskImpl($processInstance, $element);
+		$serviceTaskImpl->init($processInstance,$element);
+		return $serviceTaskImpl->processServiceTask();
+	}
+}

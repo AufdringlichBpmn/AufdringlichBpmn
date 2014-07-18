@@ -27,7 +27,11 @@ class BpmnEngine{
 		return $process;
 	}
 	public function executeUserTaskByRefId($process, $refId, $value = null){
-		$process->executeUserTaskByRefId($refId, $value);
+		$process->executeTaskByRefId($refId, $value);
+		$this->storage->storeProcess($process);
+	}
+	public function executeManualTaskByRefId($process, $refId, $value = null){
+		$process->executeTaskByRefId($refId, $value);
 		$this->storage->storeProcess($process);
 	}
 	function loadProcess($processId){
