@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="11.3">
+  <zoom_level>8</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>832</x>
+      <y>64</y>
+      <w>256</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/BpmnElementHandler/
+--
+--
+/+canHandleElement(elementName):bool/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>800</x>
+      <y>152</y>
+      <w>336</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>/DefaultBpmnElementHandler/
+--
+--
+canHandleElement(elementName):bool
+createTaskInstance($processInstance, $element):bool
+createEventInstance($processInstance, $element):bool
+#isJoin($processInstance, $element):bool
++discoverTasks($processInstance, $value, $element):bool
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>936</x>
+      <y>96</y>
+      <w>40</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>24;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>400</x>
+      <y>152</y>
+      <w>344</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>EndEventHandler
+--
+--
++discoverTasks($processInstance, $value, $element):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>448</x>
+      <y>96</y>
+      <w>272</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>StartEventHandler
+--
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>696</x>
+      <y>96</y>
+      <w>120</w>
+      <h>96</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>104;80;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>720</x>
+      <y>152</y>
+      <w>96</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>80;32;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>392</x>
+      <y>208</y>
+      <w>320</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>/AbstractIntermediateEventHandler/
+--
+--
++findEventImpl(processInstance, elementId):EventImpl
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>688</x>
+      <y>184</y>
+      <w>128</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>112;24;24;48</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>368</x>
+      <y>280</y>
+      <w>288</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>IntermediateCatchEventHandler
+--
+--
++createEventInstance(processInstance, element)
++isEventOccured(processInstance, event):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>688</x>
+      <y>280</y>
+      <w>288</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>IntermediateThrowEventHandler
+--
+--
++createEventInstance(processInstance, element)
++isEventOccured(processInstance, event):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>632</x>
+      <y>224</y>
+      <w>200</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;184;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>480</x>
+      <y>224</y>
+      <w>96</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>80;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>8</x>
+      <y>200</y>
+      <w>320</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>/AbstractEventImpl/
+--
+--
+/canHandleEvent($processInstance, $elementId):bool/
+/isEventOccured($processInstance, $event):bool/
+fg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>304</x>
+      <y>184</y>
+      <w>106</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>24;40;88;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>88</y>
+      <w>312</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>TimerEventImpl
+--
+--
+canHandleEvent($processInstance, $elementId):bool
+isEventOccured($processInstance, $event):bool
+fg=gray
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>144</x>
+      <y>112</y>
+      <w>40</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;88;24;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>8</x>
+      <y>280</y>
+      <w>320</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>/AbstractMessageEventImpl/
+--
+--
+isEventOccured($processInstance, $event):bool
+sendMessage($processInstance, $event):bool
+receiveMessage($processInstance, $event):bool
+fg=gray
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>144</x>
+      <y>224</y>
+      <w>40</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;24;56</additional_attributes>
+  </element>
+</diagram>

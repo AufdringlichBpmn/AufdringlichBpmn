@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="11.3">
+  <zoom_level>8</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>384</x>
+      <y>80</y>
+      <w>352</w>
+      <h>88</h>
+    </coordinates>
+    <panel_attributes>/DefaultBpmnElementHandler/
+--
+--
+canHandleElement($elementName):bool
+createTaskInstance($processInstance, $element):bool
+createEventInstance($processInstance, $element):bool
+#isJoin($processInstance, $element):bool
++discoverTasks($processInstance, $value, $element):bool
+bg=yellow
+
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>832</x>
+      <y>216</y>
+      <w>296</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>UserTaskHandler
+--
+--
+createTaskInstance($processInstance, $element)
+evaluate($processInstance, $element):bool
+bg=red
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>776</x>
+      <y>80</y>
+      <w>368</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>SubProcessHandler
+--
+--
+processTaskInstance($processInstance, $element, $taskId):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>384</x>
+      <y>192</y>
+      <w>376</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>/TaskHandler/
+--
+--
+#findTaskImpl($processInstance, $element):TaskImpl
+createTaskInstance($processInstance, $element)
+processTaskInstance($processInstance, $element, $taskId):bool
+/evaluate($processInstance, $element):bool/
+bg=yellow
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>832</x>
+      <y>288</y>
+      <w>296</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>ManualTaskHandler
+--
+--
+createTaskInstance($processInstance, $element)
+evaluate($processInstance, $element):bool
+bg=red</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>808</x>
+      <y>360</y>
+      <w>256</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>ServiceTaskHandler
+--
+--
+evaluate($processInstance, $element):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>792</x>
+      <y>152</y>
+      <w>264</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>ScriptTaskHandler
+--
+--
+evaluate($processInstance, $element):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>384</x>
+      <y>296</y>
+      <w>328</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>/AbstractEventTaskHandler/
+--
+--
+findEventImpl(processInstance, elementId):EventImpl
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>384</x>
+      <y>376</y>
+      <w>256</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>SendTaskHandler
+--
+--
+...todo...</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>504</x>
+      <y>432</y>
+      <w>264</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>ReceiveTaskHandler
+--
+--
+...todo...</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>784</x>
+      <y>424</y>
+      <w>264</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>CallActivityHandler
+--
+--
+evaluate($processInstance, $element):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>712</x>
+      <y>80</y>
+      <w>80</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;64;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>720</x>
+      <y>152</y>
+      <w>88</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;40;72;24</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>536</x>
+      <y>144</y>
+      <w>48</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>32;24;24;48</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>736</x>
+      <y>208</y>
+      <w>112</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;96;32</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>696</x>
+      <y>248</y>
+      <w>104</w>
+      <h>216</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;88;200</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>720</x>
+      <y>248</y>
+      <w>128</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;112;64</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>704</x>
+      <y>248</y>
+      <w>120</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;104;136</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>512</x>
+      <y>248</y>
+      <w>48</w>
+      <h>64</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>32;24;24;48</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>488</x>
+      <y>312</y>
+      <w>48</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>32;24;24;64</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>616</x>
+      <y>312</y>
+      <w>56</w>
+      <h>136</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>24;24;40;120</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>544</x>
+      <y>0</y>
+      <w>248</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/BpmnElementHandler/
+--
+--
+/+canHandleElement(elementName):bool/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>552</x>
+      <y>24</y>
+      <w>112</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>96;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>296</y>
+      <w>320</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>/AbstractEventImpl/
+--
+--
+/canHandleEvent($processInstance, $elementId):bool/
+/isEventOccured($processInstance, $event):bool/
+fg=gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>296</x>
+      <y>280</y>
+      <w>106</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;uses&gt;&gt;</panel_attributes>
+    <additional_attributes>24;40;88;40</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>160</x>
+      <y>328</y>
+      <w>48</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>32;24;24;56</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>0</x>
+      <y>384</y>
+      <w>320</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>/AbstractMessageEventImpl/
+--
+--
+isEventOccured($processInstance, $event):bool
+sendMessage($processInstance, $event):bool
+receiveMessage($processInstance, $event):bool
+fg=gray
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><diagram program="umlet" version="11.3">
+  <zoom_level>7</zoom_level>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>427</x>
+      <y>105</y>
+      <w>259</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>ExclusiveGatewayHandler
+--
+--
++discoverTasks($processInstance, $value, $element):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>350</x>
+      <y>98</y>
+      <w>90</w>
+      <h>76</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;63;77;21</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>350</x>
+      <y>168</y>
+      <w>90</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>21;21;77;42</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>427</x>
+      <y>182</y>
+      <w>308</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>ParallelGatewayHandler
+--
+--
+-checkParallelGateReady($processInstance, $refId):bool
++discoverTasks($processInstance, $value, $element):bool</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>105</x>
+      <y>70</y>
+      <w>224</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/BpmnElementHandler/
+--
+--
+/+canHandleElement(elementName):bool/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>77</x>
+      <y>147</y>
+      <w>294</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>/DefaultBpmnElementHandler/
+--
+--
+canHandleElement(elementName):bool
+createTaskInstance($processInstance, $element):bool
+createEventInstance($processInstance, $element):bool
+#isJoin($processInstance, $element):bool
++discoverTasks($processInstance, $value, $element):bool
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>196</x>
+      <y>98</y>
+      <w>34</w>
+      <h>62</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>21;21;21;49</additional_attributes>
+  </element>
+</diagram>
