@@ -4,7 +4,7 @@ namespace elements;
 
 abstract class TaskHandler extends DefaultBpmnElementHandler {
 
-	protected function findTaskImpl($processInstance, $element){
+	protected function findTaskImpl(\ProcessInstance $processInstance, $element){
 		global $CONFIG;
 		foreach($CONFIG->taskImpls as $impl){
 			if($impl::canHandleTask($processInstance, $element)){
@@ -15,7 +15,7 @@ abstract class TaskHandler extends DefaultBpmnElementHandler {
 		throw new \Exception("No Impl found for $elementName.");
 	}
 	
-	function createTaskInstance($processInstance, $element){
+	function createTaskInstance(\ProcessInstance $processInstance, $element){
 		$task = new \dto\Task();
 		$task->createdTs = time();
 		$task->type = $processInstance->getName($element);
@@ -25,11 +25,14 @@ abstract class TaskHandler extends DefaultBpmnElementHandler {
 		return 2;
 	}
 	
-	function processTaskInstance($processInstance, $element, $taskId){
+	abstract protected function evaluate(\ProcessInstance $processInstance, $element, $task);
+	
+	function processTaskInstance(\ProcessInstance $processInstance, $element, $taskId){
 		$elementId = $processInstance->getAttribute($element, "id");
 		$processInstance->decrementTaskRetries($taskId);
+		$task = $processInstance->getTaskById($taskId);
 		try{
-			$result = $this->evaluate($processInstance, $element);
+			$result = $this->evaluate($processInstance, $element, $task);
 			$processInstance->markTaskExecuted($taskId, $result);
 			$processInstance->discoverTasks($elementId, $result, true);
 		}catch(Exception $e){
@@ -40,11 +43,8 @@ abstract class TaskHandler extends DefaultBpmnElementHandler {
 }
 
 class CallActivityHandler extends TaskHandler {
-	static function canHandleElement($elementName){
-		return "callActivity" == $elementName;
-	}
 
-	protected function evaluate($processInstance, $element){
+	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
 		$globalTaskId = $processInstance->getAttribute($element, 'calledElement');
 		$globalScriptTask = $processInstance->findElementById($globalTaskId);
 		$script = $globalScriptTask->script;
@@ -54,11 +54,8 @@ class CallActivityHandler extends TaskHandler {
 }
 
 class ScriptTaskHandler extends TaskHandler {
-	static function canHandleElement($elementName){
-		return "scriptTask" == $elementName;
-	}
 	
-	protected function evaluate($processInstance, $element){
+	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
 		$script = $element->script;
 		$context = $processInstance;
 		return eval($script);
@@ -67,11 +64,8 @@ class ScriptTaskHandler extends TaskHandler {
 
 // TODO write Test
 class SubProcessHandler extends DefaultBpmnElementHandler {
-	static function canHandleElement($elementName){
-		return "subProcess" == $elementName;
-	}
 	
-	function processTaskInstance($processInstance, $element, $taskId){
+	function processTaskInstance(\ProcessInstance $processInstance, $element, $taskId){
 		$subProcess = new \ProcessInstance($this->engine, $this->xmlAdapter);
 		$subProcess->created_ts = time();
 		$subProcess->type = $this->getName($element);
@@ -89,11 +83,8 @@ class SubProcessHandler extends DefaultBpmnElementHandler {
 }
 
 class ServiceTaskHandler extends TaskHandler {
-	static function canHandleElement($elementName){
-		return "serviceTask" == $elementName;
-	}
 	
-	protected function evaluate($processInstance, $element){
+	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
 		$serviceTaskImpl = self::findTaskImpl($processInstance, $element);
 		$serviceTaskImpl->init($processInstance,$element);
 		return $serviceTaskImpl->processServiceTask();
@@ -101,11 +92,8 @@ class ServiceTaskHandler extends TaskHandler {
 }
 
 class UserTaskHandler extends TaskHandler {
-	static function canHandleElement($elementName){
-		return "userTask" == $elementName;
-	}
 
-	function createTaskInstance($processInstance, $element){
+	function createTaskInstance(\ProcessInstance $processInstance, $element){
 		$task = new \dto\Task();
 		$task->type = "userTask";
 		$task->ref_id = $processInstance->getAttribute($element, 'id');
@@ -123,17 +111,14 @@ class UserTaskHandler extends TaskHandler {
 		return 2;
 	}
 	
-	function evaluate($processInstance, $element){
+	function evaluate(\ProcessInstance $processInstance, $element, $task){
 		return $processInstance->getTaskResult($element);
 	}
 }
 
 class ManualTaskHandler extends TaskHandler {
-	static function canHandleElement($elementName){
-		return "manualTask" == $elementName;
-	}
 
-	function createTaskInstance($processInstance, $element){
+	function createTaskInstance(\ProcessInstance $processInstance, $element){
 		$task = new \dto\Task();
 		$task->type = "manualTask";
 		$task->ref_id = $processInstance->getAttribute($element, 'id');
@@ -143,31 +128,45 @@ class ManualTaskHandler extends TaskHandler {
 		return 2;
 	}
 	
-	function evaluate($processInstance, $element){
+	function evaluate(\ProcessInstance $processInstance, $element, $task){
 		return $processInstance->getTaskResult($element);
 	}
 }
 
-class SendTaskHandler extends TaskHandler {
-	static function canHandleElement($elementName){
-		return "sendTask" == $elementName;
+abstract class AbstractEventTaskHandler extends TaskHandler {
+
+	protected function findEventImpl(\ProcessInstance $processInstance, $elementId){
+		global $CONFIG;
+		foreach($CONFIG->eventImpls as $impl){
+			if($impl::canHandleEvent($processInstance, $elementId)){
+				return new $impl;
+			}
+		}
+		throw new \Exception("No Impl found for ElementId=$elementId.");
 	}
-	
-	protected function evaluate($processInstance, $element){
-		$serviceTaskImpl = self::findTaskImpl($processInstance, $element);
-		$serviceTaskImpl->init($processInstance,$element);
-		return $serviceTaskImpl->processServiceTask();
+	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
+		if($task->type == "sendTask") {
+			return $this->sendMessage($processInstance, $task);
+		}else if($task->type == "receiveTask") {
+			return $this->receiveMessage($processInstance, $task);
+		}else{
+			throw new \Exception("Type nicht erwartet: ".$task->type);
+		}
+	}
+	protected function sendMessage(\ProcessInstance $processInstance, $task){	return false; }
+	protected function receiveMessage(\ProcessInstance $processInstance, $task){	return false; }
+}
+
+class SendTaskHandler extends AbstractEventTaskHandler {
+
+	function sendMessage(\ProcessInstance $processInstance, $event){
+		return true;
 	}
 }
 
-class ReceiveTaskHandler extends TaskHandler {
-	static function canHandleElement($elementName){
-		return "receiveTask" == $elementName;
-	}
-	
-	protected function evaluate($processInstance, $element){
-		$serviceTaskImpl = self::findTaskImpl($processInstance, $element);
-		$serviceTaskImpl->init($processInstance,$element);
-		return $serviceTaskImpl->processServiceTask();
+class ReceiveTaskHandler extends AbstractEventTaskHandler {
+
+	function receiveMessage(\ProcessInstance $processInstance, $event){
+		return true;
 	}
 }

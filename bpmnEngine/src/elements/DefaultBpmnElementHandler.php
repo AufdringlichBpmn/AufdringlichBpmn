@@ -7,6 +7,10 @@ namespace elements;
  *
  */
 abstract class DefaultBpmnElementHandler implements BpmnElementHandler{
+	static function canHandleElement($elementName){
+		return strcasecmp('elements\\'.$elementName.'Handler', get_called_class()) == 0;
+	}
+
 	/**
 	 * it will be called after discovering an element on the BPMN-Graph.
 	 * A Task needs to override this implementation.
@@ -35,7 +39,6 @@ abstract class DefaultBpmnElementHandler implements BpmnElementHandler{
 	 * Tasks and Gateways need to override the implementation.
 	 */
 	function discoverTasks($processInstance, $value, $element){
-		print_r("discover $value");
 		$default =  $processInstance->getAttribute($element, "default");
 		$isExclusivGateway = $processInstance->getName($element) == "exclusivGateway";
 		$isExclusivGatewayCondition = $value."?" ==  $processInstance->getAttribute($element, "name");

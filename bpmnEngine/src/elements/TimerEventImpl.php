@@ -4,8 +4,7 @@ namespace elements;
 
 class TimerEventImpl extends AbstractEventImpl{
 
-	static function canHandleEvent(
-		\ProcessInstance $processInstance, $elementId){
+	static function canHandleEvent(\ProcessInstance $processInstance, $elementId){
 		$element = $processInstance->findElementById($elementId);
 		return (isset($element->timerEventDefinition));
 	}

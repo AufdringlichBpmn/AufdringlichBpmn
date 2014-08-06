@@ -10,15 +10,9 @@ namespace elements;
  *	</startEvent>
  */
 class StartEventHandler extends DefaultBpmnElementHandler{
-	static function canHandleElement($elementName){
-		return "startEvent" == $elementName;
-	}
 }
 
 class EndEventHandler extends DefaultBpmnElementHandler{
-	static function canHandleElement($elementName){
-		return "endEvent" == $elementName;
-	}
 	function discoverTasks($processInstance, $value, $element){
 		$result = $processInstance->getAttribute($element, 'name');
 		$processInstance->markProcessInstanceExecuted($result);
@@ -26,9 +20,8 @@ class EndEventHandler extends DefaultBpmnElementHandler{
 	}
 }
 
-abstract class AbstractIntermediaEventHandler extends DefaultBpmnElementHandler {
-	protected function findEventImpl(
-		\ProcessInstance $processInstance, $elementId){
+abstract class AbstractIntermediateEventHandler extends DefaultBpmnElementHandler {
+	protected function findEventImpl(\ProcessInstance $processInstance, $elementId){
 		global $CONFIG;
 		foreach($CONFIG->eventImpls as $impl){
 			if($impl::canHandleEvent($processInstance, $elementId)){
@@ -39,10 +32,7 @@ abstract class AbstractIntermediaEventHandler extends DefaultBpmnElementHandler 
 	}
 }
 
-class IntermediaCatchEventHandler extends AbstractIntermediaEventHandler {
-	static function canHandleElement($elementName){
-		return "intermediateCatchEvent" == $elementName;
-	}
+class IntermediateCatchEventHandler extends AbstractIntermediateEventHandler {
 	function createEventInstance(\ProcessInstance $processInstance, $element){
 		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
@@ -61,11 +51,8 @@ class IntermediaCatchEventHandler extends AbstractIntermediaEventHandler {
 	}
 }
 
-class IntermediaThrowEventHandler extends AbstractIntermediaEventHandler {
-	static function canHandleElement($elementName){
-		return "intermediateThrowEvent" == $elementName;
-	}
-	function createEventInstance($processInstance, $element){
+class IntermediateThrowEventHandler extends AbstractIntermediateEventHandler {
+	function createEventInstance(\ProcessInstance $processInstance, $element){
 		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
 		$event->createdTs = time();
@@ -74,7 +61,7 @@ class IntermediaThrowEventHandler extends AbstractIntermediaEventHandler {
 		return 2;
 	}
 	
-	function isEventOccured($processInstance, $event){
+	function isEventOccured(\ProcessInstance $processInstance, $event){
 		$handler = $this->findEventImpl($processInstance, $event->ref_id);
 		if($handler->isEventOccured($processInstance, $event)){
 			$event->result = "thrown at " . (date("M d Y H:i:s"));
