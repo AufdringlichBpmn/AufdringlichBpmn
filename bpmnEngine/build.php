@@ -11,6 +11,7 @@ $phar ["init.php"] = file_get_contents($srcRoot."/init.php");
 $phar ["elements/AbstractEventImpl.php"] = file_get_contents($srcRoot."/elements/AbstractEventImpl.php");
 $phar ["elements/AbstractMessageEventImpl.php"] = file_get_contents($srcRoot."/elements/AbstractMessageEventImpl.php");
 $phar ["elements/TimerEventImpl.php"] = file_get_contents($srcRoot."/elements/TimerEventImpl.php");
+$phar ["elements/NoneEventImpl.php"] = file_get_contents($srcRoot."/elements/NoneEventImpl.php");
 $phar ["elements/AbstractServiceTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractServiceTaskImpl.php");
 $phar ["elements/AbstractTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractTaskImpl.php");
 $phar ["elements/AbstractUserTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractUserTaskImpl.php");

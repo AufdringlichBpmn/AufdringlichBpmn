@@ -21,6 +21,7 @@ $CONFIG = (object) array(
 	),
 	"eventImpls" => array(
 		\elements\TimerEventImpl::class,
+		\elements\NoneEventImpl::class,
 	),
 );
  

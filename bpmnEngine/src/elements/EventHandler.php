@@ -32,43 +32,35 @@ abstract class AbstractEventHandler extends DefaultBpmnElementHandler {
  */
 class StartEventHandler extends AbstractEventHandler{
 	function isEventOccured(\ProcessInstance $processInstance, $event){
-		$event->result = "started at " . (date("M d Y H:i:s"));
-		return true;
 		$handler = $this->findEventImpl($processInstance, $event->ref_id);
 		if($handler->isEventOccured($processInstance, $event)){
-			$event->result = "catched at " . (date("M d Y H:i:s"));
+			$event->result = "started at " . (date("M d Y H:i:s"));
 			return true;
 		}
 	}
 }
 
 class EndEventHandler extends AbstractEventHandler{
-//TODO remove this method, to add event to processInstance
 	function createEventInstance(\ProcessInstance $processInstance, $element){
-		return false;
-	}
-	
-	function isEventOccured(\ProcessInstance $processInstance, $event){
-		$event->result = "ended at " . (date("M d Y H:i:s"));
-		return true;
-	}
-	
-	function discoverTasks($processInstance, $value, $element){
-		$result = $processInstance->getAttribute($element, 'name');
-		$processInstance->markProcessInstanceExecuted($result);
-		return false;
-	}
-}
-
-class IntermediateCatchEventHandler extends AbstractEventHandler {
-	function createEventInstance(\ProcessInstance $processInstance, $element){
+		// create Event
 		$event = new \dto\Event();
 		$event->ref_id = $processInstance->getAttribute($element, 'id');
 		$event->createdTs = time();
-		$event->type = "intermediateCatchEvent";
+		$event->type = $processInstance->getName($element);
+	
+		// is occured
+		$event->result = "ended at " . (date("M d Y H:i:s"));
+		$event->executedTs = time();
 		$processInstance->addEvent($event);
-		return 2;
-	}
+
+		// finish underlying process
+		$result = $processInstance->getAttribute($element, 'name');
+		$processInstance->markProcessInstanceExecuted($result);		
+		return true;
+	}	
+}
+
+class IntermediateCatchEventHandler extends AbstractEventHandler {
 	
 	function isEventOccured(\ProcessInstance $processInstance, $event){
 		$handler = $this->findEventImpl($processInstance, $event->ref_id);
@@ -80,14 +72,6 @@ class IntermediateCatchEventHandler extends AbstractEventHandler {
 }
 
 class IntermediateThrowEventHandler extends AbstractEventHandler {
-	function createEventInstance(\ProcessInstance $processInstance, $element){
-		$event = new \dto\Event();
-		$event->ref_id = $processInstance->getAttribute($element, 'id');
-		$event->createdTs = time();
-		$event->type = "intermediateThrowEvent";
-		$processInstance->addEvent($event);
-		return 2;
-	}
 	
 	function isEventOccured(\ProcessInstance $processInstance, $event){
 		$handler = $this->findEventImpl($processInstance, $event->ref_id);

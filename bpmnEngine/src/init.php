@@ -20,6 +20,7 @@
 	require_once('elements/AbstractEventImpl.php');
 	require_once('elements/AbstractMessageEventImpl.php');
 	require_once('elements/TimerEventImpl.php');
+	require_once('elements/NoneEventImpl.php');
 	require_once('elements/AbstractTaskImpl.php');
 	require_once('elements/AbstractServiceTaskImpl.php');
 	require_once('elements/AbstractUserTaskImpl.php');
