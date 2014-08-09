@@ -66,15 +66,14 @@ class ProcessInstance extends \dto\Process{
 	}
 
 	function discoverTasks($elementId, $value, $isExecuted = false){
-		if($element = $this->findElementById($elementId)) {
-			$handler = $this->getBpmnElementHandler($this->getName($element));
-			if( (!$isExecuted) && ( $handler->createTaskInstance($this, $element) || $handler->createEventInstance($this, $element)) ){
-				//
-			}else if($handler->discoverTasks($this, $value, $element)){
-				//
-			}else{
-				return;
-			}
+		$element = $this->findElementById($elementId);
+		$handler = $this->getBpmnElementHandler($this->getName($element));
+		if( (!$isExecuted) && ( $handler->createTaskInstance($this, $element) || $handler->createEventInstance($this, $element)) ){
+			//
+		}else if($handler->discoverTasks($this, $value, $element)){
+			//
+		}else{
+			return;
 		}
 		while($this->processNextServiceTask());
 	}

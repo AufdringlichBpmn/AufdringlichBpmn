@@ -79,7 +79,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	public function testEvents(){
 //		AbstractMessageEventImpl::registerMessageEventHandler('MessageSendingImpl', new MessageSendingImpl);
 	
-		$bpmnEngine = new BpmnEngine($this->dbAdapter, "EVENTS_TEST");
+		$bpmnEngine = new BpmnEngine($this->dbAdapter);
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/EventTest.bpmn'));
 
 		$valueMap = array("visits" => "start");
@@ -97,6 +97,22 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 
 //		print_r($process);
 		$this->assertEquals("End Event", $result);
+	}
+	
+	public function testStartProcessByEvent(){
+		global $CONFIG;
+		$CONFIG->eventImpls[] = DummyMessageEventImpl::class;
+		print_r($CONFIG);
+
+		$bpmnEngine = new BpmnEngine($this->dbAdapter);
+		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/StartEventTest.bpmn'));
+		
+		$process = $bpmnEngine->startProcessByEvent();
+		$result = $process->getResult();
+
+		print_r($process);
+		$this->assertEquals("success", $result);
+		
 	}
 }
 

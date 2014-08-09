@@ -57,6 +57,7 @@ class FileStore implements ProcessStore{
 		$processDefinitions = array();
 		$d = dir($this->processDefinitions);
 		while (false !== ($myFile = $d->read())) {
+			if($myFile == '..' || $myFile == '.') continue;
 			$dto = json_decode( file_get_contents($this->processDefinitions.'/'.$myFile) );
 			$dbObject = new \dto\ProcessDefinition();
 			$dbObject->merge($dto);

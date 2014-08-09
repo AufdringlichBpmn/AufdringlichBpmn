@@ -9,6 +9,8 @@ abstract class AbstractMessageEventImpl extends AbstractEventImpl {
 			return $this->sendMessage($processInstance, $event);
 		}else if($event->type == "intermediateCatchEvent") {
 			return $this->receiveMessage($processInstance, $event);
+		}else if($event->type == "startEvent") {
+			return $this->receiveMessage($processInstance, $event);
 		}else{
 			throw new \Exception("Type nicht erwartet: ".$event->type);
 		}

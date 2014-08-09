@@ -137,3 +137,32 @@ class MessageSendingImpl extends \elements\AbstractMessageEventImpl{
 		return $hasMsg;
 	}
 }
+
+class DummyMessageEventImpl extends \elements\AbstractMessageEventImpl{
+	static function canHandleEvent(
+		\ProcessInstance $processInstance, $elementId){
+		$element = $processInstance->findElementById($elementId);
+		if(isset($element->messageEventDefinition)) {
+			// via Event-Element
+			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
+			$msgDefinition = $processInstance->findElementById($msgRefId);
+			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
+			return $messageName == get_called_class();
+		}
+		$msgRefId = $processInstance->getAttribute($element, 'messageRef');
+		if($msgRefId){
+			// via Task-Element
+			$msgDefinition = $processInstance->findElementById($msgRefId);
+			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
+			return $messageName == get_called_class();
+		}
+		return false;
+	}
+
+	function sendMessage(\ProcessInstance $processInstance, $event){
+		return false;
+	}
+	function receiveMessage(\ProcessInstance $processInstance, $event){
+		return true;
+	}
+}
