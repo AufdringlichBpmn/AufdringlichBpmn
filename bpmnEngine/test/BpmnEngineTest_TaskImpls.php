@@ -94,25 +94,6 @@ class CheckResult extends \elements\AbstractServiceTaskImpl{
 
 // EVENTS
 class MessageSendingImpl extends \elements\AbstractMessageEventImpl{
-	static function canHandleEvent(
-		\ProcessInstance $processInstance, $elementId){
-		$element = $processInstance->findElementById($elementId);
-		if(isset($element->messageEventDefinition)) {
-			// via Event-Element
-			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
-			$msgDefinition = $processInstance->findElementById($msgRefId);
-			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
-			return $messageName == get_called_class();
-		}
-		$msgRefId = $processInstance->getAttribute($element, 'messageRef');
-		if($msgRefId){
-			// via Task-Element
-			$msgDefinition = $processInstance->findElementById($msgRefId);
-			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
-			return $messageName == get_called_class();
-		}
-		return false;
-	}
 
 	private $msgType;
 	private $maxsize;
@@ -139,30 +120,12 @@ class MessageSendingImpl extends \elements\AbstractMessageEventImpl{
 }
 
 class DummyMessageEventImpl extends \elements\AbstractMessageEventImpl{
-	static function canHandleEvent(
-		\ProcessInstance $processInstance, $elementId){
-		$element = $processInstance->findElementById($elementId);
-		if(isset($element->messageEventDefinition)) {
-			// via Event-Element
-			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
-			$msgDefinition = $processInstance->findElementById($msgRefId);
-			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
-			return $messageName == get_called_class();
-		}
-		$msgRefId = $processInstance->getAttribute($element, 'messageRef');
-		if($msgRefId){
-			// via Task-Element
-			$msgDefinition = $processInstance->findElementById($msgRefId);
-			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
-			return $messageName == get_called_class();
-		}
-		return false;
-	}
+	public static $receiveMessageReturns = true;
 
 	function sendMessage(\ProcessInstance $processInstance, $event){
 		return false;
 	}
 	function receiveMessage(\ProcessInstance $processInstance, $event){
-		return true;
+		return self::$receiveMessageReturns;
 	}
 }

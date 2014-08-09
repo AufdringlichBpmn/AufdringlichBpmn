@@ -102,7 +102,6 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 	public function testStartProcessByEvent(){
 		global $CONFIG;
 		$CONFIG->eventImpls[] = DummyMessageEventImpl::class;
-		print_r($CONFIG);
 
 		$bpmnEngine = new BpmnEngine($this->dbAdapter);
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/StartEventTest.bpmn'));
@@ -110,8 +109,20 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$process = $bpmnEngine->startProcessByEvent();
 		$result = $process->getResult();
 
-		print_r($process);
 		$this->assertEquals("success", $result);
+		
+	}
+	public function testStartProcessByEventNegative(){
+		global $CONFIG;
+		$CONFIG->eventImpls[] = DummyMessageEventImpl::class;
+		DummyMessageEventImpl::$receiveMessageReturns = false;
+
+		$bpmnEngine = new BpmnEngine($this->dbAdapter);
+		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/StartEventTest.bpmn'));
+		
+		$process = $bpmnEngine->startProcessByEvent();
+
+		$this->assertEquals(null, $process);
 		
 	}
 }
