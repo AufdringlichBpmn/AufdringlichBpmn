@@ -33,7 +33,8 @@ class ProcessInstance extends \dto\Process{
 	}
 
 	function start(){
-		$this->discoverTasks($this->getAttribute($this->xmlAdapter->findStartEventElement(), 'id'), null);
+		$startEventElement = $this->xmlAdapter->findStartEventElement();
+		$this->discoverTasks($this->getAttribute($startEventElement, 'id'), null);
 	}
 
 	function findElementById($elementId){

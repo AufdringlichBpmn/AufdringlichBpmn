@@ -97,12 +97,21 @@ class MessageSendingImpl extends \elements\AbstractMessageEventImpl{
 	static function canHandleEvent(
 		\ProcessInstance $processInstance, $elementId){
 		$element = $processInstance->findElementById($elementId);
-		if(!isset($element->messageEventDefinition)) 
-			return false;
-		$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
-		$msgDefinition = $processInstance->findElementById($msgRefId);
-		$messageName = $processInstance->getAttribute($msgDefinition, 'name');
-		return $messageName == get_called_class();
+		if(isset($element->messageEventDefinition)) {
+			// via Event-Element
+			$msgRefId = $processInstance->getAttribute($element->messageEventDefinition, 'messageRef');
+			$msgDefinition = $processInstance->findElementById($msgRefId);
+			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
+			return $messageName == get_called_class();
+		}
+		$msgRefId = $processInstance->getAttribute($element, 'messageRef');
+		if($msgRefId){
+			// via Task-Element
+			$msgDefinition = $processInstance->findElementById($msgRefId);
+			$messageName = $processInstance->getAttribute($msgDefinition, 'name');
+			return $messageName == get_called_class();
+		}
+		return false;
 	}
 
 	private $msgType;
@@ -115,7 +124,7 @@ class MessageSendingImpl extends \elements\AbstractMessageEventImpl{
 		$this->queue = msg_get_queue(1);
 	}
 	function sendMessage(\ProcessInstance $processInstance, $event){
-		$msg = "Hallo Welt\0";
+		$msg = "success";
 		return msg_send($this->queue, $this->msgType, $msg, true, false);
 	}
 	function receiveMessage(\ProcessInstance $processInstance, $event){

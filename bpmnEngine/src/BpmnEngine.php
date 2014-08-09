@@ -23,6 +23,8 @@ class BpmnEngine{
 			$process->put($key,$value);
 		}
 		$process->start();
+		 // process all evaluated events and tasks 
+		while($process->processNextUserTask() || $process->processNextEvent());
 		$this->storage->storeProcess($process);
 		return $process;
 	}
@@ -42,14 +44,13 @@ class BpmnEngine{
 	}
 	function continueProcess($processId){
 		$process = $this->loadProcess($processId);
-		while($process->processNextUserTask()); // all evaluated usertasks
-		while($process->processNextEvent()); // all evaluated events 
+		 // process all evaluated events and tasks 
+		while($process->processNextUserTask() || $process->processNextEvent());
 		$this->storage->storeProcess($process);
 		return $process;
 	}
 
 	function findNotExecutedProcessInstanceIds(){
-		// TODO filter nach ProcessDefinition
 		return $this->storage->findNotExecutedProcessInstanceIds();
 	}
 }

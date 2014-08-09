@@ -52,6 +52,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$valueMap = array("visits" => "start");
 		$process = $bpmnEngine->startProcess("GATEWAY_TEST", $valueMap);
 		$result = $process->getResult();
+		print_r($process);
 		$this->assertEquals("success", $result);
 	}
 

@@ -3,7 +3,7 @@
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>384</x>
+      <x>392</x>
       <y>80</y>
       <w>352</w>
       <h>88</h>
@@ -24,7 +24,7 @@ bg=yellow
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>832</x>
+      <x>840</x>
       <y>216</y>
       <w>296</w>
       <h>56</h>
@@ -41,7 +41,7 @@ bg=red
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>776</x>
+      <x>784</x>
       <y>80</y>
       <w>368</w>
       <h>40</h>
@@ -55,7 +55,7 @@ processTaskInstance($processInstance, $element, $taskId):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>384</x>
+      <x>392</x>
       <y>192</y>
       <w>376</w>
       <h>80</h>
@@ -74,7 +74,7 @@ bg=yellow
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>832</x>
+      <x>840</x>
       <y>288</y>
       <w>296</w>
       <h>56</h>
@@ -90,7 +90,7 @@ bg=red</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>808</x>
+      <x>816</x>
       <y>360</y>
       <w>256</w>
       <h>40</h>
@@ -104,7 +104,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>792</x>
+      <x>800</x>
       <y>152</y>
       <w>264</w>
       <h>40</h>
@@ -118,7 +118,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>384</x>
+      <x>392</x>
       <y>296</y>
       <w>328</w>
       <h>40</h>
@@ -133,7 +133,7 @@ bg=yellow</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>384</x>
+      <x>392</x>
       <y>376</y>
       <w>256</w>
       <h>40</h>
@@ -141,13 +141,13 @@ bg=yellow</panel_attributes>
     <panel_attributes>SendTaskHandler
 --
 --
-...todo...</panel_attributes>
+evaluate($processInstance, $element):bool</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>504</x>
+      <x>512</x>
       <y>432</y>
       <w>264</w>
       <h>40</h>
@@ -155,13 +155,13 @@ bg=yellow</panel_attributes>
     <panel_attributes>ReceiveTaskHandler
 --
 --
-...todo...</panel_attributes>
+evaluate($processInstance, $element):bool</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>784</x>
+      <x>792</x>
       <y>424</y>
       <w>264</w>
       <h>40</h>
@@ -175,7 +175,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>712</x>
+      <x>720</x>
       <y>80</y>
       <w>80</w>
       <h>40</h>
@@ -186,7 +186,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>720</x>
+      <x>728</x>
       <y>152</y>
       <w>88</w>
       <h>56</h>
@@ -197,7 +197,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>536</x>
+      <x>544</x>
       <y>144</y>
       <w>48</w>
       <h>64</h>
@@ -208,7 +208,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>736</x>
+      <x>744</x>
       <y>208</y>
       <w>112</w>
       <h>48</h>
@@ -219,7 +219,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>696</x>
+      <x>704</x>
       <y>248</y>
       <w>104</w>
       <h>216</h>
@@ -230,7 +230,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>720</x>
+      <x>728</x>
       <y>248</y>
       <w>128</w>
       <h>80</h>
@@ -241,7 +241,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>704</x>
+      <x>712</x>
       <y>248</y>
       <w>120</w>
       <h>152</h>
@@ -252,7 +252,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>512</x>
+      <x>520</x>
       <y>248</y>
       <w>48</w>
       <h>64</h>
@@ -263,7 +263,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>488</x>
+      <x>496</x>
       <y>312</y>
       <w>48</w>
       <h>80</h>
@@ -274,7 +274,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>616</x>
+      <x>624</x>
       <y>312</y>
       <w>56</w>
       <h>136</h>
@@ -285,7 +285,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>544</x>
+      <x>552</x>
       <y>0</y>
       <w>248</w>
       <h>48</h>
@@ -300,7 +300,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>552</x>
+      <x>560</x>
       <y>24</y>
       <w>112</w>
       <h>72</h>
@@ -311,7 +311,7 @@ evaluate($processInstance, $element):bool</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>0</x>
+      <x>8</x>
       <y>296</y>
       <w>320</w>
       <h>56</h>
@@ -327,7 +327,7 @@ fg=gray</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>296</x>
+      <x>304</x>
       <y>280</y>
       <w>106</w>
       <h>56</h>
@@ -339,7 +339,7 @@ fg=gray</panel_attributes>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
-      <x>160</x>
+      <x>168</x>
       <y>328</y>
       <w>48</w>
       <h>72</h>
@@ -350,7 +350,7 @@ fg=gray</panel_attributes>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
-      <x>0</x>
+      <x>8</x>
       <y>384</y>
       <w>320</w>
       <h>72</h>

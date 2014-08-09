@@ -145,28 +145,29 @@ abstract class AbstractEventTaskHandler extends TaskHandler {
 		throw new \Exception("No Impl found for ElementId=$elementId.");
 	}
 	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
-		if($task->type == "sendTask") {
-			return $this->sendMessage($processInstance, $task);
-		}else if($task->type == "receiveTask") {
-			return $this->receiveMessage($processInstance, $task);
-		}else{
-			throw new \Exception("Type nicht erwartet: ".$task->type);
-		}
+		throw new \Exception("Type nicht erwartet: ".$task->type);
 	}
-	protected function sendMessage(\ProcessInstance $processInstance, $task){	return false; }
-	protected function receiveMessage(\ProcessInstance $processInstance, $task){	return false; }
 }
 
 class SendTaskHandler extends AbstractEventTaskHandler {
 
-	function sendMessage(\ProcessInstance $processInstance, $event){
-		return true;
+	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
+		$elementId = $processInstance->getAttribute($element, 'id');
+		$eventImpl = $this->findEventImpl($processInstance,  $elementId);
+		return $eventImpl->sendMessage($processInstance, $task);
 	}
+	
 }
 
 class ReceiveTaskHandler extends AbstractEventTaskHandler {
 
-	function receiveMessage(\ProcessInstance $processInstance, $event){
-		return true;
+	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
+		$elementId = $processInstance->getAttribute($element, 'id');
+		$eventImpl = $this->findEventImpl($processInstance,  $elementId);
+		if($eventImpl->receiveMessage($processInstance, $task)){
+			return $task->result;
+		}
+		return false;
 	}
+	
 }
