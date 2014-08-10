@@ -49,6 +49,10 @@ class ProcessInstance extends \dto\Process{
 		return $this->xmlAdapter->findSequenceFlowElementsBySourceElement($element);
 	}
 	
+	function findBoundaryEventElementsByRefElement($element){
+		return $this->xmlAdapter->findBoundaryEventElementsByRefElement($element);
+	}
+	
 	function findSequenceFlowElementsByTargetElement($element){
 		return $this->xmlAdapter->findSequenceFlowElementsByTargetElement($element);
 	}
@@ -68,7 +72,14 @@ class ProcessInstance extends \dto\Process{
 	function discoverTasks($elementId, $value, $isExecuted = false){
 		$element = $this->findElementById($elementId);
 		$handler = $this->getBpmnElementHandler($this->getName($element));
-		if( (!$isExecuted) && ( $handler->createTaskInstance($this, $element) || $handler->createEventInstance($this, $element)) ){
+		if( (!$isExecuted) && $handler->createTaskInstance($this, $element) ){
+			// TODO Boundary Event anlegen
+			foreach($this->findBoundaryEventElementsByRefElement($element) as $boundaryElement){
+				$boundaryHandler = $this->getBpmnElementHandler($this->getName($boundaryElement));
+				$boundaryHandler->createEventInstance($this, $boundaryElement);
+			}
+			//
+		}else if( (!$isExecuted) && $handler->createEventInstance($this, $element) ){
 			//
 		}else if($handler->discoverTasks($this, $value, $element)){
 			//

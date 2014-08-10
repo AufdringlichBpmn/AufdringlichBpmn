@@ -35,6 +35,10 @@ class XmlAdapter {
 		$elementId =  $this->getAttribute($element, "id");
 		return $this->simpleXml->xpath("//bpmn:sequenceFlow[@targetRef='".$elementId."']");
 	}
+	function findBoundaryEventElementsByRefElement($element){
+		$elementId =  $this->getAttribute($element, "id");
+		return $this->simpleXml->xpath("//bpmn:boundaryEvent[@attachedToRef='".$elementId."']");
+	}
 
 	public function getAttribute($element, $attribute) {
 		return (String) $element->attributes()->$attribute;

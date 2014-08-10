@@ -60,6 +60,18 @@ class EndEventHandler extends AbstractEventHandler{
 	}	
 }
 
+class BoundaryEventHandler extends AbstractEventHandler {
+	// TODO implmenting isInterrupting -> cancel ref Task
+	
+	function isEventOccured(\ProcessInstance $processInstance, $event){
+		$handler = $this->findEventImpl($processInstance, $event->ref_id);
+		if($handler->isEventOccured($processInstance, $event)){
+			$event->result = "catched at " . (date("M d Y H:i:s"));
+			return true;
+		}
+	}
+}
+
 class IntermediateCatchEventHandler extends AbstractEventHandler {
 	
 	function isEventOccured(\ProcessInstance $processInstance, $event){

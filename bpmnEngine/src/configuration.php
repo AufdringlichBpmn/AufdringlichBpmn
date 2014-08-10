@@ -3,6 +3,7 @@
 $CONFIG = (object) array(
 	"elementHandlers" => array(
 		\elements\StartEventHandler::class,
+		\elements\BoundaryEventHandler::class,
 		\elements\IntermediateCatchEventHandler::class,
 		\elements\IntermediateThrowEventHandler::class,
 		\elements\EndEventHandler::class,

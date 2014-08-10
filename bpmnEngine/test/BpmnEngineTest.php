@@ -72,13 +72,10 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$bpmnEngine->executeUserTaskByRefId($process, "_19", "success");
 		$bpmnEngine->executeManualTaskByRefId($process, "_14", "success");
 		$process = $bpmnEngine->continueProcess($process->getId());
-		print_r($process);
 		$this->assertEquals("all success", $process->getResult());
 	}
 	
 	public function testEvents(){
-//		AbstractMessageEventImpl::registerMessageEventHandler('MessageSendingImpl', new MessageSendingImpl);
-	
 		$bpmnEngine = new BpmnEngine($this->dbAdapter);
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/EventTest.bpmn'));
 
@@ -91,12 +88,24 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$process = $bpmnEngine->continueProcess($process->getId());
 		$result = $process->getResult();
 
-		//	print_r(	$queue = msg_get_queue(1));
-		//	msg_send($queue, 12, "Hello from PHP!\0", false);
-		//	print_r(	msg_stat_queue($queue));
-
-//		print_r($process);
 		$this->assertEquals("End Event", $result);
+	}
+	
+	public function testBoundaryEvents(){
+		$bpmnEngine = new BpmnEngine($this->dbAdapter);
+		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/BoundaryEventTest.bpmn'));
+
+		$valueMap = array("visits" => "start");
+		$process = $bpmnEngine->startProcess("BOUNDARY_EVENTS_TEST", $valueMap);
+		$process = $bpmnEngine->continueProcess($process->getId());
+		
+		print_r("Warte 2 Sekunden um TimeOut zu erzeugen.");
+		sleep (2);
+		$process = $bpmnEngine->continueProcess($process->getId());
+		$result = $process->getResult();
+
+		print_r($process);
+		$this->assertEquals("success", $result);
 	}
 	
 	public function testStartProcessByEvent(){
