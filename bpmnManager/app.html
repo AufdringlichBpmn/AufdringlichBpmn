@@ -22,15 +22,12 @@
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content" >
+		<h2>&Uuml;bersicht</h2>
 		<p><a href="#pageProcessDefinitions" class="ui-btn ui-shadow ui-corner-all">Show Process Definitions</a></p>
+		<p>I have an <code>id</code></p>
 		<p><a href="#pageUserTasks" class="ui-btn ui-shadow ui-corner-all">Show User Tasks</a></p>
 
-		<h2>&Uuml;bersicht</h2>
-		<p>I have an <code>id</code> of "one" on my page container. I'm first in the source order so I'm shown when the page loads.</p>
-
 		<p>This is a multi-page boilerplate template that you can copy to build your first jQuery Mobile page. This template contains multiple "page" containers inside, unlike a single page template that has just one page within it.</p>
-		<p>Just view the source and copy the code to get started. All the CSS and JS is linked to the jQuery CDN versions so this is super easy to set up. Remember to include a meta viewport tag in the head to set the zoom level.</p>
-		<p>You link to internal pages by referring to the <code>id</code> of the page you want to show. For example, to <a href="#two" >link</a> to the page with an <code>id</code> of "two", my link would have a <code>href="#two"</code> in the code.</p>
 
 		<h3>Show internal pages:</h3>
 		<p><a href="#two" class="ui-btn ui-shadow ui-corner-all">Show page "two"</a></p>
@@ -60,14 +57,16 @@
 				<th>Details</th>
 			</tr>
 			{{#process_definitions}}
-			<tr>
+			<tr data-processDefinitionId="{{id}}">
 				<td>{{id}}</td>
 				<td>{{file}}</td>
 				<td>{{#process_stats}}
 					{{running}}/{{done}}
 				{{/process_stats}}</td>
-				<td><a href="#executeUserTask" _class="ui-btn ui-shadow ui-corner-all"
-					data-rel="dialog" data-transition="pop">details</a></td>
+				<td>
+					<a href="#detailsProcessDefinition" _class="ui-btn ui-shadow ui-corner-all" data-rel="dialog" data-transition="pop">details</a>
+					<a href="#startProcessDialog" _class="ui-btn ui-shadow ui-corner-all" data-rel="dialog" data-transition="pop">start</a>
+				</td>
 			</tr>
 			{{/process_definitions}}
 		</table>
@@ -94,8 +93,7 @@
 		<table class="ui-table" border=1>
 			{{#usertasks}}
 			<tr data-processDefinitionId="{{process_definition_id}}" data-processId="{{process_id}}" data-taskId="{{id}}">
-				<td><a href="#executeUserTask" class="ui-btn ui-shadow ui-corner-all"
-					data-action="openUserTask"
+				<td><a href="#executeUserTask" class="ui-btn ui-shadow ui-corner-all" data-action="openUserTask"
 					data-rel="dialog" data-transition="pop">{{name}}</a></td>
 				<td>{{process_definition_id}} / {{process_id}}<br>{{created_ts}}</td>
 			</tr>
@@ -166,6 +164,26 @@
 			<a href="#pageUserTasks" data-rel="back" 
 				id="executeUserTask-save"
 				class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">Speichern und Nächster</a>
+		</p>
+	</textarea><!-- /content -->
+
+	<div data-role="footer">
+		<h4>Page Footer</h4>
+	</div><!-- /footer -->
+</div><!-- /page popup -->
+
+<!-- Start of third page: #popup -->
+<div data-role="page" id="startProcessDialog">
+
+	<div data-role="header" data-theme="b">
+		<h1>Dialog</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content"></div>
+	<textarea id="template-startProcessDialog" style="display:none;">
+		<p>
+			<a href="#pageProcessDefinitions" data-rel="back" id="startProcessDialog-ok"
+				class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Ok</a>
 		</p>
 	</textarea><!-- /content -->
 

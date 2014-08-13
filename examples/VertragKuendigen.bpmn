@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://sourceforge.net/bpmn/definitions/_1404394409686" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Yaoqiang BPMN Editor" exporterVersion="3.0" expressionLanguage="http://www.w3.org/1999/XPath" id="_1404394409686" name="" targetNamespace="http://sourceforge.net/bpmn/definitions/_1404394409686" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+  <import importType="php" location="MietvertragKundigenImpls.php" namespace="php"/>
+  <process id="VERTRAG_KUNDIGEN" isClosed="false" isExecutable="true" processType="None">
+    <startEvent id="_2" isInterrupting="true" name="Start Event" parallelMultiple="false">
+      <outgoing>_5</outgoing>
+    </startEvent>
+    <endEvent id="_3" name="erledigt">
+      <incoming>_25</incoming>
+      <incoming>_28</incoming>
+    </endEvent>
+    <manualTask completionQuantity="1" id="_4" isForCompensation="false" name="Vertragsnummer und&#10;Kündigungstermin&#10;erfassen" startQuantity="1">
+      <incoming>_5</incoming>
+      <outgoing>_9</outgoing>
+      <ioSpecification>
+        <dataOutput id="Dout_4_1" itemSubjectRef="xsd:string" name="Vertragsnummer"/>
+        <dataOutput id="Dout_4_2" itemSubjectRef="xsd:string" name="Kündigungstermin"/>
+        <inputSet/>
+        <outputSet>
+          <dataOutputRefs>Dout_4_1</dataOutputRefs>
+          <dataOutputRefs>Dout_4_2</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+    </manualTask>
+    <sequenceFlow id="_5" sourceRef="_2" targetRef="_4"/>
+    <manualTask completionQuantity="1" id="_8" isForCompensation="false" name="Anschrift vom&#10;Vertragspartner&#10;erfassen" startQuantity="1">
+      <incoming>_9</incoming>
+      <outgoing>_12</outgoing>
+      <ioSpecification>
+        <dataOutput id="Dout_8_1" itemSubjectRef="xsd:string" name="Vertragspartner_Name"/>
+        <dataOutput id="Dout_8_2" itemSubjectRef="xsd:string" name="Vertragspartner_Strasse"/>
+        <dataOutput id="Dout_8_3" itemSubjectRef="xsd:string" name="Vertragspartner_Plz_Ort"/>
+        <inputSet/>
+        <outputSet>
+          <dataOutputRefs>Dout_8_1</dataOutputRefs>
+          <dataOutputRefs>Dout_8_2</dataOutputRefs>
+          <dataOutputRefs>Dout_8_3</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+    </manualTask>
+    <sequenceFlow id="_9" name="weiter" sourceRef="_4" targetRef="_8"/>
+    <manualTask completionQuantity="1" id="_11" isForCompensation="false" name="Absender&#10;erfassen" startQuantity="1">
+      <incoming>_12</incoming>
+      <outgoing>_15</outgoing>
+      <ioSpecification>
+        <dataOutput id="Dout_11_1" itemSubjectRef="xsd:string" name="Kunde_Name"/>
+        <dataOutput id="Dout_11_2" itemSubjectRef="xsd:string" name="Kunde_Strasse"/>
+        <dataOutput id="Dout_11_3" itemSubjectRef="xsd:string" name="Kunde_Plz_Ort"/>
+        <inputSet/>
+        <outputSet>
+          <dataOutputRefs>Dout_11_1</dataOutputRefs>
+          <dataOutputRefs>Dout_11_2</dataOutputRefs>
+          <dataOutputRefs>Dout_11_3</dataOutputRefs>
+        </outputSet>
+      </ioSpecification>
+    </manualTask>
+    <sequenceFlow id="_12" name="weiter" sourceRef="_8" targetRef="_11"/>
+    <serviceTask completionQuantity="1" id="_14" implementation="CreateLyxDocument" isForCompensation="false" name="Lyx-Document&#10;erzeugen" startQuantity="1">
+      <incoming>_15</incoming>
+      <outgoing>_18</outgoing>
+    </serviceTask>
+    <sequenceFlow id="_15" name="weiter" sourceRef="_11" targetRef="_14"/>
+    <serviceTask completionQuantity="1" id="_17" implementation="CreatePdf" isForCompensation="false" name="PDF erzeugen" startQuantity="1">
+      <incoming>_18</incoming>
+      <outgoing>_24</outgoing>
+    </serviceTask>
+    <sequenceFlow id="_18" sourceRef="_14" targetRef="_17"/>
+    <manualTask completionQuantity="1" id="_23" isForCompensation="false" name="PDF downloaden" startQuantity="1">
+      <incoming>_24</incoming>
+      <outgoing>_25</outgoing>
+      <outgoing>_27</outgoing>
+    </manualTask>
+    <sequenceFlow id="_24" sourceRef="_17" targetRef="_23"/>
+    <sequenceFlow id="_25" name="weiter" sourceRef="_23" targetRef="_3"/>
+    <serviceTask completionQuantity="1" id="_26" implementation="##WebService" isForCompensation="false" name="PDF drucken" startQuantity="1">
+      <incoming>_27</incoming>
+      <outgoing>_28</outgoing>
+    </serviceTask>
+    <sequenceFlow id="_27" name="drucken" sourceRef="_23" targetRef="_26"/>
+    <sequenceFlow id="_28" sourceRef="_26" targetRef="_3"/>
+    <dataObject id="DO_PROCESS_1_1" isCollection="false" name="Data Object"/>
+    <textAnnotation id="_7" textFormat="text/plain">
+      <text>Vertrag kündigen</text>
+    </textAnnotation>
+  </process>
+  <resource id="RS_1" name="impl"/>
+  <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=1;orientation=0;width=597.6;height=842.4;imageableWidth=587.6;imageableHeight=832.4;imageableX=5.0;imageableY=5.0" id="Yaoqiang_Diagram-_1" name="New Diagram">
+    <bpmndi:BPMNPlane bpmnElement="VERTRAG_KUNDIGEN">
+      <bpmndi:BPMNShape bpmnElement="_2" id="Yaoqiang-_2">
+        <dc:Bounds height="32.0" width="32.0" x="15.0" y="57.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" id="Yaoqiang-_3">
+        <dc:Bounds height="32.0" width="32.0" x="1020.0" y="185.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_4" id="Yaoqiang-_4">
+        <dc:Bounds height="60.0" width="155.0" x="100.0" y="43.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="60.0" width="155.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_7" id="Yaoqiang-_7">
+        <dc:Bounds height="50.0" width="145.0" x="-5.0" y="-5.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="50.0" width="145.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_8" id="Yaoqiang-_8">
+        <dc:Bounds height="60.0" width="125.0" x="300.0" y="43.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="60.0" width="125.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_11" id="Yaoqiang-_11">
+        <dc:Bounds height="60.0" width="105.0" x="472.0" y="43.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="60.0" width="105.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_14" id="Yaoqiang-_14">
+        <dc:Bounds height="55.0" width="100.0" x="637.0" y="45.5"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="55.0" width="100.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_17" id="Yaoqiang-_17">
+        <dc:Bounds height="55.0" width="85.0" x="775.0" y="45.5"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_23" id="Yaoqiang-_23">
+        <dc:Bounds height="55.0" width="85.0" x="902.0" y="45.5"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_26" id="Yaoqiang-_26">
+        <dc:Bounds height="55.0" width="85.0" x="885.0" y="170.5"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_18" id="Yaoqiang-_18" sourceElement="_14" targetElement="_17">
+        <di:waypoint x="737.0" y="73.0"/>
+        <di:waypoint x="775.0" y="73.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_15" id="Yaoqiang-_15" sourceElement="_11" targetElement="_14">
+        <di:waypoint x="577.0" y="73.0"/>
+        <di:waypoint x="637.0" y="73.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_9" id="Yaoqiang-_9" sourceElement="_4" targetElement="_8">
+        <di:waypoint x="255.0" y="73.0"/>
+        <di:waypoint x="300.0" y="73.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_12" id="Yaoqiang-_12" sourceElement="_8" targetElement="_11">
+        <di:waypoint x="425.0" y="73.0"/>
+        <di:waypoint x="472.0" y="73.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_5" id="Yaoqiang-_5" sourceElement="_2" targetElement="_4">
+        <di:waypoint x="47.0" y="73.0"/>
+        <di:waypoint x="100.0" y="73.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_28" id="Yaoqiang-_28" sourceElement="_26" targetElement="_3">
+        <di:waypoint x="970.0" y="198.0"/>
+        <di:waypoint x="1020.0" y="201.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_27" id="Yaoqiang-_27" sourceElement="_23" targetElement="_26">
+        <di:waypoint x="936.0" y="101.0"/>
+        <di:waypoint x="936.0" y="171.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_25" id="Yaoqiang-_25" sourceElement="_23" targetElement="_3">
+        <di:waypoint x="987.0" y="73.0"/>
+        <di:waypoint x="1035.0" y="130.0"/>
+        <di:waypoint x="1035.0" y="185.0312805773287"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="-19.0" width="0.0" x="0.0" y="22.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_24" id="Yaoqiang-_24" sourceElement="_17" targetElement="_23">
+        <di:waypoint x="860.0" y="73.0"/>
+        <di:waypoint x="902.0" y="73.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

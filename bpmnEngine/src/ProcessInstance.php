@@ -180,9 +180,18 @@ class ProcessInstance extends \dto\Process{
 	
 	public function executeTaskByRefId($refId, $result = null){
 		$task = $this->getTaskByRefId($refId);
+		$this->executeTask($task, $result);
+	}
+	
+	public function executeTaskByTaskId($taskId, $result = null){
+		$task = $this->getTaskById($taskId);
+		$this->executeTask($task, $result);
+	}
+	
+	private function executeTask($task, $result = null){
 		$task->executedTs = time();
 		$task->result = $result;
-		$this->discoverTasks($refId, $result, true);
+		$this->discoverTasks($task->ref_id, $result, true);
 		while($this->processNextServiceTask());
 	}
 	

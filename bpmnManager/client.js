@@ -2,6 +2,7 @@ var config = {
 	server : {
 		base_url: "testStub/",
 		process_definitions_url:"../connector/processdefinitions.php",
+		start_process_url:"../connector/startProcess.php",
 		open_usertasks_url:"../connector/openUserTasks.php",
 		usertask_url:"../connector/usertask.php",
 		evaluate_usertask_url:"../connector/evaluateUserTask.php"
@@ -21,6 +22,9 @@ $(document).ready(function() {
 				$("#pageProcessDefinitions [role='main']").html(
 					Mustache.render(template, data)
 				);
+				$("a[href='#startProcessDialog']").click(function( event ) {
+					$("#startProcessDialog").attr("data-processDefinitionId", $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId"));
+				});
 			},
 			dataType: "json"
 		});
@@ -43,6 +47,21 @@ $(document).ready(function() {
 			dataType: "json"
 		});
 	});
+	$( "#startProcessDialog" ).on( "pageshow", function( event ) {
+		$.ajax({
+			url: config.server.base_url + config.server.start_process_url,
+			data: {
+				process_definition_id: $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId")
+			},
+			success: function(data){
+				var template = $("#template-startProcessDialog").text();
+				$("#startProcessDialog [role='main']").html(
+					Mustache.render(template, data)
+				);
+			},
+			dataType: "json"
+		});
+	});
 	$( "#executeUserTask" ).on( "pageshow", function( event ) {
 		$.ajax({
 			url: config.server.base_url + config.server.usertask_url,
@@ -58,7 +77,7 @@ $(document).ready(function() {
 				);
 				$( "#executeUserTask-save" ).click(function( event ) {
 					var result;
-					if($(this).closest("div").find("input:checked.default"))
+					if($(this).closest("div").find("input:checked.default").size()>0)
 						result = $(this).closest("div").find("input[type='text'].default").val();
 					else
 						result = $(this).closest("div").find("input:checked").val();
@@ -71,14 +90,13 @@ $(document).ready(function() {
 							result: result
 						},
 						success: function(data){
-							alert("ok");
+//							alert("ok");
 						},
 						dataType: "json"
 					});
 				});
 				$( "#executeUserTask-cancel" ).click(function( event ) {
-					//TODO
-					alert("zurück");
+//					alert("zurück");
 				});
 			},
 			dataType: "json"

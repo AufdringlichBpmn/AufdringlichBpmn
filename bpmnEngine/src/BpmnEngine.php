@@ -15,7 +15,7 @@ class BpmnEngine{
 	}
 
 	public function startProcess($processDefinitionId, $variables) {
-		$processDefinition = $this->storage->loadProcessDefinition($processDefinitionId);
+		$processDefinition = $this->loadProcessDefinition($processDefinitionId);
 		$process = ProcessInstance::buildByProcessDefinition($this, $processDefinition);
 		foreach($variables as $key => $value){
 			$process->put($key,$value);
@@ -36,10 +36,24 @@ class BpmnEngine{
 		$process->executeTaskByRefId($refId, $value);
 		$this->storage->storeProcess($process);
 	}
+
+	public function executeUserTaskByTaskId($process, $taskId, $value = null){
+		$process->executeTaskByTaskId($taskId, $value);
+		$this->storage->storeProcess($process);
+	}
+	
+	public function executeManualTaskByTaskId($process, $taskId, $value = null){
+		$process->executeTaskByTaskId($taskId, $value);
+		$this->storage->storeProcess($process);
+	}
+	
+	private function loadProcessDefinition($processDefinitionId){
+		return $this->storage->loadProcessDefinition($processDefinitionId);
+	}
 	
 	function loadProcess($processId){
 		$processDto = $this->storage->loadProcess($processId);
-		$processDefinition = $this->storage->loadProcessDefinition($processDto->processDefinitionId);
+		$processDefinition = $this->loadProcessDefinition($processDto->processDefinitionId);
 		$process = ProcessInstance::buildByDto($this, $processDefinition->xml, $processDto);
 		return $process;
 	}

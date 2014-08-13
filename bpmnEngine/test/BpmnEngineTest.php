@@ -1,8 +1,6 @@
 <?php
 
-Phar::interceptFileFuncs();
 require_once(__DIR__.'/../build/bpmn.phar');
-require_once('BpmnEngineTest_TaskImpls.php');
 
 class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 
@@ -39,7 +37,6 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$CONFIG->taskImpls[] = Neun::class;
 		$CONFIG->taskImpls[] = CheckResult::class;
 		$CONFIG->eventImpls[] = MessageSendingImpl::class;
-		print_r($CONFIG);
 	}
 
 	protected function tearDown(){

@@ -1,8 +1,6 @@
 <?php
 
-include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
-
-$store = new \persistence\FileStore();
+require_once('_init.php');
 
 $output->process_definitions = array();
 

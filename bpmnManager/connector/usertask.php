@@ -4,8 +4,7 @@ include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
 
 $store = new \persistence\FileStore();
 
-$processDefinitionId = $_GET["process_definition_id"];
-$engine = new BpmnEngine($store, $processDefinitionId);
+$engine = new BpmnEngine($store);
 $p = $engine->loadProcess($_GET["process_id"]);
 $t = $p->getTaskById($_GET["task_id"]);
 $e = $p->findElementById($t->ref_id);
@@ -56,7 +55,7 @@ if(isSet($e->ioSpecification)){
 echo json_encode(array("usertask" => array(
 	"name" => (String)$e->attributes()->name,
 	"created_ts" => $t->createdTs,
-	"process_definition_id" => $processDefinitionId,
+	"process_definition_id" => $p->processDefinitionId,
 	"process_id" => $p->getId(),
 	"variables" => $variables,
 	"choice" => $choice,

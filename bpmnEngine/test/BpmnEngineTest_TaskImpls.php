@@ -129,3 +129,22 @@ class DummyMessageEventImpl extends \elements\AbstractMessageEventImpl{
 		return self::$receiveMessageReturns;
 	}
 }
+
+global $CONFIG;
+$CONFIG->taskImpls[] = CheckVariableA::class;
+$CONFIG->taskImpls[] = ServiceTaskImpl::class;
+$CONFIG->taskImpls[] = UserTaskImpl::class;
+$CONFIG->taskImpls[] = SendTaskImpl::class;
+$CONFIG->taskImpls[] = ReceiveTaskImpl::class;
+$CONFIG->taskImpls[] = Eins::class;
+$CONFIG->taskImpls[] = Zwei::class;
+$CONFIG->taskImpls[] = Drei::class;
+$CONFIG->taskImpls[] = Vier::class;
+$CONFIG->taskImpls[] = Funf::class;
+$CONFIG->taskImpls[] = Sechs::class;
+$CONFIG->taskImpls[] = Sieben::class;
+$CONFIG->taskImpls[] = Acht::class;
+$CONFIG->taskImpls[] = Neun::class;
+$CONFIG->taskImpls[] = CheckResult::class;
+$CONFIG->eventImpls[] = MessageSendingImpl::class;
+
