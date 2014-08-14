@@ -39,7 +39,6 @@ $(document).ready(function() {
 					Mustache.render(template, data)
 				);
 				$("a[data-action]").click(function( event ) {
-					$("#executeUserTask").attr("data-processDefinitionId", $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId"));
 					$("#executeUserTask").attr("data-processId", $(this).closest("[data-processId]").attr("data-processId"));
 					$("#executeUserTask").attr("data-taskId", $(this).closest("[data-taskId]").attr("data-taskId"));
 				});
@@ -66,7 +65,6 @@ $(document).ready(function() {
 		$.ajax({
 			url: config.server.base_url + config.server.usertask_url,
 			data: {
-				process_definition_id: $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId"),
 				process_id: $(this).closest("[data-processId]").attr("data-processId"),
 				task_id: $(this).closest("[data-taskId]").attr("data-taskId")
 			},
@@ -84,19 +82,16 @@ $(document).ready(function() {
 					$.ajax({
 						url: config.server.base_url + config.server.evaluate_usertask_url,
 						data: {
-							process_definition_id: $(this).closest("[data-processDefinitionId]").attr("data-processDefinitionId"),
 							process_id: $(this).closest("[data-processId]").attr("data-processId"),
 							task_id: $(this).closest("[data-taskId]").attr("data-taskId"),
 							result: result
 						},
 						success: function(data){
-//							alert("ok");
 						},
 						dataType: "json"
 					});
 				});
 				$( "#executeUserTask-cancel" ).click(function( event ) {
-//					alert("zurück");
 				});
 			},
 			dataType: "json"

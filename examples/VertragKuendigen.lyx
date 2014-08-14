@@ -1,0 +1,408 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass dinbrief
+\begin_preamble
+% Erzeugen von Adressaufklebern
+%\makelabels
+
+%% Layout-Schalter (\no* = aus, \* = an) 
+% Fenster um Adressfeld
+% \nowindowrules
+% Trennstrich zwischen Absender und Anschrift
+% \nobackaddressrule
+% Faltmarkierung
+% \nowindowtics
+
+% Hochgestellte vs. Standardanschrift
+% \addresshigh
+% \addressstd (default)
+\end_preamble
+\use_default_options false
+\maintain_unincluded_children false
+\language ngerman
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize a4paper
+\use_geometry false
+\use_amsmath 1
+\use_esint 0
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 0
+\index Stichwortverzeichnis
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation skip
+\defskip medskip
+\quotes_language german
+\papercolumns 1
+\papersides 1
+\paperpagestyle empty
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Die Datenfelder (
+\emph on
+Briefkopf
+\emph default
+, 
+\emph on
+Absender
+\emph default
+, 
+\emph on
+Betreff
+\emph default
+, 
+\emph on
+Empfängeradresse
+\emph default
+, 
+\emph on
+Datum
+\emph default
+, 
+\emph on
+Unterschrift
+\emph default
+, 
+\emph on
+Fußzeile
+\emph default
+, \SpecialChar \ldots{}
+) müssen vor der 
+\emph on
+Anrede
+\emph default
+ definiert werden!
+\begin_inset Newline newline
+\end_inset
+
+Bei mehrfacher Verwendung in einem Dokument ersetzt die letzte Definition
+ die jeweils vorhergehende.
+\end_layout
+
+\begin_layout Plain Layout
+Vgl.
+ für weitere Einstellungsmöglichkeiten auch 
+\family sans
+Dokument\SpecialChar \menuseparator
+Einstellungen\SpecialChar \menuseparator
+LaTeX-Vorspann
+\family default
+.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout My Address
+{{Kunde_Name}}
+\begin_inset Newline newline
+\end_inset
+
+{{Kunde_Strasse}}
+\begin_inset Newline newline
+\end_inset
+
+{{Kunde_Plz_Ort}}
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+oder individuell gestalteter Briefkopf (z.
+\begin_inset space \thinspace{}
+\end_inset
+
+B.
+ Tabelle oder eingebundene Grafik)
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Return address
+{{Kunde_Name}}, {{Kunde_Strasse}}, {{Kunde_Plz_Ort}}
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Absenderzeile im Adressfenster
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Send To Address
+{{Vertragspartner_Name}}
+\begin_inset Newline newline
+\end_inset
+
+{{Vertragspartner_Strasse}}
+\begin_inset Newline newline
+\end_inset
+
+{{Vertragspartner_Plz_Ort}}
+\end_layout
+
+\begin_layout Postal comment
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Handling
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout YourRef
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout MyRef
+{{Vertragsnummer}}
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Writer
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+wenn hier etwas engetragen ist, wird auf die DIN 676 von Mai 1991 umgeschaltet
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Area code
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Telephone
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Erscheint nur, wenn auch 
+\emph on
+Ihr Zeichen
+\emph default
+ oder 
+\emph on
+Unser Zeichen
+\emph default
+ definiert ist (ggf.
+ mit geschütztem Leerzeichen erzwingen).
+\begin_inset Newline newline
+\end_inset
+
+Kann auch als Teil der Nummer formatiert werden (z.
+\begin_inset space \thinspace{}
+\end_inset
+
+B.
+ 0351/12312312).
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Signature
+{{Kunde_Name}}
+\end_layout
+
+\begin_layout Bottomtext
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+optional
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Location
+{{Ort}}
+\end_layout
+
+\begin_layout Date
+{{Datum}}
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Wenn das Datum fehlt, wird automatisch das aktuelle Datum eingesetzt.
+\begin_inset Newline newline
+\end_inset
+
+Ein leeres 
+\emph on
+Datum
+\emph default
+-Feld unterdrückt die Ausgabe.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subject
+{{Betreff}}
+\end_layout
+
+\begin_layout Opening
+{{Anrede}}
+\end_layout
+
+\begin_layout Standard
+{{Text}}
+\end_layout
+
+\begin_layout Standard
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+Der Brieftext steht zwischen Anrede und Gruß.
+ Es sind alle Schriftstile möglich.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Closing
+Mit freundlichen Grüßen,
+\begin_inset Argument
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_body
+\end_document

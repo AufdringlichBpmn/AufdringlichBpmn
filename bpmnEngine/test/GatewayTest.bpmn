@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://sourceforge.net/bpmn/definitions/_1360242316487" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Yaoqiang BPMN Editor" exporterVersion="3.0" expressionLanguage="http://www.w3.org/1999/XPath" id="_1360242316487" name="" targetNamespace="http://sourceforge.net/bpmn/definitions/_1360242316487" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
-  <import importType="php" location="BpmnEngineTest_TaskImpls.php"/>
+  <import importType="php" location="test/BpmnEngineTest_TaskImpls.php"/>
   <process id="GATEWAY_TEST" isClosed="false" isExecutable="true" processType="None">
     <extensionElements>
       <yaoqiang:pageFormat height="842.4" imageableHeight="832.4" imageableWidth="587.6" imageableX="5.0" imageableY="5.0" orientation="0" width="597.6"/>

@@ -1,11 +1,8 @@
 <?php
 
-include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
+require_once('_init.php');
 
-$store = new \persistence\FileStore();
-
-$engine = new BpmnEngine($store);
-$p = $engine->loadProcess($_GET["process_id"]);
+$p = $bpmnEngine->loadProcess($_GET["process_id"]);
 $t = $p->getTaskById($_GET["task_id"]);
 $e = $p->findElementById($t->ref_id);
 

@@ -25,4 +25,4 @@ $CONFIG = (object) array(
 		\elements\NoneEventImpl::class,
 	),
 );
- 
+

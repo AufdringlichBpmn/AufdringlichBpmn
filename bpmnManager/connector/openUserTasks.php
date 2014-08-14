@@ -1,13 +1,10 @@
 <?php
 
-include __DIR__.'/../../bpmnEngine/build/bpmn.phar';
-
-$store = new \persistence\FileStore();
+require_once('_init.php');
 
 $output = array();
 foreach($store->findOpenUserTasks() as $row){
-	$engine = new BpmnEngine($store, $row["processDefinitionId"]);
-	$p = $engine->loadProcess($row["processId"]);
+	$p = $bpmnEngine->loadProcess($row["processId"]);
 	$t = $p->getTaskById($row["taskId"]);
 	$e = $p->findElementById($t->ref_id);
 	
