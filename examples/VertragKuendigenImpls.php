@@ -7,14 +7,20 @@ $CONFIG->taskImpls[] = PdfDownload::class;
 
 class CreateLyxDocument extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
-		global $CONFIG;
+		// fill variables
+		$vertragsnummer = $this->process->get("Vertragsnummer");
+		$termin = $this->process->get("Kündigungstermin");
+		$this->process->put("Datum", date("d.m.Y"));
+		$this->process->put("Betreff", "Kündigung des Vertrages $vertragsnummer");
+		$this->process->put("Anrede", "Sehr geehrte Damen und Herren");
+		$this->process->put("Text", "Hiermit kündige ich den Vertrag mit der Nummer $vertragsnummer fristgerecht zum $termin. Bitte bestätigen Sie mir den Erhalt der Kündigung.");
+
+		// fill template
 		$lyx = file_get_contents("../examples/VertragKuendigen.lyx");
-		$lyx = preg_replace("/\{\{Kunde_Name\}\}/", $this->process->get("Kunde_Name"), $lyx);
-		$lyx = preg_replace("/\{\{Kunde_Strasse\}\}/", $this->process->get("Kunde_Strasse"), $lyx);
-		$lyx = preg_replace("/\{\{Kunde_Plz_Ort\}\}/", $this->process->get("Kunde_Plz_Ort"), $lyx);
-		$lyx = preg_replace("/\{\{Vertragspartner_Name\}\}/", $this->process->get("Vertragspartner_Name"), $lyx);
-		$lyx = preg_replace("/\{\{Vertragspartner_Strasse\}\}/", $this->process->get("Vertragspartner_Strasse"), $lyx);
-		$lyx = preg_replace("/\{\{Vertragspartner_Plz_Ort\}\}/", $this->process->get("Vertragspartner_Plz_Ort"), $lyx);
+		// apply Mustache
+		foreach($this->process->variables as $name => $value){
+			$lyx = preg_replace("/\{\{$name\}\}/", $value, $lyx);
+		}
 
 		$tmpfname = '/temp/VertragKuendigen'.uniqid();
 		mkdir($_SERVER['DOCUMENT_ROOT'].'/temp');

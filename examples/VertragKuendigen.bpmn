@@ -71,7 +71,8 @@
     </serviceTask>
     <sequenceFlow id="_18" sourceRef="_14" targetRef="_17"/>
     <manualTask completionQuantity="1" id="_23" isForCompensation="false" name="Auswahl" startQuantity="1">
-      <documentation id="_23_D_1" textFormat="text/plain"><![CDATA[Dokument downloaden <a href={{filename.pdf}}>{{filename.pdf}}</a>]]></documentation>
+      <documentation id="_23_D_1" textFormat="text/plain"><![CDATA[Dokument downloaden <a target=_blank 
+href="{{filename.pdf}}">{{filename.pdf}}</a>]]></documentation>
       <incoming>_24</incoming>
       <incoming>_6</incoming>
       <outgoing>_25</outgoing>
@@ -222,10 +223,10 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_21" id="Yaoqiang-_21" sourceElement="_23" targetElement="_14">
         <di:waypoint x="944.5" y="45.5"/>
-        <di:waypoint x="821.0" y="15.5"/>
+        <di:waypoint x="821.0" y="16.0"/>
         <di:waypoint x="687.0" y="45.5"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds height="18.8046875" width="42.0" x="794.75" y="6.09765625"/>
+          <dc:Bounds height="18.8046875" width="42.0" x="794.75" y="6.59765625"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
