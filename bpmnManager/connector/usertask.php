@@ -24,7 +24,12 @@ foreach($p->findSequenceFlowElementsBySourceElement($e) as $s){
 
 $documentation = array();
 foreach($e->documentation as $documentationElement){
-	$documentation[] = (String)$documentationElement;
+	$d = (String)$documentationElement;
+	// apply Mustache
+	foreach($p->variables as $name => $value){
+		$d = preg_replace("/\{\{$name\}\}/", $value, $d);
+	}
+	$documentation[] = $d;
 }
 
 $ioSpecification = array();

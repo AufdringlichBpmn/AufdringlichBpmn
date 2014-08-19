@@ -120,9 +120,9 @@
 		<h2>Execute User Task - {{name}}</h2>
 		<table class="ui-table">
 			{{#documentation}}
-			<tr>
-				<td colspan="2">{{.}}</td>
-			</tr>
+				<tr>
+					<td colspan="2">{{{.}}}</td>
+				</tr>
 			{{/documentation}}
 			{{#ioSpecification}}
 				{{#input}}
@@ -134,37 +134,34 @@
 				{{#output}}
 					<tr>
 						<th>{{name}}:</th>
-						<td><input name="var_{{name}}" value="{{value}}"></td>
+						<td><input class="ouput" data-name="{{name}}" value="{{value}}"></td>
 					</tr>
 				{{/output}}
 			{{/ioSpecification}}
 			<tr>
 				<th colspan="2">Auswahl</th>
 			</tr>
-			{{#choice}}
-				{{#name}}{{^default}}
-					<tr>
-						<th><input type="radio" name="choice" value="{{.}}"></th>
-						<td>{{.}}</td>
-					</tr>
-				{{/default}}{{/name}}
-				{{#default}}
-					<tr>
-						<th><input type="radio" name="choice" class="default"></th>
-						<td><input type="text" class="default" value="sonstiges"></td>
-					</tr>
-				{{/default}}
-			{{/choice}}
+				<tr>
+					<td colspan="2">
+						<a href="#pageUserTasks" data-rel="back"
+							id="executeUserTask-cancel"
+							class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Abbrechen</a>
+						{{#choice}}
+							{{#name}}{{^default}}
+								<a href="#pageUserTasks" data-rel="back" 
+								data-action="executeUserTask-save" data-value="{{.}}"
+								class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">{{.}}</a>
+							{{/default}}{{/name}}
+							{{#default}}
+								<a href="#pageUserTasks" data-rel="back" 
+								data-action="executeUserTask-save" data-value="sonstiges"
+								class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">sonstiges</a>
+						{{/default}}
+					{{/choice}}
+				</td>
+			</tr>
 		</table>
 		{{/usertask}}
-		<p>
-			<a href="#pageUserTasks" data-rel="back"
-				id="executeUserTask-cancel"
-				class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Abbrechen</a>
-			<a href="#pageUserTasks" data-rel="back" 
-				id="executeUserTask-save"
-				class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">Speichern und Nächster</a>
-		</p>
 	</textarea><!-- /content -->
 
 	<div data-role="footer">

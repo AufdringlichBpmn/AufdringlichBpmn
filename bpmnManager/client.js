@@ -13,6 +13,7 @@ var config = {
 };
 
 $(document).ready(function() {
+	
 	$( "#pageProcessDefinitions" ).on( "pageshow", function( event ) {
 		$.ajax({
 			url: config.server.base_url + config.server.process_definitions_url,
@@ -29,6 +30,7 @@ $(document).ready(function() {
 			dataType: "json"
 		});
 	});
+	
 	$( "#pageUserTasks" ).on( "pageshow", function( event ) {
 		$.ajax({
 			url: config.server.base_url + config.server.open_usertasks_url,
@@ -46,6 +48,7 @@ $(document).ready(function() {
 			dataType: "json"
 		});
 	});
+	
 	$( "#startProcessDialog" ).on( "pageshow", function( event ) {
 		$.ajax({
 			url: config.server.base_url + config.server.start_process_url,
@@ -61,6 +64,7 @@ $(document).ready(function() {
 			dataType: "json"
 		});
 	});
+	
 	$( "#executeUserTask" ).on( "pageshow", function( event ) {
 		$.ajax({
 			url: config.server.base_url + config.server.usertask_url,
@@ -73,17 +77,18 @@ $(document).ready(function() {
 				$("#executeUserTask [role='main']").html(
 					Mustache.render(template, data)
 				);
-				$( "#executeUserTask-save" ).click(function( event ) {
-					var result;
-					if($(this).closest("div").find("input:checked.default").size()>0)
-						result = $(this).closest("div").find("input[type='text'].default").val();
-					else
-						result = $(this).closest("div").find("input:checked").val();
+				$( "a[data-action='executeUserTask-save']" ).click(function( event ) {
+					var result = $(this).attr("data-value");
+					var vars = {};
+					$(this).closest("div").find("input[data-name]").each(function(i,e){
+						vars[$(this).attr("data-name")] = $(this).val();
+					});
 					$.ajax({
 						url: config.server.base_url + config.server.evaluate_usertask_url,
 						data: {
 							process_id: $(this).closest("[data-processId]").attr("data-processId"),
 							task_id: $(this).closest("[data-taskId]").attr("data-taskId"),
+							vars: JSON.stringify(vars),
 							result: result
 						},
 						success: function(data){
