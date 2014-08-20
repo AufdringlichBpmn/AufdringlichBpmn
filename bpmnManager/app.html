@@ -132,10 +132,18 @@
 					</tr>
 				{{/input}}
 				{{#output}}
-					<tr>
-						<th>{{name}}:</th>
-						<td><input class="ouput" data-name="{{name}}" value="{{value}}"></td>
-					</tr>
+					{{^type_ID_1}}
+						<tr>
+							<th>{{name}}:</th>
+							<td><input class="ouput" data-name="{{name}}" value="{{value}}"></td>
+						</tr>
+					{{/type_ID_1}}
+					{{#type_ID_1}}
+						<tr>
+							<th>{{name}}:</th>
+							<td><textarea class="ouput" data-name="{{name}}">{{{value}}}&lt;/textarea></td>
+						</tr>
+					{{/type_ID_1}}
 				{{/output}}
 			{{/ioSpecification}}
 			<tr>
@@ -156,11 +164,11 @@
 								<a href="#pageUserTasks" data-rel="back" 
 								data-action="executeUserTask-save" data-value="sonstiges"
 								class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">sonstiges</a>
-						{{/default}}
-					{{/choice}}
-				</td>
-			</tr>
-		</table>
+							{{/default}}
+						{{/choice}}
+					</td>
+				</tr>
+			</table>
 		{{/usertask}}
 	</textarea><!-- /content -->
 

@@ -80,7 +80,7 @@ $(document).ready(function() {
 				$( "a[data-action='executeUserTask-save']" ).click(function( event ) {
 					var result = $(this).attr("data-value");
 					var vars = {};
-					$(this).closest("div").find("input[data-name]").each(function(i,e){
+					$(this).closest("div").find(":input[data-name]").each(function(i,e){
 						vars[$(this).attr("data-name")] = $(this).val();
 					});
 					$.ajax({

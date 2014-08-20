@@ -48,7 +48,8 @@ if(isSet($e->ioSpecification)){
 		$ioSpecification[] = array(
 			"output" => array(
 				"name"=>$dataOutputName,
-				"value"=>$p->get($dataOutputName)
+				"value"=>$p->get($dataOutputName),
+				"type_".((String)$dataOutput->attributes()->itemSubjectRef)=>true
 			)
 		);
 	}
