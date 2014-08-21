@@ -71,7 +71,6 @@ class BpmnEngine{
 	}
 	
 	public function startProcessByEvent(){
-		global $CONFIG;
 		foreach($this->storage->listProcessDefinitions() as $processDefinition){
 			
 			$xmlAdapter = new XmlAdapter();
@@ -80,19 +79,23 @@ class BpmnEngine{
 			$elementId = $xmlAdapter->getAttribute($startEventElement, 'id');
 			
 			$process = ProcessInstance::buildByProcessDefinition($this, $processDefinition);
-			foreach($CONFIG->eventImpls as $impl){
-				if($impl::canHandleEvent($process, $elementId)){
-					if($impl != \elements\NoneEventImpl::class ){
-						$process->start();
-						// process all evaluated events and tasks 
-						while($process->processNextUserTask() || $process->processNextEvent());
-						// store process if something happened
-						if(isSet($process->events[0]->executedTs)){
-							$this->storage->storeProcess($process);
-							return $process;
+			foreach ( get_declared_classes() as $c ) {
+				$class = new ReflectionClass($c);
+				if ( $class->isSubclassOf('\elements\AbstractEventImpl') && $class->IsInstantiable()) {
+					$impl = $c;
+					if($impl::canHandleEvent($process, $elementId)){
+						if($impl != \elements\NoneEventImpl::class ){
+							$process->start();
+							// process all evaluated events and tasks 
+							while($process->processNextUserTask() || $process->processNextEvent());
+							// store process if something happened
+							if(isSet($process->events[0]->executedTs)){
+								$this->storage->storeProcess($process);
+								return $process;
+							}
 						}
+						break;
 					}
-					break;
 				}
 			}
 		}

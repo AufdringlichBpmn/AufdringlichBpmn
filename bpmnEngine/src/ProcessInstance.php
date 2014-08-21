@@ -90,11 +90,14 @@ class ProcessInstance extends \dto\Process{
 	}
 	
 	private function getBpmnElementHandler($elementName){
-		global $CONFIG;
-		foreach($CONFIG->elementHandlers as $handler){
-			$handlerInstance = new $handler;
-			if($handler::canHandleElement($elementName))
-				return $handlerInstance;
+		foreach ( get_declared_classes() as $c ) {
+			$class = new \ReflectionClass($c);
+			if ( $class->isSubclassOf('\elements\BpmnElementHandler') && $class->IsInstantiable()) {
+				$handler = $c;
+				$handlerInstance = new $handler;
+				if($handler::canHandleElement($elementName))
+					return $handlerInstance;
+			}
 		}
 		throw new Exception("No Handler found for $elementName.");
 	}

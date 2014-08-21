@@ -13,10 +13,13 @@ abstract class AbstractEventHandler extends DefaultBpmnElementHandler {
 	}
 	
 	protected function findEventImpl(\ProcessInstance $processInstance, $elementId){
-		global $CONFIG;
-		foreach($CONFIG->eventImpls as $impl){
-			if($impl::canHandleEvent($processInstance, $elementId)){
-				return new $impl;
+		foreach ( get_declared_classes() as $c ) {
+			$class = new \ReflectionClass($c);
+			if ( $class->isSubclassOf('\elements\AbstractEventImpl') && $class->IsInstantiable()) {
+				$impl = $c;
+				if($impl::canHandleEvent($processInstance, $elementId)){
+					return new $impl;
+				}
 			}
 		}
 		throw new \Exception("No Impl found for ElementId=$elementId.");

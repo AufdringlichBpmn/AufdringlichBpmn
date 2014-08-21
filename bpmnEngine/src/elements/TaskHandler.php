@@ -5,10 +5,13 @@ namespace elements;
 abstract class TaskHandler extends DefaultBpmnElementHandler {
 
 	protected function findTaskImpl(\ProcessInstance $processInstance, $element){
-		global $CONFIG;
-		foreach($CONFIG->taskImpls as $impl){
-			if($impl::canHandleTask($processInstance, $element)){
-				return new $impl;
+		foreach ( get_declared_classes() as $c ) {
+			$class = new \ReflectionClass($c);
+			if ( $class->isSubclassOf('\elements\AbstractTaskImpl') && $class->IsInstantiable()) {
+				$impl = $c;
+				if($impl::canHandleTask($processInstance, $element)){
+					return new $impl;
+				}
 			}
 		}
 		$elementName = $processInstance->getAttribute($element, 'name');
@@ -136,10 +139,13 @@ class ManualTaskHandler extends TaskHandler {
 abstract class AbstractEventTaskHandler extends TaskHandler {
 
 	protected function findEventImpl(\ProcessInstance $processInstance, $elementId){
-		global $CONFIG;
-		foreach($CONFIG->eventImpls as $impl){
-			if($impl::canHandleEvent($processInstance, $elementId)){
-				return new $impl;
+		foreach ( get_declared_classes() as $c ) {
+			$class = new \ReflectionClass($c);
+			if ( $class->isSubclassOf('\elements\AbstractEventImpl') && $class->IsInstantiable()) {
+				$impl = $c;
+				if($impl::canHandleEvent($processInstance, $elementId)){
+					return new $impl;
+				}
 			}
 		}
 		throw new \Exception("No Impl found for ElementId=$elementId.");

@@ -20,23 +20,6 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		// Or use this for File Persistence
 		$this->dbAdapter = new \persistence\FileStore();
 		
-		global $CONFIG;
-		$CONFIG->taskImpls[] = CheckVariableA::class;
-		$CONFIG->taskImpls[] = ServiceTaskImpl::class;
-		$CONFIG->taskImpls[] = UserTaskImpl::class;
-		$CONFIG->taskImpls[] = SendTaskImpl::class;
-		$CONFIG->taskImpls[] = ReceiveTaskImpl::class;
-		$CONFIG->taskImpls[] = Eins::class;
-		$CONFIG->taskImpls[] = Zwei::class;
-		$CONFIG->taskImpls[] = Drei::class;
-		$CONFIG->taskImpls[] = Vier::class;
-		$CONFIG->taskImpls[] = Funf::class;
-		$CONFIG->taskImpls[] = Sechs::class;
-		$CONFIG->taskImpls[] = Sieben::class;
-		$CONFIG->taskImpls[] = Acht::class;
-		$CONFIG->taskImpls[] = Neun::class;
-		$CONFIG->taskImpls[] = CheckResult::class;
-		$CONFIG->eventImpls[] = MessageSendingImpl::class;
 	}
 
 	protected function tearDown(){
@@ -101,14 +84,10 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		$process = $bpmnEngine->continueProcess($process->getId());
 		$result = $process->getResult();
 
-		print_r($process);
 		$this->assertEquals("success", $result);
 	}
 	
 	public function testStartProcessByEvent(){
-		global $CONFIG;
-		$CONFIG->eventImpls[] = DummyMessageEventImpl::class;
-
 		$bpmnEngine = new BpmnEngine($this->dbAdapter);
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/StartEventTest.bpmn'));
 		
@@ -119,8 +98,6 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 		
 	}
 	public function testStartProcessByEventNegative(){
-		global $CONFIG;
-		$CONFIG->eventImpls[] = DummyMessageEventImpl::class;
 		DummyMessageEventImpl::$receiveMessageReturns = false;
 
 		$bpmnEngine = new BpmnEngine($this->dbAdapter);
@@ -130,8 +107,11 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 
 		$this->assertEquals(null, $process);
 		
+		foreach ( get_declared_classes() as $c ) {
+			$class = new ReflectionClass($c);
+			if ( $class->isSubclassOf('\elements\AbstractTaskImpl') && $class->IsInstantiable()) {
+				print_r($c);
+			}
+		}
 	}
 }
-
-
-?>

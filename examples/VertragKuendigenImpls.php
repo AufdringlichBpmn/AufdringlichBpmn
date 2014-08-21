@@ -1,11 +1,5 @@
 <?php
 
-global $CONFIG;
-$CONFIG->taskImpls[] = CreateLyxDocument::class;
-$CONFIG->taskImpls[] = CreatePdf::class;
-$CONFIG->taskImpls[] = GenerateTexts::class;
-$CONFIG->taskImpls[] = PrintPdf::class;
-
 class CreateLyxDocument extends \elements\AbstractServiceTaskImpl{
 	function processServiceTask(){
 		// fill template
