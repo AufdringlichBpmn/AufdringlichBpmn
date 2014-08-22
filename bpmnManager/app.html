@@ -117,38 +117,38 @@
 	<div role="main" class="ui-content"></div>
 	<textarea id="template-executeUserTask" style="display:none;">
 		{{#usertask}}
-		<h2>Execute User Task - {{name}}</h2>
-		<table class="ui-table">
-			{{#documentation}}
-				<tr>
-					<td colspan="2">{{{.}}}</td>
-				</tr>
-			{{/documentation}}
-			{{#ioSpecification}}
-				{{#input}}
+			<h2>Execute User Task - {{name}}</h2>
+			<table class="ui-table">
+				{{#documentation}}
 					<tr>
-						<th>{{name}}:</th>
-						<td>{{value}}</td>
+						<td colspan="2">{{{.}}}</td>
 					</tr>
-				{{/input}}
-				{{#output}}
-					{{^type_ID_1}}
+				{{/documentation}}
+				{{#ioSpecification}}
+					{{#input}}
 						<tr>
 							<th>{{name}}:</th>
-							<td><input class="ouput" data-name="{{name}}" value="{{value}}"></td>
+							<td>{{value}}</td>
 						</tr>
-					{{/type_ID_1}}
-					{{#type_ID_1}}
-						<tr>
-							<th>{{name}}:</th>
-							<td><textarea class="ouput" data-name="{{name}}">{{{value}}}&lt;/textarea></td>
-						</tr>
-					{{/type_ID_1}}
-				{{/output}}
-			{{/ioSpecification}}
-			<tr>
-				<th colspan="2">Auswahl</th>
-			</tr>
+					{{/input}}
+					{{#output}}
+						{{^type_ID_1}}
+							<tr>
+								<th>{{name}}:</th>
+								<td><input class="ouput" data-name="{{name}}" value="{{value}}"></td>
+							</tr>
+						{{/type_ID_1}}
+						{{#type_ID_1}}
+							<tr>
+								<th>{{name}}:</th>
+								<td><textarea class="ouput" data-name="{{name}}" rows="10">{{{value}}}&lt;/textarea></td>
+							</tr>
+						{{/type_ID_1}}
+					{{/output}}
+				{{/ioSpecification}}
+				<tr>
+					<th colspan="2">Auswahl</th>
+				</tr>
 				<tr>
 					<td colspan="2">
 						<a href="#pageUserTasks" data-rel="back"
@@ -156,12 +156,12 @@
 							class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Abbrechen</a>
 						{{#choice}}
 							{{#name}}{{^default}}
-								<a href="#pageUserTasks" data-rel="back" 
+								<a href="#" data-rel="back" 
 								data-action="executeUserTask-save" data-value="{{.}}"
 								class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">{{.}}</a>
 							{{/default}}{{/name}}
 							{{#default}}
-								<a href="#pageUserTasks" data-rel="back" 
+								<a href="#" data-rel="back" 
 								data-action="executeUserTask-save" data-value="sonstiges"
 								class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-ok ui-btn-icon-left">sonstiges</a>
 							{{/default}}
@@ -187,8 +187,8 @@
 	<div role="main" class="ui-content"></div>
 	<textarea id="template-startProcessDialog" style="display:none;">
 		<p>
-			<a href="#pageProcessDefinitions" data-rel="back" id="startProcessDialog-ok"
-				class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Ok</a>
+			<a href="#pageProcessDefinitions"
+				class="ok ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Ok</a>
 		</p>
 	</textarea><!-- /content -->
 
