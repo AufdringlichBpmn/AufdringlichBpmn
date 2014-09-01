@@ -34,59 +34,58 @@ foreach($e->documentation as $documentationElement){
 
 $ioSpecification = array();
 if(isSet($e->ioSpecification)){
-	foreach($e->ioSpecification->dataInput as $dataInput){
-		$itemSubjectRef = (String)$dataInput->attributes()->itemSubjectRef;
+	foreach($e->ioSpecification->children() as $dataIo){
+		$dataIoElementName = $dataIo->getName();
+		$dataIoName = (String)$dataIo->attributes()->name;
+		$itemSubjectRef = (String)$dataIo->attributes()->itemSubjectRef;
 		$itemDefinition = $p->findElementById($itemSubjectRef);
-		$html = null;
-		if($itemDefinition) {
-			foreach ( get_declared_classes() as $c ) {
-				$class = new ReflectionClass($c);
-				if ( $class->isSubclassOf('\elements\AbstractItemDefinitionImpl') && $class->IsInstantiable()) {
-					$impl = $c;
-					if($impl::canHandleItem($p, $itemDefinition)){
-						$itemDefinitionImpl = new $impl;
-						$itemDefinitionImpl->init($bpmnEngine, $p, $e);
-						$html = $itemDefinitionImpl->asHtml();
+		if($dataIoElementName == 'dataInput') {
+			$html = null;
+			if($itemDefinition) {
+				foreach ( get_declared_classes() as $c ) {
+					$class = new ReflectionClass($c);
+					if ( $class->isSubclassOf('\elements\AbstractItemDefinitionImpl') && $class->IsInstantiable()) {
+						$impl = $c;
+						if($impl::canHandleItem($p, $itemDefinition)){
+							$itemDefinitionImpl = new $impl;
+							$itemDefinitionImpl->init($bpmnEngine, $p, $e);
+							$html = $itemDefinitionImpl->asHtml();
+						}
 					}
 				}
 			}
+			$ioSpecification[] = array(
+				"input"=>array(
+					"name"=>$dataIoName,
+					"value"=>$p->get($dataIoName),
+					"html"=>$html
+				)
+			);
 		}
-		$dataInputName = (String)$dataInput->attributes()->name;
-		$ioSpecification[] = array(
-			"input"=>array(
-				"name"=>$dataInputName,
-				"value"=>$p->get($dataInputName),
-				"html"=>$html
-			)
-		);
-	}
-	foreach($e->ioSpecification->dataOutput as $dataOutput){
-		$dataOutputName = (String)$dataOutput->attributes()->name;
-		$itemSubjectRef = (String)$dataOutput->attributes()->itemSubjectRef;
-		$itemDefinition = $p->findElementById($itemSubjectRef);
-		$html = null;
-		if($itemDefinition) {
-			foreach ( get_declared_classes() as $c ) {
-				$class = new ReflectionClass($c);
-				if ( $class->isSubclassOf('\elements\AbstractItemDefinitionImpl') && $class->IsInstantiable()) {
-					$impl = $c;
-					if($impl::canHandleItem($p, $itemDefinition)){
-						$itemDefinitionImpl = new $impl;
-						$itemDefinitionImpl->init($bpmnEngine, $p, $e);
-						$html = $itemDefinitionImpl->asInput();
+		else if ($dataIoElementName == 'dataOutput') {
+			$html = null;
+			if($itemDefinition) {
+				foreach ( get_declared_classes() as $c ) {
+					$class = new ReflectionClass($c);
+					if ( $class->isSubclassOf('\elements\AbstractItemDefinitionImpl') && $class->IsInstantiable()) {
+						$impl = $c;
+						if($impl::canHandleItem($p, $itemDefinition)){
+							$itemDefinitionImpl = new $impl;
+							$itemDefinitionImpl->init($bpmnEngine, $p, $e);
+							$html = $itemDefinitionImpl->asInput();
+						}
 					}
 				}
 			}
+			$ioSpecification[] = array(
+				"output" => array(
+					"name"=>$dataIoName,
+					"value"=>$p->get($dataIoName),
+					"type_".((String)$dataIo->attributes()->itemSubjectRef)=>true,
+					"html"=>$html
+				)
+			);
 		}
-
-		$ioSpecification[] = array(
-			"output" => array(
-				"name"=>$dataOutputName,
-				"value"=>$p->get($dataOutputName),
-				"type_".((String)$dataOutput->attributes()->itemSubjectRef)=>true,
-				"html"=>$html
-			)
-		);
 	}
 }
 
