@@ -71,6 +71,10 @@ class InMemoryStore implements ProcessStore{
 			}
 		}
 	}
+	
+	public function listProcesses(){
+		return $this->processes;
+	}
 		
 	function findNotExecutedProcessInstanceIds(){
 		foreach($this->processes as $process) {

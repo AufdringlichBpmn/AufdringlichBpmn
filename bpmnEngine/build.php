@@ -3,6 +3,7 @@
 $srcRoot = "./src";
 $buildRoot = "./build";
 
+unlink($buildRoot . "/bpmn.phar");
 $phar = new Phar($buildRoot . "/bpmn.phar",
 	FilesystemIterator::CURRENT_AS_FILEINFO |
 	FilesystemIterator::KEY_AS_FILENAME, "bpmn.phar");
@@ -15,6 +16,7 @@ $phar ["elements/NoneEventImpl.php"] = file_get_contents($srcRoot."/elements/Non
 $phar ["elements/AbstractServiceTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractServiceTaskImpl.php");
 $phar ["elements/AbstractTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractTaskImpl.php");
 $phar ["elements/AbstractUserTaskImpl.php"] = file_get_contents($srcRoot."/elements/AbstractUserTaskImpl.php");
+$phar ["elements/AbstractItemDefinitionImpl.php"] = file_get_contents($srcRoot."/elements/AbstractItemDefinitionImpl.php");
 
 $phar ["dto/DbObject.php"] = file_get_contents($srcRoot."/dto/DbObject.php");
 $phar ["dto/Event.php"] = file_get_contents($srcRoot."/dto/Event.php");

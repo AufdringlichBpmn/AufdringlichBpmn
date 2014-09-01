@@ -86,7 +86,7 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 
 		$this->assertEquals("success", $result);
 	}
-	
+	/*
 	public function testStartProcessByEvent(){
 		$bpmnEngine = new BpmnEngine($this->dbAdapter);
 		$bpmnEngine->importDefinition(file_get_contents(__DIR__.'/StartEventTest.bpmn'));
@@ -113,5 +113,5 @@ class BpmnEngineTest extends PHPUnit_Framework_TestCase{
 				print_r($c);
 			}
 		}
-	}
+	}*/
 }

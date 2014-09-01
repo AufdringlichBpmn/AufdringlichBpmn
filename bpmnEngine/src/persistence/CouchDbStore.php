@@ -374,9 +374,15 @@ EOF;
 
 	public function listProcessDefinitions(){
 		// TODO implement this
+		throw new Exception("Not implemented!");
+	}
+	public function listProcesses(){
+		// TODO implement this
+		throw new Exception("Not implemented!");
 	}
 	public function findOpenUserTasks(){
 		// TODO implement this
+		throw new Exception("Not implemented!");
 	}
 
 	public function put($processInstanceId, $key, $value){

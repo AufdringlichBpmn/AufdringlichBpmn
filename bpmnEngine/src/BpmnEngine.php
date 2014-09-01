@@ -58,6 +58,10 @@ class BpmnEngine{
 		return $process;
 	}
 	
+	function listProcesses(){
+		return $this->storage->listProcesses();
+	}
+	
 	function continueProcess($processId){
 		$process = $this->loadProcess($processId);
 		 // process all evaluated events and tasks 

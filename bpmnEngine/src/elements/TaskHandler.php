@@ -89,7 +89,7 @@ class ServiceTaskHandler extends TaskHandler {
 	
 	protected function evaluate(\ProcessInstance $processInstance, $element, $task){
 		$serviceTaskImpl = self::findTaskImpl($processInstance, $element);
-		$serviceTaskImpl->init($processInstance,$element);
+		$serviceTaskImpl->init($processInstance, $element);
 		return $serviceTaskImpl->processServiceTask();
 	}
 }

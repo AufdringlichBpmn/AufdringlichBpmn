@@ -8,6 +8,7 @@ interface ProcessStore {
 	function listProcessDefinitions();
 	function storeProcess($process);
 	function loadProcess($processId);
+	function listProcesses();
 	function findNotExecutedProcessInstanceIds();
 	function findOpenUserTasks();
 }

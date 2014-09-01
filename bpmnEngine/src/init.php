@@ -18,6 +18,7 @@
 	require_once('elements/EventHandler.php');
 	require_once('elements/TaskHandler.php');
 	require_once('elements/AbstractEventImpl.php');
+	require_once('elements/AbstractItemDefinitionImpl.php');
 	require_once('elements/AbstractMessageEventImpl.php');
 	require_once('elements/TimerEventImpl.php');
 	require_once('elements/NoneEventImpl.php');
@@ -25,4 +26,3 @@
 	require_once('elements/AbstractServiceTaskImpl.php');
 	require_once('elements/AbstractUserTaskImpl.php');
 	require_once('configuration.php');
-

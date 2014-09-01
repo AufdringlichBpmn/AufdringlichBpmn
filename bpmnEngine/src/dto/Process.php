@@ -1,5 +1,4 @@
 <?php
-
 namespace dto;
 
 class Process extends DbObject{

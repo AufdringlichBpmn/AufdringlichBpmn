@@ -69,9 +69,21 @@ class FileStore implements ProcessStore{
 
 	function storeProcess($process){
 		$myFile = $this->processes.'/'.md5($process->getId()).".json";
+		{ // optimistick locking: validate version
+			if( ! isSet($process->_version) ) $process->_version = 1;
+			if( file_exists($myFile) ) {
+				// check version
+				$dto = json_decode( file_get_contents($myFile) );
+				if( ! isSet($dto->_version) ) $dto->_version = 1;
+				$refVersion = $dto->_version;
+				if($process->_version != $dto->_version)
+					throw new \Exception("ProcessInstance-File $myFile wurde von einem anderen Process verändert.");
+				$process->_version++;
+			}
+		}
 		file_put_contents($myFile, json_encode( $process ));
 	}
-	
+
 	function loadProcess($processId){
 		$myFile = $this->processes.'/'.md5($processId).".json";
 		if( file_exists($myFile) ) {
@@ -82,6 +94,20 @@ class FileStore implements ProcessStore{
 		}
 	}
 		
+	public function listProcesses(){
+		$processes = array();
+		$d = dir($this->processes);
+		while (false !== ($myFile = $d->read())) {
+			if($myFile == '..' || $myFile == '.') continue;
+			$dto = json_decode( file_get_contents($this->processes.'/'.$myFile) );
+			$dbObject = new \dto\Process();
+			$dbObject->merge($dto);
+			$processes[] = $dbObject;
+		}
+		$d->close();
+		return $processes;
+	}
+
 	function findNotExecutedProcessInstanceIds(){
 		$d = dir($this->processes);
 		while (false !== ($myFile = $d->read())) {

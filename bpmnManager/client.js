@@ -102,7 +102,7 @@ $(document).ready(function() {
 					var processId = atag.closest("[data-processId]").attr("data-processId");
 					var vars = {};
 					atag.closest("div").find(":input[data-name]").each(function(i,e){
-						vars[atag.attr("data-name")] = atag.val();
+						vars[$(e).attr("data-name")] = $(e).val();
 					});
 					var done = false;
 					$.ajax({

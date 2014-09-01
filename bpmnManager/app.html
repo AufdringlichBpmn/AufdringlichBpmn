@@ -125,13 +125,21 @@
 					</tr>
 				{{/documentation}}
 				{{#ioSpecification}}
-					{{#input}}
+					{{#input}}{{#html}}
+						<tr>
+							<td colspan="2">{{{.}}}</td>
+						</tr>
+					{{/html}}{{^html}}
 						<tr>
 							<th>{{name}}:</th>
 							<td>{{value}}</td>
 						</tr>
-					{{/input}}
-					{{#output}}
+					{{/html}}{{/input}}
+					{{#output}}{{#html}}
+						<tr>
+							<td colspan="2">{{{.}}}</td>
+						</tr>
+					{{/html}}{{^html}}
 						{{^type_ID_1}}
 							<tr>
 								<th>{{name}}:</th>
@@ -144,16 +152,13 @@
 								<td><textarea class="ouput" data-name="{{name}}" rows="10">{{{value}}}&lt;/textarea></td>
 							</tr>
 						{{/type_ID_1}}
-					{{/output}}
+					{{/html}}{{/output}}
 				{{/ioSpecification}}
 				<tr>
 					<th colspan="2">Auswahl</th>
 				</tr>
 				<tr>
 					<td colspan="2">
-						<a href="#pageUserTasks" data-rel="back"
-							id="executeUserTask-cancel"
-							class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Abbrechen</a>
 						{{#choice}}
 							{{#name}}{{^default}}
 								<a href="#" data-rel="back" 
