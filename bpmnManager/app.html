@@ -94,7 +94,7 @@
 			{{#usertasks}}
 			<tr data-processDefinitionId="{{process_definition_id}}" data-processId="{{process_id}}" data-taskId="{{id}}">
 				<td><a href="#executeUserTask" class="ui-btn ui-shadow ui-corner-all" data-action="openUserTask"
-					data-rel="dialog" data-transition="pop">{{name}}</a></td>
+					data-rel="dialog" data-transition="pop">{{title}} {{name}}</a></td>
 				<td>{{process_definition_id}} / {{process_id}}<br>{{created_ts}}</td>
 			</tr>
 			{{/usertasks}}
@@ -117,7 +117,7 @@
 	<div role="main" class="ui-content"></div>
 	<textarea id="template-executeUserTask" style="display:none;">
 		{{#usertask}}
-			<h2>Execute User Task - {{name}}</h2>
+			<h2>{{title}} - {{name}}</h2>
 			<table class="ui-table">
 				{{#documentation}}
 					<tr>

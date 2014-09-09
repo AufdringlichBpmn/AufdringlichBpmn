@@ -9,6 +9,7 @@ foreach($store->findOpenUserTasks() as $row){
 	$e = $p->findElementById($t->ref_id);
 	
 	$output[]= array(
+		"title"=>$p->title,
 		"name"=>(String)$e->attributes()->name,
 		"created_ts"=>$t->createdTs,
 		"process_definition_id"=>$row["processDefinitionId"],
@@ -16,6 +17,7 @@ foreach($store->findOpenUserTasks() as $row){
 		"id"=>$t->_id
 	);
 }
+sort($output);
 
 echo json_encode(array("usertasks"=>$output));
 

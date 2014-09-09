@@ -112,9 +112,9 @@ class FileStore implements ProcessStore{
 		$d = dir($this->processes);
 		while (false !== ($myFile = $d->read())) {
 			$process = json_decode( file_get_contents($this->processes.'/'.$myFile) );
-			if( ! $process->executed_ts){
+			if( ! isSet($process->executed_ts) && isSet($process->tasks) ){
 				foreach($process->tasks as $task) {
-					if( ! $task->executedTs && $task->result){
+					if( ! isSet($task->executedTs) && isSet($task->result) ){
 						$d->close();
 						return $process->getId();
 					}

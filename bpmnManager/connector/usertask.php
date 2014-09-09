@@ -90,6 +90,7 @@ if(isSet($e->ioSpecification)){
 }
 
 echo json_encode(array("usertask" => array(
+	"title" => $p->title,
 	"name" => (String)$e->attributes()->name,
 	"created_ts" => $t->createdTs,
 	"process_definition_id" => $p->processDefinitionId,
